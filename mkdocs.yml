@@ -24,6 +24,7 @@ nav:
   - Arquitetura: architecture.md
   - Modelo de dados: data_model.md
   - API: api.md
+  - Referência OpenAPI: api_reference.md
   - Scraping ético: ethics.md
   - Deploy: deployment.md
   - Compliance & segurança: compliance.md

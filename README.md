@@ -6,7 +6,9 @@
 > **dados abertos** reutilizável.
 
 [![CI](https://github.com/danzeroum/culturasp-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/danzeroum/culturasp-adapter/actions/workflows/ci.yml)
+[![Docs](https://github.com/danzeroum/culturasp-adapter/actions/workflows/docs.yml/badge.svg)](https://danzeroum.github.io/culturasp-adapter/)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Princípios
@@ -76,8 +78,10 @@ culturasp-scrape --source sala-sp --max 5
 
 ## Documentação
 
-Documentação completa em `docs/` (MkDocs Material): arquitetura, modelo de dados,
-guia da API, scraping ético, deploy, compliance e backup/DR.
+Documentação completa (MkDocs Material) publicada em
+**https://danzeroum.github.io/culturasp-adapter/** — arquitetura, modelo de dados, guia da
+API, **referência OpenAPI** (Swagger UI), scraping ético, deploy, compliance e backup/DR.
+Histórico de versões em [CHANGELOG.md](CHANGELOG.md).
 
 ## Segurança & compliance
 

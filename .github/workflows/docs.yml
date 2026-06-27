@@ -3,13 +3,23 @@ name: Docs
 on:
   push:
     branches: [main]
-    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+    paths: ["docs/**", "mkdocs.yml", "src/**", ".github/workflows/docs.yml"]
+  workflow_dispatch:
 
+# Required for deploying to GitHub Pages via the official Pages actions.
+# NOTE: enable once in Settings → Pages → Source: "GitHub Actions".
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; cancel in-progress runs for the same ref.
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,5 +27,27 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force
+      - name: Install project + docs deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install mkdocs-material
+      - name: Export OpenAPI spec (keeps published spec in sync with the app)
+        run: python scripts/export_openapi.py
+      - name: Build site
+        run: mkdocs build --strict
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
