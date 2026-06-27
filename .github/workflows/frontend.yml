@@ -64,6 +64,13 @@ jobs:
         run: npm run build
         env:
           VITE_API_BASE: http://127.0.0.1:8000
+      - name: Start seeded API
+        run: |
+          python scripts/e2e_serve_seeded.py > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8000/health && break || sleep 1
+          done
+          curl -sf http://127.0.0.1:8000/health || { echo "::error::seeded API failed to start"; cat /tmp/api.log; exit 1; }
       - name: Run smoke E2E
         working-directory: frontend
         run: npm run e2e

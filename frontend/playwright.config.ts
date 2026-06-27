@@ -34,14 +34,22 @@ export default defineConfig({
     {
       command: API_CMD,
       url: `${API_URL}/health`,
-      reuseExistingServer: !process.env.CI,
-      timeout: 60_000,
+      // The seeded API is read-only; reuse a pre-booted instance if present
+      // (CI boots it in an explicit step so its logs are visible).
+      reuseExistingServer: true,
+      timeout: 120_000,
+      stdout: "pipe",
+      stderr: "pipe",
     },
     {
-      command: `npm run preview -- --port ${PREVIEW_PORT} --strictPort`,
+      // Bind IPv4 explicitly: on CI runners `localhost` can resolve to ::1
+      // (IPv6) while Playwright probes 127.0.0.1, causing a readiness timeout.
+      command: `npm run preview -- --host 127.0.0.1 --port ${PREVIEW_PORT} --strictPort`,
       url: `http://127.0.0.1:${PREVIEW_PORT}`,
       reuseExistingServer: !process.env.CI,
-      timeout: 60_000,
+      timeout: 120_000,
+      stdout: "pipe",
+      stderr: "pipe",
     },
   ],
 });
