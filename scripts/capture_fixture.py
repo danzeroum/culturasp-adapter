@@ -27,7 +27,7 @@ from pathlib import Path
 from culturasp.core.config import get_settings
 from culturasp.scraper.cli import LISTING_PATHS
 from culturasp.scraper.fetcher import Fetcher
-from culturasp.scraper.parsers import PARSERS
+from culturasp.scraper.parsers import ALL_PARSERS
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "real"
 
@@ -37,13 +37,21 @@ def _slug(url: str) -> str:
     return m.group(1) if m else re.sub(r"\W+", "-", url)[-40:].strip("-")
 
 
-async def _capture(source: str, max_events: int) -> None:
+async def _capture(source: str, max_events: int, listing_url: str | None) -> None:
     settings = get_settings()
-    parser = PARSERS[source]
+    parser = ALL_PARSERS[source]
     fetcher = Fetcher()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    listing_url = settings.sala_sp_base_url + LISTING_PATHS[source]
+    # Live sources have a known listing path; experimental ones require --listing-url
+    # so no URL is ever invented in the codebase.
+    if listing_url is None:
+        if source not in LISTING_PATHS:
+            raise SystemExit(
+                f"source {source!r} has no known listing path — pass --listing-url "
+                "with the real programação/exposições URL."
+            )
+        listing_url = settings.sala_sp_base_url + LISTING_PATHS[source]
     print(f"→ fetching listing: {listing_url}")
     listing_html = await fetcher.fetch(listing_url, use_cache=False)
     (OUT_DIR / f"{source}_listing.html").write_text(listing_html, encoding="utf-8")
@@ -77,10 +85,15 @@ async def _capture(source: str, max_events: int) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Capture real source snapshots (run locally).")
-    ap.add_argument("--source", default="sala-sp", choices=sorted(PARSERS))
+    ap.add_argument("--source", default="sala-sp", choices=sorted(ALL_PARSERS))
     ap.add_argument("--max", type=int, default=2, help="Max event pages to capture")
+    ap.add_argument(
+        "--listing-url",
+        default=None,
+        help="Real listing URL (required for experimental sources without a known path).",
+    )
     args = ap.parse_args()
-    asyncio.run(_capture(args.source, args.max))
+    asyncio.run(_capture(args.source, args.max, args.listing_url))
 
 
 if __name__ == "__main__":

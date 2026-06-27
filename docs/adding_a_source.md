@@ -47,6 +47,27 @@ Use os snapshots capturados como fixtures e siga o padrão de
 `tests/real/test_real_fixtures.py` rodam automaticamente sobre qualquer
 `tests/fixtures/real/*_concert_*.html` presente (e são pulados quando ausentes).
 
+## Parsers experimentais (candidatos)
+
+Um parser pode ser commitado como **candidato** antes de validado: ele fica em
+`EXPERIMENTAL_PARSERS` (não em `PARSERS`), então **não** roda no scheduler/API. É
+o caso do `pinacoteca.py` — seus seletores estão marcados como **"A CONFIRMAR"**.
+
+Para validar um candidato contra o site real (fonte sem path de listagem conhecido):
+
+```bash
+python scripts/capture_fixture.py --source pinacoteca \
+    --listing-url "<URL real da programação/exposições>"
+```
+
+Revise o relatório de parse, ajuste os seletores, capture o snapshot e só então
+mova o parser de `EXPERIMENTAL_PARSERS` para `PARSERS`.
+
+> **Caveat schema.org:** o mapeamento `models/jsonld.event_to_jsonld` emite
+> `MusicEvent`. Fontes que **não** são de música (ex.: museus → exposições)
+> exigem generalizar o tipo schema.org (`ExhibitionEvent`/`Event`) **antes** de
+> entrar em produção. Trate isso como follow-up ao promover um candidato de museu.
+
 ## Regras de ouro
 
 - **Scraping ético**: mantenha `robots.txt`, User-Agent identificável e o delay.
