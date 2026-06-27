@@ -24,4 +24,8 @@ problemas de dependências.
 
 - Segredos apenas via variáveis de ambiente (`.env`, nunca commitado).
 - Fetcher respeita robots.txt e usa User-Agent identificável.
-- Dependências verificadas no CI.
+- Containers rodam como usuário não-root (`api` com filesystem read-only, `cap_drop: ALL`).
+- CI com secret scanning (gitleaks), auditoria de dependências (pip-audit) e scan de imagem (Trivy).
+
+Para a postura completa de compliance (LGPD/NIST CSF 2.0) e o mapeamento de controles,
+veja [`docs/compliance.md`](docs/compliance.md).

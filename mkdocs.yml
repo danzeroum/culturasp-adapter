@@ -26,6 +26,10 @@ nav:
   - API: api.md
   - Scraping ético: ethics.md
   - Deploy: deployment.md
+  - Compliance & segurança: compliance.md
+  - Backup & DR: backup_dr.md
+  - ADRs:
+      - ADR-0001 Stack & deploy: adr/0001-stack-e-deploy.md
 
 markdown_extensions:
   - admonition
