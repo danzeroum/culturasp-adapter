@@ -13,6 +13,9 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   de música só para `MusicEvent`). Pré-requisito para fontes de museu.
 - Parser **candidato (experimental)** da Pinacoteca (`EXPERIMENTAL_PARSERS`, fora do
   runtime) com seletores a confirmar; helpers compartilhados em `parsers/_common.py`.
+- `parse_ptbr_date_range` (em `parsers/_common.py`): extrai **período de exposição**
+  ("de … a …", "até …", "a partir de …") em `start`/`end` (→ `startDate`/`endDate`).
+  A Pinacoteca passa a preencher o período; resta só confirmar o rótulo no site real.
 - Tooling de fontes: `scripts/capture_fixture.py` (snapshot educado local, com
   `--listing-url`), template de parser, guia "adicionar uma fonte" e testes golden.
 

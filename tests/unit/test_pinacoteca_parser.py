@@ -41,3 +41,21 @@ def test_missing_title_raises() -> None:
             "https://pinacoteca.org.br/exposicao/x",
             scraped_at=NOW,
         )
+
+
+def test_exhibition_period_fills_start_and_end() -> None:
+    # ILLUSTRATIVE HTML — the period label here ("Período") is one of the
+    # candidates the parser checks; the real site's label is still "A CONFIRMAR".
+    # This verifies the date-range wiring, not the production selectors.
+    html = (
+        "<html><body>"
+        "<h1>Exposição Exemplo</h1>"
+        "<p><strong>Período:</strong> De 10 de maio a 20 de agosto de 2026</p>"
+        "</body></html>"
+    )
+    event = PinacotecaParser().parse_event(
+        html, "https://pinacoteca.org.br/exposicao/exemplo", scraped_at=NOW
+    )
+    assert event.schema_type.value == "ExhibitionEvent"
+    assert event.start is not None and (event.start.month, event.start.day) == (5, 10)
+    assert event.end is not None and (event.end.month, event.end.day) == (8, 20)
