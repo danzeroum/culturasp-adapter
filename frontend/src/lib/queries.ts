@@ -32,3 +32,23 @@ export function useSources() {
 export function useMetrics() {
   return useQuery({ queryKey: ["metrics"], queryFn: ({ signal }) => api.getMetrics(signal) });
 }
+
+export function useHealth() {
+  return useQuery({
+    queryKey: ["health"],
+    queryFn: ({ signal }) => api.getHealth(signal),
+    retry: false,
+  });
+}
+
+/** Fetch a representative JSON-LD document from the first available event. */
+export function useSampleJsonLd() {
+  return useQuery({
+    queryKey: ["sample-jsonld"],
+    queryFn: async ({ signal }) => {
+      const events = await api.listEvents({ limit: 1 }, signal);
+      if (!events.length) return null;
+      return api.getEventJsonLd(events[0].id, signal);
+    },
+  });
+}

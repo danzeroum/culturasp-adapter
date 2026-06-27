@@ -65,4 +65,10 @@ export const api = {
   icsUrl: () => `${BASE}/v1/events.ics`,
   rssUrl: () => `${BASE}/v1/events.rss`,
   jsonLdUrl: (id: string) => `${BASE}/v1/events/${encodeURIComponent(id)}/jsonld`,
+  docsUrl: () => `${BASE}/docs`,
+  openapiUrl: () => `${BASE}/openapi.json`,
+  // Public-facing base used for display (curl examples). Falls back to the
+  // current origin when no explicit API base is configured (dev proxy).
+  displayBase: () =>
+    BASE || (typeof window !== "undefined" ? window.location.origin : ""),
 };
