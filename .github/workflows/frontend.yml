@@ -3,10 +3,18 @@ name: Frontend
 on:
   push:
     branches: [main]
-    paths: ["frontend/**", ".github/workflows/frontend.yml"]
+    paths:
+      - "frontend/**"
+      - "src/culturasp/**"
+      - "scripts/e2e_serve_seeded.py"
+      - ".github/workflows/frontend.yml"
   pull_request:
     branches: [main]
-    paths: ["frontend/**", ".github/workflows/frontend.yml"]
+    paths:
+      - "frontend/**"
+      - "src/culturasp/**"
+      - "scripts/e2e_serve_seeded.py"
+      - ".github/workflows/frontend.yml"
 
 permissions:
   contents: read
@@ -29,3 +37,39 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run build
+
+  e2e:
+    # Smoke test: drive the built SPA against the real API (seeded in-memory,
+    # no Postgres/Redis). Catches broken links/routes and API contract drift.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install deps
+        working-directory: frontend
+        run: npm ci
+      - name: Install Playwright Chromium
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+      - name: Build (API base → local seeded API)
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_BASE: http://127.0.0.1:8000
+      - name: Run smoke E2E
+        working-directory: frontend
+        run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7

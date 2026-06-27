@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { configDefaults } from "vitest/config";
 
 // Vitest config is merged here via the `test` key (typed through vitest/config).
 export default defineConfig({
@@ -21,5 +22,9 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     css: false,
+    // Unit tests live under src/. Keep Vitest away from the Playwright specs in
+    // e2e/ (its default glob would otherwise match **/*.spec.ts).
+    include: ["src/**/*.test.{ts,tsx}"],
+    exclude: [...configDefaults.exclude, "e2e/**"],
   },
 });

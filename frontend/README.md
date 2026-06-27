@@ -25,9 +25,32 @@ npm run dev          # http://localhost:5173 (proxy de /v1,/health,/metrics → 
 ## Scripts
 - `npm run dev` — servidor de desenvolvimento (proxy para a API)
 - `npm run build` — typecheck + build de produção (`dist/`)
-- `npm run test` — testes (Vitest + Testing Library)
+- `npm run test` — testes unitários (Vitest + Testing Library)
+- `npm run e2e` — teste de fumaça E2E (Playwright; ver abaixo)
 - `npm run lint` — ESLint
 - `npm run typecheck` — `tsc --noEmit`
+
+## E2E (teste de fumaça)
+`frontend/e2e/smoke.spec.ts` dirige o SPA buildado (servido por `vite preview`)
+contra a **API real semeada** (`scripts/e2e_serve_seeded.py` — `InMemoryEventRepository`,
+sem Postgres/Redis), validando que cada link/botão chega à sua rota/handler e que as
+chamadas ao backend respondem. O `playwright.config.ts` sobe os dois servidores via
+`webServer[]` e os derruba ao final.
+
+```bash
+# pré-requisito: backend instalado (pip install -e . na raiz)
+VITE_API_BASE=http://127.0.0.1:8000 npm run build   # embute a base da API
+npm run e2e                                          # sobe API + preview e roda
+```
+No CI (`.github/workflows/frontend.yml`, job `e2e`) o Chromium é instalado com
+`npx playwright install`. Localmente neste ambiente o browser já está em
+`PLAYWRIGHT_BROWSERS_PATH`; o `@playwright/test` é pinado à versão cujo Chromium
+casa com o build presente. Pré-suba a API semeada e o Playwright a reaproveita
+(`reuseExistingServer`).
+
+## Configuração
+`VITE_API_BASE` (ver `.env.example`): vazio em dev (usa o proxy do Vite); em
+produção, a URL pública da API.
 
 ## Configuração
 `VITE_API_BASE` (ver `.env.example`): vazio em dev (usa o proxy do Vite); em
