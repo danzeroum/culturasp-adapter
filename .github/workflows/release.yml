@@ -3,6 +3,14 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # Manual trigger: lets us cut a release (and create the tag) when direct tag
+  # pushes aren't available. Defaults to the current package version's tag.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v1.0.0)"
+        required: true
+        default: "v1.0.0"
 
 permissions:
   contents: write
@@ -13,24 +21,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract changelog section for this tag
-        id: notes
+      - name: Resolve tag name
+        id: tag
         run: |
-          version="${GITHUB_REF_NAME#v}"
-          # Pull the body of the matching "## [x.y.z]" section from CHANGELOG.md.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract changelog section for this tag
+        run: |
+          version="${{ steps.tag.outputs.name }}"
+          version="${version#v}"
           awk -v ver="$version" '
             $0 ~ "^## \\[" ver "\\]" { capture=1; next }
             capture && /^## \[/ { exit }
             capture { print }
           ' CHANGELOG.md > release_notes.md
           if [ ! -s release_notes.md ]; then
-            echo "Release $GITHUB_REF_NAME" > release_notes.md
+            echo "Release ${{ steps.tag.outputs.name }}" > release_notes.md
           fi
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (creates the tag if missing)
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ github.ref_name }}
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: ${{ steps.tag.outputs.name }}
           body_path: release_notes.md
+          target_commitish: ${{ github.sha }}
           draft: false
           prerelease: false
