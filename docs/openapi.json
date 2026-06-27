@@ -1,0 +1,819 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CulturaSP-Adapter API",
+    "description": "Open, read-only API for São Paulo's public cultural events. Data is scraped ethically from official sources and structured as schema.org JSON-LD. No authentication — the data is public.",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "List Events",
+        "operationId": "list_events_v1_events_get",
+        "parameters": [
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by source slug, e.g. 'sala-sp'",
+              "title": "Source"
+            },
+            "description": "Filter by source slug, e.g. 'sala-sp'"
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only events starting at/after this",
+              "title": "Date From"
+            },
+            "description": "Only events starting at/after this"
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only events starting at/before this",
+              "title": "Date To"
+            },
+            "description": "Only events starting at/before this"
+          },
+          {
+            "name": "accessible",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by any accessibility feature",
+              "title": "Accessible"
+            },
+            "description": "Filter by any accessibility feature"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CulturalEvent"
+                  },
+                  "title": "Response List Events V1 Events Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events.ics": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Events Ical",
+        "operationId": "events_ical_v1_events_ics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events.rss": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Events Rss",
+        "operationId": "events_rss_v1_events_rss_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events/{event_id}": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get Event",
+        "operationId": "get_event_v1_events__event_id__get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CulturalEvent"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events/{event_id}/jsonld": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get Event Jsonld",
+        "operationId": "get_event_jsonld_v1_events__event_id__jsonld_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Event Jsonld V1 Events  Event Id  Jsonld Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/accessibility": {
+      "get": {
+        "tags": [
+          "accessibility"
+        ],
+        "summary": "List Accessible Events",
+        "operationId": "list_accessible_events_v1_accessibility_get",
+        "parameters": [
+          {
+            "name": "feature",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Feature"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Required accessibility feature",
+              "title": "Feature"
+            },
+            "description": "Required accessibility feature"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CulturalEvent"
+                  },
+                  "title": "Response List Accessible Events V1 Accessibility Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/schema": {
+      "get": {
+        "tags": [
+          "schema"
+        ],
+        "summary": "Get Schema",
+        "description": "Return the JSON Schema of CulturalEvent and the schema.org context used.",
+        "operationId": "get_schema_v1_schema_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Schema V1 Schema Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Metrics",
+        "operationId": "metrics_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Metrics Metrics Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sources": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Sources",
+        "operationId": "sources_v1_sources_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response Sources V1 Sources Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Root  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessibilityInfo": {
+        "properties": {
+          "sign_language": {
+            "type": "boolean",
+            "title": "Sign Language",
+            "description": "Libras (Brazilian Sign Language) available",
+            "default": false
+          },
+          "audio_description": {
+            "type": "boolean",
+            "title": "Audio Description",
+            "description": "Audio description available",
+            "default": false
+          },
+          "wheelchair_seats": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wheelchair Seats",
+            "description": "Number of wheelchair-adapted seats"
+          },
+          "obese_seats": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Obese Seats",
+            "description": "Number of seats adapted for obese patrons"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes",
+            "description": "Original accessibility text, kept verbatim"
+          }
+        },
+        "type": "object",
+        "title": "AccessibilityInfo",
+        "description": "Accessibility features available for an event."
+      },
+      "CulturalEvent": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Stable id: '{source}:{source_event_id}'"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "Source slug, e.g. 'sala-sp'"
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Source Url",
+            "description": "Canonical public URL of the event"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start",
+            "description": "Start datetime (ISO 8601, local tz)"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End",
+            "description": "End datetime (ISO 8601, local tz)"
+          },
+          "duration_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Minutes",
+            "description": "Duration in minutes, if published"
+          },
+          "venue": {
+            "type": "string",
+            "title": "Venue",
+            "description": "Venue name",
+            "default": "Sala São Paulo"
+          },
+          "program": {
+            "items": {
+              "$ref": "#/components/schemas/ProgramItem"
+            },
+            "type": "array",
+            "title": "Program"
+          },
+          "conductor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conductor"
+          },
+          "performers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Performers"
+          },
+          "accessibility": {
+            "$ref": "#/components/schemas/AccessibilityInfo"
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/TicketPolicy"
+          },
+          "seat_map_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seat Map Url",
+            "description": "URL of the seat-map PDF, if any"
+          },
+          "seat_map_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seat Map Text",
+            "description": "OCR-extracted seat-map text, if any"
+          },
+          "ocr_status": {
+            "$ref": "#/components/schemas/OCRStatus",
+            "default": "not_attempted"
+          },
+          "scraped_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scraped At",
+            "description": "When this snapshot was collected"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "source_url",
+          "title",
+          "scraped_at"
+        ],
+        "title": "CulturalEvent",
+        "description": "A cultural event normalised from a public source."
+      },
+      "Feature": {
+        "type": "string",
+        "enum": [
+          "libras",
+          "audio_description",
+          "wheelchair"
+        ],
+        "title": "Feature"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "OCRStatus": {
+        "type": "string",
+        "enum": [
+          "not_attempted",
+          "success",
+          "failed"
+        ],
+        "title": "OCRStatus",
+        "description": "Outcome of attempting OCR on an attached PDF (seat map / programme)."
+      },
+      "ProgramItem": {
+        "properties": {
+          "composer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Composer",
+            "description": "Composer name"
+          },
+          "work": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Work",
+            "description": "Title of the work performed"
+          }
+        },
+        "type": "object",
+        "title": "ProgramItem",
+        "description": "A single piece in the concert programme."
+      },
+      "TicketPolicy": {
+        "properties": {
+          "free_of_charge": {
+            "type": "boolean",
+            "title": "Free Of Charge",
+            "description": "Whether tickets are free",
+            "default": true
+          },
+          "distribution_window": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distribution Window",
+            "description": "When tickets become available, e.g. \"T-3 days at 12h\" (verbatim text)"
+          },
+          "cancellation_window": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancellation Window",
+            "description": "Cancellation deadline as published (verbatim text)"
+          },
+          "external_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Url",
+            "description": "Official ticket page (reference link only — not automated)"
+          }
+        },
+        "type": "object",
+        "title": "TicketPolicy",
+        "description": "Ticket distribution / cancellation policy.\n\nNOTE: this is descriptive only. The adapter never automates reservation or\ncancellation — those windows are surfaced as text and an external link."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
