@@ -35,7 +35,10 @@ qualquer recurso.
 
 ## Mapeamento JSON-LD
 
-`models/jsonld.py` mapeia `CulturalEvent` → `schema.org/MusicEvent`:
+O `@type` segue o campo `schema_type` do evento: **`MusicEvent`** (concertos),
+**`ExhibitionEvent`** (museus/exposições) ou **`Event`** (genérico). Propriedades
+específicas de música (`workPerformed`, regente como `performer`) são emitidas
+apenas para `MusicEvent`. Exemplo (`MusicEvent`):
 
 ```json
 {

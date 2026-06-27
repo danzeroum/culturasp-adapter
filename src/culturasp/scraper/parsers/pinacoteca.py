@@ -8,15 +8,15 @@
         python scripts/capture_fixture.py --source pinacoteca \\
             --listing-url "<URL real da programação/exposições>"
 
-Two caveats before promoting this to a live source (adding it to ``PARSERS``):
+Remaining caveat before promoting this to a live source (adding it to ``PARSERS``):
 
-1. **schema.org type.** Pinacoteca events are exhibitions, not concerts. The
-   shared model is concert-shaped and ``models/jsonld.event_to_jsonld`` currently
-   emits ``MusicEvent``. Generalise the JSON-LD type (e.g. ``ExhibitionEvent`` /
-   ``Event``) before exposing a museum source through the API.
-2. **Date ranges.** Exhibitions run over a period ("de … a …"); the shared
-   ``parse_datetime`` extracts a single start, so the end/period handling will
-   need refinement.
+- **Date ranges.** Exhibitions run over a period ("de … a …"); the shared
+  ``parse_datetime`` extracts a single start, so the end/period handling will
+  need refinement.
+
+The schema.org type is already handled: this parser sets
+``schema_type=ExhibitionEvent``, and ``models/jsonld.event_to_jsonld`` maps it to
+``schema.org/ExhibitionEvent`` (omitting music-only properties).
 
 The host (``pinacoteca.org.br``) is the real, well-known domain; no event paths
 are hardcoded — they are discovered at runtime from the listing page.
@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup
 
 from culturasp.core.exceptions import ParseError
 from culturasp.core.logging import get_logger
-from culturasp.models.event import CulturalEvent, TicketPolicy
+from culturasp.models.event import CulturalEvent, SchemaType, TicketPolicy
 from culturasp.scraper.parsers._common import (
     accessibility_from_soup,
     clean_text,
@@ -88,6 +88,7 @@ class PinacotecaParser(BaseParser):
             source=self.source,
             source_url=url,
             title=title,
+            schema_type=SchemaType.exhibition_event,  # museu → exposição
             start=start,
             end=end,
             # A CONFIRMAR: rótulo do local; default para a instituição.
