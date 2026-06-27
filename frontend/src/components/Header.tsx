@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../app/theme";
 import { AccessibilityIcon, MoonIcon, SunIcon } from "../lib/icons";
+import { t } from "../lib/i18n";
 
 const navStyle = ({ isActive }: { isActive: boolean }) => ({
   display: "inline-flex",
@@ -50,24 +51,24 @@ export function Header() {
           >
             C
           </span>
-          <span style={{ fontSize: 22, fontWeight: 700, color: "var(--ct)" }}>CulturaSP</span>
+          <span style={{ fontSize: 22, fontWeight: 700, color: "var(--ct)" }}>{t.app.name}</span>
         </NavLink>
 
-        <nav aria-label="Principal" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <nav aria-label={t.nav.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <NavLink to="/programacao" style={navStyle}>
-            Programação
+            {t.nav.programacao}
           </NavLink>
           <NavLink to="/acessibilidade" style={({ isActive }) => ({ ...navStyle({ isActive }), color: isActive ? "var(--navacc)" : "var(--navacc)" })}>
             <AccessibilityIcon size={15} />
-            Acessibilidade
+            {t.nav.acessibilidade}
           </NavLink>
           <NavLink to="/dev" style={navStyle}>
-            Dados abertos
+            {t.nav.dadosAbertos}
           </NavLink>
           <button
             type="button"
             onClick={toggle}
-            aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+            aria-label={theme === "dark" ? t.nav.themeToLight : t.nav.themeToDark}
             aria-pressed={theme === "dark"}
             style={{
               all: "unset",

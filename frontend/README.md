@@ -38,8 +38,10 @@ produção, a URL pública da API.
 src/
   app/        theme + toast (contexts)
   components/ Header, Footer, Layout, EventCard, LeaveModal, states
-  lib/        api, types, format (PT-BR), adapter (CulturalEvent→VM), icons, queries
-  routes/     Home (A1), List (A2), Detail (A3), stubs (A4/A6/Dev — próximas fases)
+  lib/        api, types, format (PT-BR), adapter (CulturalEvent→VM), icons,
+              queries, i18n (catálogo de strings pt-BR)
+  routes/     Home (A1), List (A2), Detail (A3), Accessibility (A4),
+              Subscribe (A6), Dev/Kit (B)
 ```
 
 ## Mapeamento tela → API
@@ -47,3 +49,20 @@ Ver `docs/design_handoff_culturasp_portal/README.md` §8 e o plano em
 `/root/.claude/plans/…`. A camada `lib/adapter.ts` concentra as divergências
 handoff↔API (ex.: `schema_type`→rótulo; `venue` sem endereço; ausência → "Não
 informado").
+
+## i18n
+Todas as strings de interface ficam em `lib/i18n.ts` (catálogo `t`, locale
+primário `pt-BR`). Valores em runtime usam `fmt(template, vars)` para interpolar
+`{placeholders}`. Para um novo idioma: duplicar o objeto, traduzir as folhas e
+trocar para qual catálogo `t` aponta — a forma é `as const`, então chaves
+ausentes viram erro de TypeScript.
+
+## Acessibilidade & responsivo
+- **WCAG 2.2 AA**: skip link, foco visível forte, `aria`/roles, `prefers-reduced-motion`.
+- **axe-core**: `src/a11y.test.tsx` falha o CI se houver violações nos componentes
+  e telas-chave (contraste é verificado à parte, pois o jsdom não o calcula).
+- **Responsivo**: breakpoints 640/900/1024. No mobile os filtros da Lista viram um
+  **bottom-sheet** (`role="dialog"`, Escape/clique-fora para fechar); grids e hero
+  se adaptam.
+- **Tema**: claro/escuro via `data-theme`, persistido em `localStorage`
+  (`culturasp-theme`) + `prefers-color-scheme` (ver `app/theme.test.tsx`).
