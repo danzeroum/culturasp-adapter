@@ -1,0 +1,55 @@
+# Full local stack: API + scraper + Postgres + Redis.
+# Usage:  cp .env.example .env  &&  docker compose up --build
+services:
+  api:
+    build: .
+    command: uvicorn culturasp.api.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  scraper:
+    build: .
+    # Runs the periodic collection scheduler (not the one-shot CLI).
+    command: python -m culturasp.scraper.scheduler
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: culturasp
+      POSTGRES_PASSWORD: culturasp
+      POSTGRES_DB: culturasp
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U culturasp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
