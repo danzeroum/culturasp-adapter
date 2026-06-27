@@ -63,10 +63,11 @@ python scripts/capture_fixture.py --source pinacoteca \
 Revise o relatório de parse, ajuste os seletores, capture o snapshot e só então
 mova o parser de `EXPERIMENTAL_PARSERS` para `PARSERS`.
 
-> **Caveat schema.org:** o mapeamento `models/jsonld.event_to_jsonld` emite
-> `MusicEvent`. Fontes que **não** são de música (ex.: museus → exposições)
-> exigem generalizar o tipo schema.org (`ExhibitionEvent`/`Event`) **antes** de
-> entrar em produção. Trate isso como follow-up ao promover um candidato de museu.
+> **Tipos schema.org e período:** já suportados. Defina `schema_type` no evento
+> (ex.: `ExhibitionEvent` para museus) — o `event_to_jsonld` mapeia o `@type` e
+> omite propriedades de música. Para exposições com período ("de … a …"), use
+> `parse_ptbr_date_range` (em `parsers/_common.py`) para preencher `start`/`end`.
+> Para um candidato de museu, falta apenas **confirmar os seletores/rótulos** reais.
 
 ## Regras de ouro
 

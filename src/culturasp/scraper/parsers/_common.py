@@ -17,6 +17,19 @@ from culturasp.models.accessibility import AccessibilityInfo
 
 TIME_RE = re.compile(r"(\d{1,2})\s*h\s*(\d{2})?")
 DURATION_RE = re.compile(r"(\d+)\s*min", re.IGNORECASE)
+_YEAR_RE = re.compile(r"\b(20\d{2})\b")
+# Range separators must be space-delimited so numeric dates like "10-05-2026"
+# are never split on their internal hyphens.
+_RANGE_SEP = re.compile(r"\s+(?:a|até|ate|to)\s+|\s+[\u2013\u2014-]\s+", re.IGNORECASE)
+_ONLY_END = re.compile(r"^(?:até|ate)\s+(.*)$", re.IGNORECASE)
+_ONLY_START = re.compile(r"^(?:a partir d[eo]|a partir do dia|desde)\s+(.*)$", re.IGNORECASE)
+_RANGE_OPENER = re.compile(r"^(?:de|do dia)\s+", re.IGNORECASE)
+
+
+def _parse_ptbr_date(text: str | None) -> datetime | None:
+    if not text or not text.strip():
+        return None
+    return dateparser.parse(text, languages=["pt"], settings={"DATE_ORDER": "DMY"})
 
 
 def clean_text(text: str | None) -> str | None:
@@ -71,6 +84,35 @@ def parse_datetime(
 
     end = start + timedelta(minutes=duration) if (start and duration) else None
     return start, end, duration
+
+
+def parse_ptbr_date_range(text: str | None) -> tuple[datetime | None, datetime | None]:
+    """Parse a PT-BR date period into ``(start, end)``.
+
+    Handles ranges ("De 10 de maio a 20 de agosto de 2026", "10/05/2026 a
+    20/08/2026"), one-sided phrases ("até …" → only end; "a partir de …" → only
+    start) and a bare single date. The year is propagated from the end to the
+    start when the start omits it. Unparseable input yields ``(None, None)``.
+    """
+    cleaned = clean_text(text)
+    if not cleaned:
+        return None, None
+
+    if m := _ONLY_END.match(cleaned):
+        return None, _parse_ptbr_date(m.group(1))
+    if m := _ONLY_START.match(cleaned):
+        return _parse_ptbr_date(m.group(1)), None
+
+    body = _RANGE_OPENER.sub("", cleaned)
+    parts = _RANGE_SEP.split(body, maxsplit=1)
+    if len(parts) == 2:
+        start_text, end_text = parts[0].strip(), parts[1].strip()
+        # Propagate the year from the end to the start when the start lacks one.
+        if not _YEAR_RE.search(start_text) and (ym := _YEAR_RE.search(end_text)):
+            start_text = f"{start_text} de {ym.group(1)}"
+        return _parse_ptbr_date(start_text), _parse_ptbr_date(end_text)
+
+    return _parse_ptbr_date(body), None
 
 
 def accessibility_from_soup(soup: BeautifulSoup) -> AccessibilityInfo:

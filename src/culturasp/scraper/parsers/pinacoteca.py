@@ -8,15 +8,15 @@
         python scripts/capture_fixture.py --source pinacoteca \\
             --listing-url "<URL real da programação/exposições>"
 
-Remaining caveat before promoting this to a live source (adding it to ``PARSERS``):
+Modelling is complete; what remains is **selector validation** against a real
+snapshot before adding this to ``PARSERS``:
 
-- **Date ranges.** Exhibitions run over a period ("de … a …"); the shared
-  ``parse_datetime`` extracts a single start, so the end/period handling will
-  need refinement.
-
-The schema.org type is already handled: this parser sets
-``schema_type=ExhibitionEvent``, and ``models/jsonld.event_to_jsonld`` maps it to
-``schema.org/ExhibitionEvent`` (omitting music-only properties).
+- **schema.org type** is handled: this parser sets ``schema_type=ExhibitionEvent``
+  and ``models/jsonld.event_to_jsonld`` maps it to ``schema.org/ExhibitionEvent``
+  (omitting music-only properties).
+- **Date ranges** are handled: the exhibition period ("de … a …", "até …") is
+  parsed via ``parse_ptbr_date_range`` into ``start``/``end`` (→ ``startDate``/
+  ``endDate``). Only the period's *label* on the real page is still "A CONFIRMAR".
 
 The host (``pinacoteca.org.br``) is the real, well-known domain; no event paths
 are hardcoded — they are discovered at runtime from the listing page.
@@ -38,6 +38,7 @@ from culturasp.scraper.parsers._common import (
     clean_text,
     labeled_fields,
     parse_datetime,
+    parse_ptbr_date_range,
 )
 from culturasp.scraper.parsers.base import BaseParser
 
@@ -81,7 +82,19 @@ class PinacotecaParser(BaseParser):
             raise ParseError(f"No <h1> title found at {url}")
 
         labels = labeled_fields(soup)
-        start, end, _duration = parse_datetime(labels)
+        # Exhibitions run over a period. A CONFIRMAR: rótulos do período no site real.
+        period_text = (
+            labels.get("período")
+            or labels.get("periodo")
+            or labels.get("visitação")
+            or labels.get("visitacao")
+            or labels.get("exposição")
+            or labels.get("quando")
+        )
+        start, end = parse_ptbr_date_range(period_text)
+        if start is None and end is None:
+            # Fallback: a single "data" field (same logic as concerts).
+            start, end, _duration = parse_datetime(labels)
 
         return CulturalEvent(
             id=f"{self.source}:{self._event_id(url)}",
