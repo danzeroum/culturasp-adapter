@@ -1,0 +1,7 @@
+Alembic migrations for CulturaSP-Adapter.
+
+  alembic upgrade head                          # apply
+  alembic revision --autogenerate -m "message"  # create new
+
+The database URL and target metadata are injected from the app settings in
+env.py, so no URL is hardcoded in alembic.ini.

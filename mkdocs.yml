@@ -1,0 +1,34 @@
+site_name: CulturaSP-Adapter
+site_description: Open, read-only adapter for São Paulo's public cultural data.
+repo_url: https://github.com/danzeroum/culturasp-adapter
+theme:
+  name: material
+  language: pt
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Modo escuro
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Modo claro
+  features:
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - Início: index.md
+  - Arquitetura: architecture.md
+  - Modelo de dados: data_model.md
+  - API: api.md
+  - Scraping ético: ethics.md
+  - Deploy: deployment.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - tables
