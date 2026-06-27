@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { toEventVM } from "../lib/adapter";
+import { t } from "../lib/i18n";
 import { SearchIcon } from "../lib/icons";
 import { useEvents } from "../lib/queries";
 import { EventCard } from "../components/EventCard";
@@ -44,14 +45,13 @@ export function Home() {
             marginBottom: 14,
           }}
         >
-          Dados culturais abertos · São Paulo
+          {t.home.eyebrow}
         </span>
-        <h1 style={{ fontSize: 60, lineHeight: 1.02, letterSpacing: "-.02em", margin: "0 0 16px" }}>
-          A programação cultural de SP, acessível a todos.
+        <h1 className="hero-title" style={{ fontSize: 60, lineHeight: 1.02, letterSpacing: "-.02em", margin: "0 0 16px" }}>
+          {t.home.heroTitle}
         </h1>
         <p style={{ fontSize: 19, color: "var(--cm)", margin: "0 0 22px", lineHeight: 1.5 }}>
-          Descubra concertos e exposições, filtre por recursos de acessibilidade e seja levado ao
-          canal oficial para retirar seu ingresso.
+          {t.home.heroLede}
         </p>
         <form
           role="search"
@@ -67,8 +67,8 @@ export function Home() {
             </span>
             <input
               type="search"
-              aria-label="Buscar eventos"
-              placeholder="Buscar por evento, artista ou local…"
+              aria-label={t.home.searchLabel}
+              placeholder={t.home.searchPlaceholder}
               style={{
                 width: "100%",
                 padding: "14px 16px 14px 44px",
@@ -81,18 +81,18 @@ export function Home() {
             />
           </span>
           <button type="submit" className="btn btn--pill">
-            Explorar
+            {t.home.searchSubmit}
           </button>
         </form>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 9, marginTop: 16 }}>
           <Link to="/programacao?accessible=true" style={chip}>
-            Acessível
+            {t.home.chipAccessible}
           </Link>
           <Link to="/programacao?weekend=true" style={chip}>
-            Este fim de semana
+            {t.home.chipWeekend}
           </Link>
           <Link to="/programacao?free=true" style={chip}>
-            Gratuito
+            {t.home.chipFree}
           </Link>
         </div>
       </section>
@@ -101,10 +101,10 @@ export function Home() {
       <section aria-labelledby="prox" style={{ marginBottom: 40 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 18 }}>
           <h2 id="prox" style={{ fontSize: 28 }}>
-            Próximos eventos
+            {t.home.upcoming}
           </h2>
           <Link to="/programacao" style={{ fontSize: 15, fontWeight: 600, color: "var(--brand)" }}>
-            Ver toda a programação →
+            {t.home.seeAll}
           </Link>
         </div>
         {isLoading ? (
@@ -136,14 +136,14 @@ export function Home() {
       >
         <div>
           <h2 style={{ color: "var(--dark-band-tx)", fontSize: 24, margin: "0 0 4px" }}>
-            Leve a agenda com você
+            {t.home.subscribeTitle}
           </h2>
           <p style={{ color: "var(--dark-band-tx2)", margin: 0, fontSize: 15 }}>
-            Assine o feed iCal/RSS ou adicione ao seu calendário.
+            {t.home.subscribeLede}
           </p>
         </div>
         <Link to="/assinar" className="btn btn--primary">
-          Assinar agenda
+          {t.home.subscribeCta}
         </Link>
       </section>
     </div>

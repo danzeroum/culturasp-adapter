@@ -1,4 +1,5 @@
 import { EmptySearchIcon, InfoIcon } from "../lib/icons";
+import { t } from "../lib/i18n";
 
 export function CardSkeleton() {
   return (
@@ -42,13 +43,13 @@ export function EmptyState({ onClear }: { onClear?: () => void }) {
       <span style={{ width: 54, height: 54, borderRadius: 14, background: "var(--csoft)", color: "var(--cm2)", display: "grid", placeItems: "center" }}>
         <EmptySearchIcon size={26} />
       </span>
-      <h3 style={{ fontSize: 24, margin: "2px 0 0", color: "var(--ct)" }}>Nenhum evento com esses filtros</h3>
+      <h3 style={{ fontSize: 24, margin: "2px 0 0", color: "var(--ct)" }}>{t.states.emptyTitle}</h3>
       <p style={{ fontSize: 15, lineHeight: 1.5, color: "var(--cm)", margin: 0, maxWidth: 360 }}>
-        Tente afrouxar a busca — incluir dias de semana, eventos pagos ou outras fontes.
+        {t.states.emptyLede}
       </p>
       {onClear && (
         <button type="button" onClick={onClear} className="btn btn--primary" style={{ marginTop: 6 }}>
-          Limpar filtros
+          {t.states.emptyClear}
         </button>
       )}
     </div>
@@ -75,13 +76,13 @@ export function ErrorState({ onRetry }: { onRetry?: () => void }) {
       <span style={{ width: 54, height: 54, borderRadius: 14, background: "var(--weekend-bg)", color: "var(--weekend-tx)", display: "grid", placeItems: "center" }}>
         <InfoIcon size={26} />
       </span>
-      <h3 style={{ fontSize: 23, margin: 0, color: "var(--ct)" }}>Não foi possível carregar</h3>
+      <h3 style={{ fontSize: 23, margin: 0, color: "var(--ct)" }}>{t.states.errorTitle}</h3>
       <p style={{ fontSize: 15, lineHeight: 1.5, color: "var(--cm)", margin: 0, maxWidth: 380 }}>
-        Verifique sua conexão. Os dados podem estar desatualizados — confirme sempre na fonte oficial.
+        {t.states.errorLede}
       </p>
       {onRetry && (
         <button type="button" onClick={onRetry} className="btn btn--primary" style={{ marginTop: 6 }}>
-          Tentar de novo
+          {t.states.errorRetry}
         </button>
       )}
     </div>

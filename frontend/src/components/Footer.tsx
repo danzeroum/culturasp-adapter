@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { t } from "../lib/i18n";
 
 export function Footer() {
   return (
@@ -16,21 +17,18 @@ export function Footer() {
           fontSize: 13.5,
         }}
       >
-        <span>
-          CulturaSP · portal de dados culturais abertos. Não vende ingressos — sempre confirme na
-          fonte oficial.
-        </span>
-        <nav aria-label="Rodapé" style={{ display: "flex", gap: 16 }}>
+        <span>{t.footer.blurb}</span>
+        <nav aria-label={t.footer.label} style={{ display: "flex", gap: 16 }}>
           <Link to="/dev" style={{ color: "var(--cm)" }}>
-            Dados abertos
+            {t.footer.dadosAbertos}
           </Link>
           <a
-            href="https://github.com/danzeroum/culturasp-adapter"
+            href={t.footer.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "var(--cm)" }}
           >
-            Repositório ↗
+            {t.footer.repo}
           </a>
         </nav>
       </div>

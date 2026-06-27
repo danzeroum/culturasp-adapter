@@ -171,8 +171,101 @@ a {
   border: 0;
 }
 
+/* ---------------------------------------------------------------------------
+   Responsivo (§ hardening F4) — breakpoints 640 / 900 / 1024.
+   A lista usa sidebar de filtros no desktop e um bottom-sheet no mobile.
+--------------------------------------------------------------------------- */
+
+/* Layout da Lista: sidebar + resultados */
+.list-layout {
+  display: grid;
+  grid-template-columns: 268px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+/* Botão "Filtros" e bottom-sheet só existem no mobile */
+.filter-fab {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .list-layout {
+    grid-template-columns: 1fr;
+  }
+  .filters-aside {
+    display: none;
+  }
+  .filter-fab {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bottom-sheet de filtros (mobile) */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(27, 23, 18, 0.5);
+  display: flex;
+  align-items: flex-end;
+  animation: csp-fade 0.15s ease;
+}
+.sheet {
+  width: 100%;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--cb);
+  border-radius: 18px 18px 0 0;
+  border-top: 1px solid var(--cl);
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -16px 40px -20px rgba(0, 0, 0, 0.5);
+  animation: csp-slide-up 0.2s ease;
+}
+@keyframes csp-slide-up {
+  from {
+    transform: translateY(16px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Hero da Home encolhe no mobile */
 @media (max-width: 768px) {
   .container {
     padding: 0 18px;
+  }
+  .hero-title {
+    font-size: 40px !important;
+  }
+}
+@media (max-width: 420px) {
+  .hero-title {
+    font-size: 33px !important;
+  }
+}
+
+/* Header compacto em telas estreitas */
+@media (max-width: 640px) {
+  header > .container {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  nav[aria-label] a {
+    padding: 6px 8px !important;
+    font-size: 13.5px !important;
   }
 }

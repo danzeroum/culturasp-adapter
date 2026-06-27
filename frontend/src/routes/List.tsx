@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toEventVM, type EventVM } from "../lib/adapter";
+import { fmt, t } from "../lib/i18n";
 import { AccessibilityIcon } from "../lib/icons";
 import { useEvents } from "../lib/queries";
 import { EventCard } from "../components/EventCard";
@@ -63,8 +64,131 @@ function Switch({
 
 const divider = <div style={{ height: 1, background: "var(--cl)" }} />;
 
+interface FilterState {
+  accessible: boolean;
+  weekend: boolean;
+  free: boolean;
+  tipo: string[];
+  setFlag: (key: string, on: boolean) => void;
+  toggleTipo: (t: string) => void;
+  clear: () => void;
+}
+
+/** Filter controls, shared between the desktop sidebar and the mobile sheet. */
+function FilterControls({ s }: { s: FilterState }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--ct)" }}>
+          {t.list.filters}
+        </span>
+        <button type="button" onClick={s.clear} style={{ all: "unset", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "var(--brand)" }}>
+          {t.list.clear}
+        </button>
+      </div>
+
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cm)", marginBottom: 11 }}>{t.list.periodo}</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+          <button
+            type="button"
+            aria-pressed={s.weekend}
+            onClick={() => s.setFlag("weekend", !s.weekend)}
+            style={{
+              all: "unset",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+              padding: "7px 12px",
+              borderRadius: 8,
+              border: `1px solid ${s.weekend ? "var(--weekend-bd)" : "var(--cl2)"}`,
+              color: s.weekend ? "var(--weekend-tx)" : "var(--cm2)",
+              background: s.weekend ? "var(--weekend-bg)" : "var(--cb)",
+            }}
+          >
+            {t.list.weekend}
+          </button>
+        </div>
+      </div>
+
+      {divider}
+
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "var(--navacc)", marginBottom: 11 }}>
+          <AccessibilityIcon size={15} />
+          {t.list.a11yGroup}
+        </div>
+        <Switch checked={s.accessible} onChange={() => s.setFlag("accessible", !s.accessible)} label={t.list.a11ySwitch} />
+        <p style={{ fontSize: 12, color: "var(--cf)", margin: "8px 2px 0", lineHeight: 1.4 }}>{t.list.a11yHint}</p>
+      </div>
+
+      {divider}
+
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cm)", marginBottom: 11 }}>{t.list.tipo}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+          {[t.list.tipoConcerto, t.list.tipoExposicao].map((label) => (
+            <label key={label} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 14, color: "var(--ct)", cursor: "pointer", minHeight: 28 }}>
+              <input type="checkbox" checked={s.tipo.includes(label)} onChange={() => s.toggleTipo(label)} />
+              {label}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {divider}
+
+      <Switch checked={s.free} onChange={() => s.setFlag("free", !s.free)} label={t.list.onlyFree} />
+    </div>
+  );
+}
+
+/** Mobile-only bottom sheet wrapping the same filter controls. */
+function FilterSheet({ s, onClose }: { s: FilterState; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    // Backdrop. Keyboard users dismiss via Escape (handled above) or the close
+    // button; click-to-dismiss here is a supplementary mouse affordance.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div
+      className="sheet-backdrop"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="sheet" role="dialog" aria-modal="true" aria-label={t.list.filters}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+          <span style={{ fontSize: 16, fontWeight: 800, color: "var(--ct)" }}>{t.list.filters}</span>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label={t.list.filtersClose}
+            className="btn btn--secondary"
+            style={{ minHeight: 40, padding: "8px 14px" }}
+          >
+            {t.list.filtersClose}
+          </button>
+        </div>
+        <FilterControls s={s} />
+      </div>
+    </div>
+  );
+}
+
 export function List() {
   const [params, setParams] = useSearchParams();
+  const [sheetOpen, setSheetOpen] = useState(false);
   const accessible = params.get("accessible") === "true";
   const weekend = params.get("weekend") === "true";
   const free = params.get("free") === "true";
@@ -76,15 +200,17 @@ export function List() {
     else next.delete(key);
     setParams(next, { replace: true });
   };
-  const toggleTipo = (t: string) => {
+  const toggleTipo = (label: string) => {
     const next = new URLSearchParams(params);
     const current = next.getAll("tipo");
     next.delete("tipo");
-    const updated = current.includes(t) ? current.filter((x) => x !== t) : [...current, t];
+    const updated = current.includes(label) ? current.filter((x) => x !== label) : [...current, label];
     updated.forEach((x) => next.append("tipo", x));
     setParams(next, { replace: true });
   };
   const clear = () => setParams(new URLSearchParams(), { replace: true });
+
+  const filterState: FilterState = { accessible, weekend, free, tipo, setFlag, toggleTipo, clear };
 
   // Server supports `accessible`; weekend/free/tipo are applied client-side.
   const { data, isLoading, isError, refetch } = useEvents({ accessible: accessible || undefined, limit: 60 });
@@ -98,14 +224,21 @@ export function List() {
     return vms;
   }, [data, weekend, free, tipo]);
 
-  const activeBits = [accessible && "acessível", weekend && "fim de semana", free && "gratuito", ...tipo.map((t) => t.toLowerCase())].filter(Boolean);
+  const activeCount = [accessible, weekend, free].filter(Boolean).length + tipo.length;
+  const activeBits = [
+    accessible && t.list.bitAccessible,
+    weekend && t.list.bitWeekend,
+    free && t.list.bitFree,
+    ...tipo.map((x) => x.toLowerCase()),
+  ].filter(Boolean);
   const summary = activeBits.length ? ` · ${activeBits.join(", ")}` : "";
 
   return (
-    <div className="container" style={{ paddingTop: 36, paddingBottom: 8, display: "grid", gridTemplateColumns: "268px 1fr", gap: 32, alignItems: "start" }}>
-      {/* Filtros */}
+    <div className="container list-layout" style={{ paddingTop: 36, paddingBottom: 8 }}>
+      {/* Filtros — sidebar no desktop */}
       <aside
-        aria-label="Filtros"
+        className="filters-aside"
+        aria-label={t.list.filters}
         style={{
           position: "sticky",
           top: 90,
@@ -113,83 +246,35 @@ export function List() {
           border: "1px solid var(--cl)",
           borderRadius: 12,
           padding: 22,
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--ct)" }}>
-            Filtros
-          </span>
-          <button type="button" onClick={clear} style={{ all: "unset", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "var(--brand)" }}>
-            Limpar
-          </button>
-        </div>
-
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cm)", marginBottom: 11 }}>Período</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-            <button
-              type="button"
-              aria-pressed={weekend}
-              onClick={() => setFlag("weekend", !weekend)}
-              style={{
-                all: "unset",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-                padding: "7px 12px",
-                borderRadius: 8,
-                border: `1px solid ${weekend ? "var(--weekend-bd)" : "var(--cl2)"}`,
-                color: weekend ? "var(--weekend-tx)" : "var(--cm2)",
-                background: weekend ? "var(--weekend-bg)" : "var(--cb)",
-              }}
-            >
-              Fim de semana
-            </button>
-          </div>
-        </div>
-
-        {divider}
-
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "var(--navacc)", marginBottom: 11 }}>
-            <AccessibilityIcon size={15} />
-            Acessibilidade
-          </div>
-          <Switch checked={accessible} onChange={() => setFlag("accessible", !accessible)} label="Com recursos de acessibilidade" />
-          <p style={{ fontSize: 12, color: "var(--cf)", margin: "8px 2px 0", lineHeight: 1.4 }}>
-            Libras, audiodescrição ou assentos para cadeirantes.
-          </p>
-        </div>
-
-        {divider}
-
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cm)", marginBottom: 11 }}>Tipo</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-            {["Concerto", "Exposição"].map((t) => (
-              <label key={t} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 14, color: "var(--ct)", cursor: "pointer", minHeight: 28 }}>
-                <input type="checkbox" checked={tipo.includes(t)} onChange={() => toggleTipo(t)} />
-                {t}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {divider}
-
-        <Switch checked={free} onChange={() => setFlag("free", !free)} label="Somente gratuitos" />
+        <FilterControls s={filterState} />
       </aside>
 
       {/* Resultados */}
       <div>
-        <h1 style={{ fontSize: 40, letterSpacing: "-.015em", margin: "0 0 6px" }}>Programação</h1>
-        <p style={{ fontSize: 15, color: "var(--cm2)", margin: "0 0 26px" }} aria-live="polite">
-          <strong style={{ color: "var(--ct)", fontWeight: 700 }}>{filtered.length} eventos</strong>
-          {summary} · fonte oficial: Sala São Paulo
-        </p>
+        <h1 style={{ fontSize: 40, letterSpacing: "-.015em", margin: "0 0 6px" }}>{t.list.title}</h1>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 26 }}>
+          <p style={{ fontSize: 15, color: "var(--cm2)", margin: 0 }} aria-live="polite">
+            <strong style={{ color: "var(--ct)", fontWeight: 700 }}>{fmt(t.list.summaryCount, { count: filtered.length })}</strong>
+            {summary} · {t.list.summarySource}
+          </p>
+          {/* Botão de filtros — só no mobile (CSS) */}
+          <button
+            type="button"
+            className="btn btn--secondary filter-fab"
+            onClick={() => setSheetOpen(true)}
+            aria-haspopup="dialog"
+            style={{ minHeight: 40, padding: "8px 14px", fontSize: 14 }}
+          >
+            {t.list.filtersOpen}
+            {activeCount > 0 && (
+              <span aria-hidden="true" style={{ marginLeft: 7, background: "var(--brand)", color: "#fff", borderRadius: 999, fontSize: 12, fontWeight: 800, padding: "1px 7px" }}>
+                {activeCount}
+              </span>
+            )}
+          </button>
+        </div>
 
         {isLoading ? (
           <SkeletonGrid count={6} />
@@ -198,13 +283,15 @@ export function List() {
         ) : filtered.length === 0 ? (
           <EmptyState onClear={clear} />
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 18 }}>
+          <div className="card-grid">
             {filtered.map((vm) => (
               <EventCard key={vm.id} vm={vm} />
             ))}
           </div>
         )}
       </div>
+
+      {sheetOpen && <FilterSheet s={filterState} onClose={() => setSheetOpen(false)} />}
     </div>
   );
 }
