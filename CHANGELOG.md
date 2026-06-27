@@ -8,6 +8,9 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Brief de design** (`docs/design_brief.md`): especificação completa de todas as
+  interfaces (portal público + portal de dados/dev), derivada da API/modelo, com
+  fluxos, design system, requisitos de acessibilidade (WCAG 2.2 AA) e entregáveis.
 - **Deploy em VPS**: `scripts/deploy_vps.sh` (clona em `/opt/btv`, sobe a stack,
   migra e checa health — idempotente) + `docker-compose.prod.yml` (restart
   `unless-stopped`). Postgres/Redis passam a ser publicados **só no loopback**
