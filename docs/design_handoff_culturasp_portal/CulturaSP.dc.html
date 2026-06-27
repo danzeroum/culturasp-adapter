@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; }
+  :root {
+    --cb:#FBF8F2; --cs:#FFFFFF; --csoft:#F1EADC; --ct:#1B1712; --ct2:#3A352C;
+    --cm:#544C40; --cm2:#6E665A; --cf:#8A8275; --cl:#EAE2D3; --cl2:#E0D6C4;
+    --navacc:#0C6A71; --pill:#1B1712; --pilltx:#FFFFFF;
+  }
+  .csp-dark {
+    --cb:#14110D; --cs:#1E1A14; --csoft:#221D16; --ct:#F2ECE0; --ct2:#E6DFD2;
+    --cm:#C9C0AE; --cm2:#A89E8D; --cf:#8C8270; --cl:#2E2820; --cl2:#383126;
+    --navacc:#4FC3CB; --pill:#F2ECE0; --pilltx:#14110D;
+  }
+  ::selection { background:#FBD9CF; }
+  @keyframes csp-pop { from { opacity:0; transform:translateY(10px) scale(.98); } to { opacity:1; transform:none; } }
+  @keyframes csp-fade { from { opacity:0; } to { opacity:1; } }
+  @keyframes csp-shimmer { 0% { background-position:-360px 0; } 100% { background-position:360px 0; } }
+</style>
+</helmet>
+
+<!-- ============ DESKTOP FRAME ============ -->
+<div style="position:absolute; left:40px; top:40px; width:1240px;">
+  <div data-drags-parent="1" style="font-family:'Public Sans',sans-serif; font-size:13px; font-weight:600; color:var(--cf); letter-spacing:.02em; margin-bottom:10px; padding-left:2px; cursor:grab;">Desktop · culturasp.org.br</div>
+  <div class="{{ themeClass }}" style="background:var(--cs); border-radius:10px; box-shadow:0 24px 60px -28px rgba(27,23,18,.4); overflow:hidden; border:1px solid var(--cl);">
+    <div style="display:flex; align-items:center; gap:8px; padding:11px 16px; background:var(--csoft); border-bottom:1px solid var(--cl);">
+      <span style="width:11px; height:11px; border-radius:50%; background:#E5432A; display:inline-block;"></span>
+      <span style="width:11px; height:11px; border-radius:50%; background:#E8B23A; display:inline-block;"></span>
+      <span style="width:11px; height:11px; border-radius:50%; background:#3FAE6A; display:inline-block;"></span>
+      <div style="flex:1; display:flex; justify-content:center;">
+        <div style="font-family:'Public Sans',sans-serif; font-size:12.5px; color:var(--cm2); background:var(--cb); border:1px solid var(--cl); border-radius:7px; padding:5px 16px; min-width:340px; text-align:center;">culturasp.org.br/programacao</div>
+      </div>
+    </div>
+
+    <div style="background:var(--cb); font-family:'Public Sans',sans-serif; color:var(--ct);">
+      <!-- HEADER -->
+      <header style="display:flex; align-items:center; justify-content:space-between; padding:18px 40px; border-bottom:1px solid var(--cl); position:sticky; top:0; background:var(--cb); backdrop-filter:blur(6px); z-index:5;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:11px;">
+          <span style="width:30px; height:30px; border-radius:8px; background:#E5432A; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Newsreader',serif; font-weight:600; font-size:19px;">C</span>
+          <span style="font-family:'Newsreader',serif; font-weight:600; font-size:22px; letter-spacing:-.01em;">CulturaSP</span>
+        </button>
+        <nav style="display:flex; align-items:center; gap:6px;">
+          <button type="button" onClick="{{ goList }}" style="all:unset; cursor:pointer; font-size:15px; font-weight:600; color:var(--ct); padding:8px 14px; border-radius:8px;" style-hover="background:var(--csoft);">Programação</button>
+          <button type="button" onClick="{{ goAccess }}" style="all:unset; cursor:pointer; font-size:15px; font-weight:600; color:var(--navacc); padding:8px 14px; border-radius:8px; display:flex; align-items:center; gap:6px;" style-hover="background:#E1F1F2;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg>
+            Acessibilidade
+          </button>
+          <button type="button" onClick="{{ goDev }}" style="all:unset; cursor:pointer; font-size:15px; font-weight:600; color:var(--cm2); padding:8px 14px; border-radius:8px;" style-hover="background:var(--csoft);">Dados abertos</button>
+          <button type="button" style="all:unset; cursor:pointer; font-size:15px; font-weight:600; color:var(--cm2); padding:8px 14px; border-radius:8px;" style-hover="background:var(--csoft);">Sobre</button>
+          <button type="button" onClick="{{ toggleDark }}" aria-label="Alternar tema claro e escuro" style="all:unset; cursor:pointer; width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:var(--ct); border:1px solid var(--cl); margin-left:4px;" style-hover="background:var(--csoft);">
+            <sc-if value="{{ dark }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4 12H1.5M22.5 12H20M5.2 5.2 6.9 6.9M17.1 17.1l1.7 1.7M18.8 5.2 17.1 6.9M6.9 17.1 5.2 18.8"/></svg></sc-if>
+            <sc-if value="{{ light }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></sc-if>
+          </button>
+        </nav>
+      </header>
+
+      <!-- ============ DESKTOP : HOME ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <main>
+        <section style="padding:64px 40px 40px; max-width:1240px; margin:0 auto;">
+          <div style="max-width:760px;">
+            <span style="display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--navacc); background:#E1F1F2; border:1px solid #BBDFE1; padding:6px 13px; border-radius:999px;">Dados culturais abertos de São Paulo</span>
+            <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:60px; line-height:1.02; letter-spacing:-.02em; margin:22px 0 0;">A agenda cultural da cidade,<br><span style="font-style:italic; color:#E5432A;">aberta a todos.</span></h1>
+            <p style="font-size:19px; line-height:1.5; color:var(--cm); margin:20px 0 0; max-width:620px;">Descubra concertos e exposições, filtre por acessibilidade e seja levado direto ao canal oficial para retirar seu ingresso. Sem cadastro, sem cobrança.</p>
+            <button type="button" onClick="{{ goList }}" style="all:unset; cursor:pointer; margin-top:28px; display:flex; align-items:center; gap:14px; width:min(560px,100%); background:var(--cs); border:1.5px solid var(--cl2); border-radius:12px; padding:16px 20px;" style-hover="border-color:#0C7C84; box-shadow:0 10px 26px -18px rgba(12,124,132,.6);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cf)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <span style="font-size:16px; color:var(--cf); flex:1;">Buscar por evento, artista ou local…</span>
+              <span style="font-size:14px; font-weight:700; color:var(--pilltx); background:var(--pill); padding:9px 16px; border-radius:8px;">Explorar</span>
+            </button>
+          </div>
+
+          <div style="margin-top:32px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+            <span style="font-size:13.5px; font-weight:600; color:var(--cf);">Atalhos:</span>
+            <button type="button" onClick="{{ chipAccessible }}" style="all:unset; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:600; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:9px 15px; border-radius:999px;" style-hover="background:#D2EBEC;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg> Acessível</button>
+            <button type="button" onClick="{{ chipWeekend }}" style="all:unset; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:600; color:var(--ct); background:var(--cs); border:1px solid var(--cl2); padding:9px 15px; border-radius:999px;" style-hover="background:var(--csoft);">Este fim de semana</button>
+            <button type="button" onClick="{{ chipFree }}" style="all:unset; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:600; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:9px 15px; border-radius:999px;" style-hover="background:#D6EBDF;">Gratuito</button>
+          </div>
+        </section>
+
+        <section style="padding:24px 40px 56px; max-width:1240px; margin:0 auto;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:22px; border-top:1px solid var(--cl); padding-top:30px;">
+            <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:30px; letter-spacing:-.01em; margin:0;">Próximos eventos</h2>
+            <button type="button" onClick="{{ goList }}" style="all:unset; cursor:pointer; font-size:15px; font-weight:700; color:#E5432A; display:inline-flex; align-items:center; gap:6px;" style-hover="gap:10px;">Ver toda a programação →</button>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px;">
+            <sc-for list="{{ homeViews }}" as="ev" hint-placeholder-count="4" style="display:contents;">
+              <dc-import name="Event Card" event="{{ ev }}" hint-size="100%,330px"></dc-import>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="padding:0 40px 64px; max-width:1240px; margin:0 auto;">
+          <div style="display:flex; align-items:center; gap:30px; background:#16302F; color:#EAF3F1; border-radius:14px; padding:34px 40px;">
+            <div style="flex:1;">
+              <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:26px; margin:0 0 8px;">Leve a agenda para onde você quiser</h3>
+              <p style="font-size:15.5px; line-height:1.5; color:#AFC9C5; margin:0; max-width:520px;">Assine o calendário (iCal) ou o feed RSS e receba a programação automaticamente — ideal para educadores e agregadores culturais.</p>
+            </div>
+            <div style="display:flex; gap:12px;">
+              <button type="button" onClick="{{ goSubscribe }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:700; background:#0C7C84; color:#fff; padding:12px 20px; border-radius:9px;" style-hover="background:#0A6A71;">Assinar iCal</button>
+              <button type="button" onClick="{{ goSubscribe }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:700; background:transparent; color:#EAF3F1; border:1.5px solid #3C5755; padding:12px 20px; border-radius:9px;" style-hover="background:#1E3A39;">Feed RSS</button>
+            </div>
+          </div>
+        </section>
+      </main>
+      </sc-if>
+
+      <!-- ============ DESKTOP : LISTA ============ -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <main style="max-width:1240px; margin:0 auto; padding:28px 40px 64px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:600; color:var(--cm2); display:inline-flex; align-items:center; gap:6px; margin-bottom:18px;" style-hover="color:var(--ct);">← Início</button>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:40px; letter-spacing:-.015em; margin:0 0 6px;">Programação</h1>
+        <p style="font-size:15px; color:var(--cm2); margin:0 0 26px;"><strong style="color:var(--ct); font-weight:700;">{{ listCount }} eventos</strong>{{ filterSummary }} · fonte oficial: Sala São Paulo</p>
+
+        <div style="display:grid; grid-template-columns:268px 1fr; gap:32px; align-items:start;">
+          <aside style="position:sticky; top:90px; background:var(--cs); border:1px solid var(--cl); border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:24px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--ct);">Filtros</span>
+              <button type="button" onClick="{{ clearFilters }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:600; color:#E5432A;" style-hover="text-decoration:underline;">Limpar</button>
+            </div>
+
+            <div>
+              <div style="font-size:13px; font-weight:700; color:var(--cm); margin-bottom:11px;">Período</div>
+              <div style="display:flex; flex-wrap:wrap; gap:7px;">
+                <span style="font-size:13px; font-weight:600; color:var(--cm2); background:var(--cb); border:1px solid var(--cl2); padding:7px 12px; border-radius:8px;">Hoje</span>
+                <button type="button" onClick="{{ toggleWeekend }}" aria-pressed="{{ filterWeekend }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:600; padding:7px 12px; border-radius:8px; border:1px solid {{ weekendBorder }}; color:{{ weekendText }}; background:{{ weekendBg }};">Fim de semana</button>
+                <span style="font-size:13px; font-weight:600; color:var(--cm2); background:var(--cb); border:1px solid var(--cl2); padding:7px 12px; border-radius:8px;">Este mês</span>
+              </div>
+            </div>
+
+            <div style="height:1px; background:#EFE8DA;"></div>
+
+            <div>
+              <div style="display:flex; align-items:center; gap:7px; font-size:13px; font-weight:700; color:var(--navacc); margin-bottom:11px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg>
+                Acessibilidade
+              </div>
+              <button type="button" onClick="{{ toggleAccessible }}" role="switch" aria-checked="{{ filterAccessible }}" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:10px; width:100%; padding:9px 11px; border-radius:9px; border:1px solid {{ accBorder }}; background:{{ accBg }};">
+                <span style="width:38px; height:22px; border-radius:999px; background:{{ accSwitch }}; position:relative; flex:none; transition:background .15s;"><span style="position:absolute; top:2px; left:{{ accKnob }}; width:18px; height:18px; border-radius:50%; background:#FCFBF8; box-shadow:0 1px 2px rgba(0,0,0,.3); transition:left .15s;"></span></span>
+                <span style="font-size:13.5px; font-weight:600; color:var(--ct);">Com recursos de acessibilidade</span>
+              </button>
+              <p style="font-size:12px; color:var(--cf); margin:8px 2px 0; line-height:1.4;">Libras, audiodescrição ou assentos para cadeirantes.</p>
+            </div>
+
+            <div style="height:1px; background:#EFE8DA;"></div>
+
+            <div>
+              <div style="font-size:13px; font-weight:700; color:var(--cm); margin-bottom:11px;">Tipo</div>
+              <div style="display:flex; flex-direction:column; gap:9px;">
+                <label style="display:flex; align-items:center; gap:9px; font-size:14px; color:var(--ct); cursor:pointer;"><span style="width:17px; height:17px; border-radius:5px; border:1.5px solid #C9BFAC;"></span> Concerto</label>
+                <label style="display:flex; align-items:center; gap:9px; font-size:14px; color:var(--ct); cursor:pointer;"><span style="width:17px; height:17px; border-radius:5px; border:1.5px solid #C9BFAC;"></span> Exposição</label>
+              </div>
+            </div>
+
+            <div style="height:1px; background:#EFE8DA;"></div>
+
+            <button type="button" onClick="{{ toggleFree }}" role="switch" aria-checked="{{ filterFree }}" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:10px; width:100%;">
+              <span style="width:38px; height:22px; border-radius:999px; background:{{ freeSwitch }}; position:relative; flex:none; transition:background .15s;"><span style="position:absolute; top:2px; left:{{ freeKnob }}; width:18px; height:18px; border-radius:50%; background:#FCFBF8; box-shadow:0 1px 2px rgba(0,0,0,.3); transition:left .15s;"></span></span>
+              <span style="font-size:13.5px; font-weight:600; color:var(--ct);">Somente gratuitos</span>
+            </button>
+          </aside>
+
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:18px;">
+            <sc-for list="{{ listViews }}" as="ev" hint-placeholder-count="4" style="display:contents;">
+              <dc-import name="Event Card" event="{{ ev }}" hint-size="100%,330px"></dc-import>
+            </sc-for>
+            <sc-if value="{{ listEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px; padding:64px 30px; background:var(--cs); border:1px dashed var(--cl2); border-radius:14px;">
+                <span style="width:54px; height:54px; border-radius:14px; background:var(--csoft); color:var(--cm2); display:flex; align-items:center; justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8.5 11h5"/></svg></span>
+                <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:24px; margin:2px 0 0; color:var(--ct);">Nenhum evento com esses filtros</h3>
+                <p style="font-size:15px; line-height:1.5; color:var(--cm); margin:0; max-width:360px;">Tente afrouxar a busca — incluir dias de semana, eventos pagos ou outras fontes.</p>
+                <button type="button" onClick="{{ clearFilters }}" style="all:unset; cursor:pointer; margin-top:6px; font-size:14.5px; font-weight:700; color:#fff; background:#E5432A; padding:11px 20px; border-radius:9px;" style-hover="background:#CE3A23;">Limpar filtros</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </main>
+      </sc-if>
+
+      <!-- ============ DESKTOP : DETALHE ============ -->
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <main style="max-width:1100px; margin:0 auto; padding:26px 40px 70px;">
+        <button type="button" onClick="{{ back }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:600; color:var(--cm2); display:inline-flex; align-items:center; gap:6px; margin-bottom:20px;" style-hover="color:var(--ct);">← Voltar à programação</button>
+
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <span style="font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#fff; background:{{ sel.typeColor }}; padding:5px 12px; border-radius:999px;">{{ sel.typeLabel }}</span>
+          <span style="display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--cm);">Fonte: <strong style="color:var(--ct);">{{ sel.source }}</strong>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--cf)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </span>
+        </div>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:46px; line-height:1.06; letter-spacing:-.02em; margin:0 0 28px; max-width:760px;">{{ sel.title }}</h1>
+
+        <div style="display:grid; grid-template-columns:1fr 340px; gap:40px; align-items:start;">
+          <div style="display:flex; flex-direction:column; gap:30px;">
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+              <div style="background:var(--cs); border:1px solid var(--cl); border-radius:12px; padding:20px;">
+                <div style="font-size:12px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--cf); margin-bottom:10px;">Quando</div>
+                <div style="font-size:18px; font-weight:600; color:var(--ct); line-height:1.3;">{{ sel.dateFull }}</div>
+                <div style="font-size:15px; color:var(--cm); margin-top:5px;">{{ sel.timeLine }}</div>
+              </div>
+              <div style="background:var(--cs); border:1px solid var(--cl); border-radius:12px; padding:20px;">
+                <div style="font-size:12px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--cf); margin-bottom:10px;">Onde</div>
+                <div style="font-size:18px; font-weight:600; color:var(--ct); line-height:1.3;">{{ sel.venueName }}</div>
+                <div style="font-size:14px; color:var(--cm); margin-top:5px; line-height:1.4;">{{ sel.venueAddr }}</div>
+              </div>
+            </div>
+
+            <!-- PROGRAMA -->
+            <sc-if value="{{ sel.hasProgram }}" hint-placeholder-val="{{ true }}">
+            <section>
+              <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:25px; margin:0 0 6px;">Programa</h2>
+              <p style="font-size:14.5px; color:var(--cm); margin:0 0 16px;">Regência de <strong style="color:var(--ct);">{{ sel.conductor }}</strong> · {{ sel.performersLine }}</p>
+              <div style="background:var(--cs); border:1px solid var(--cl); border-radius:12px; overflow:hidden;">
+                <sc-for list="{{ sel.program }}" as="p" hint-placeholder-count="3" style="display:contents;">
+                  <div style="display:flex; gap:18px; padding:14px 20px; border-bottom:1px solid var(--csoft);">
+                    <span style="font-family:'Newsreader',serif; font-size:16px; font-weight:600; color:#E5432A; min-width:130px;">{{ p.composer }}</span>
+                    <span style="font-size:15px; color:var(--ct);">{{ p.work }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+            </sc-if>
+
+            <sc-if value="{{ sel.hasNotesBlock }}" hint-placeholder-val="{{ false }}">
+            <section>
+              <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:25px; margin:0 0 12px;">Sobre</h2>
+              <p style="font-size:16px; line-height:1.6; color:var(--ct2); margin:0;">{{ sel.about }}</p>
+            </section>
+            </sc-if>
+
+            <!-- ACESSIBILIDADE — bloco em destaque -->
+            <section aria-label="Recursos de acessibilidade" style="background:#EAF5F5; border:1.5px solid #BBDFE1; border-radius:14px; padding:26px;">
+              <div style="display:flex; align-items:center; gap:11px; margin-bottom:6px;">
+                <span style="width:34px; height:34px; border-radius:9px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg>
+                </span>
+                <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:25px; margin:0; color:#0A4F55;">Acessibilidade</h2>
+              </div>
+              <p style="font-size:14px; color:#3C6A6E; margin:0 0 18px;">Informações fornecidas pela fonte oficial. Em caso de dúvida, confirme na instituição.</p>
+
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; gap:14px; background:#FCFCFD; border:1px solid #CFE7E8; border-radius:10px; padding:14px 16px;">
+                  <span style="width:38px; height:38px; flex:none; border-radius:9px; background:{{ sel.librasBg }}; color:{{ sel.librasFg }}; display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4"/><path d="M10 9.5V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 11.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.1-2.9L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.2"/></svg></span>
+                  <div style="flex:1;"><div style="font-size:15.5px; font-weight:700; color:#1B1712;">Tradução em Libras</div><div style="font-size:13.5px; color:#544C40;">{{ sel.librasText }}</div></div>
+                  <span style="font-size:13px; font-weight:700; color:{{ sel.librasFg }};">{{ sel.librasStatus }}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:14px; background:#FCFCFD; border:1px solid #CFE7E8; border-radius:10px; padding:14px 16px;">
+                  <span style="width:38px; height:38px; flex:none; border-radius:9px; background:{{ sel.audioBg }}; color:{{ sel.audioFg }}; display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg></span>
+                  <div style="flex:1;"><div style="font-size:15.5px; font-weight:700; color:#1B1712;">Audiodescrição</div><div style="font-size:13.5px; color:#544C40;">{{ sel.audioText }}</div></div>
+                  <span style="font-size:13px; font-weight:700; color:{{ sel.audioFg }};">{{ sel.audioStatus }}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:14px; background:#FCFCFD; border:1px solid #CFE7E8; border-radius:10px; padding:14px 16px;">
+                  <span style="width:38px; height:38px; flex:none; border-radius:9px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="4.4" r="1.7"/><path d="M9 7v5.2h4.4L16 18"/><path d="M13 12.5a5 5 0 1 1-4.4-2.4"/></svg></span>
+                  <div style="flex:1;"><div style="font-size:15.5px; font-weight:700; color:#1B1712;">Assentos para cadeirantes</div><div style="font-size:13.5px; color:#544C40;">{{ sel.wheelText }}</div></div>
+                  <span style="font-size:13px; font-weight:700; color:#0A5B61;">{{ sel.wheelStatus }}</span>
+                </div>
+              </div>
+              <p style="font-size:13px; color:#3C6A6E; margin:16px 0 0; line-height:1.5;">{{ sel.accNotes }}</p>
+            </section>
+
+            <!-- PROCEDÊNCIA -->
+            <div style="display:flex; gap:11px; align-items:flex-start; background:#FBF1E9; border:1px solid #F0D9C5; border-radius:11px; padding:16px 18px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2622A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:1px;" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+              <p style="font-size:13.5px; line-height:1.5; color:#7A4E2C; margin:0;">Dados coletados de <strong>{{ sel.source }}</strong> em {{ sel.scrapedAt }}. O CulturaSP é um portal de dados abertos e <strong>não vende ingressos</strong> — sempre confirme horários e disponibilidade no site oficial.</p>
+            </div>
+          </div>
+
+          <!-- ASIDE: INGRESSO -->
+          <aside style="position:sticky; top:90px; display:flex; flex-direction:column; gap:14px;">
+            <div style="background:var(--cs); border:1px solid var(--cl); border-radius:14px; padding:24px; box-shadow:0 18px 40px -28px rgba(27,23,18,.35);">
+              <sc-if value="{{ sel.free }}" hint-placeholder-val="{{ true }}">
+                <div style="display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:800; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:7px 14px; border-radius:999px; margin-bottom:16px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Entrada gratuita</div>
+              </sc-if>
+              <div style="font-size:13px; font-weight:700; color:var(--cm); margin-bottom:5px;">Retirada de ingressos</div>
+              <p style="font-size:14.5px; line-height:1.5; color:var(--ct); margin:0 0 4px;">{{ sel.ticketDist }}</p>
+              <p style="font-size:13px; line-height:1.5; color:var(--cm2); margin:0 0 20px;">{{ sel.ticketCancel }}</p>
+
+              <button type="button" onClick="{{ leaveOfficial }}" style="all:unset; cursor:pointer; box-sizing:border-box; width:100%; text-align:center; background:#E5432A; color:#fff; font-size:16px; font-weight:700; padding:15px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:9px;" style-hover="background:#CE3A23;">
+                Retirar no site oficial
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </button>
+              <p style="font-size:12px; color:var(--cf); text-align:center; margin:9px 0 0;">Abre o site da {{ sel.source }} em nova aba.</p>
+            </div>
+
+            <div style="background:var(--cs); border:1px solid var(--cl); border-radius:14px; padding:10px; display:flex; flex-direction:column; gap:2px;">
+              <button type="button" onClick="{{ addToCalendar }}" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:9px; font-size:14.5px; font-weight:600; color:var(--ct);" style-hover="background:var(--csoft);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0C7C84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4M12 13v4M10 15h4"/></svg>
+                Adicionar ao calendário</button>
+              <button type="button" onClick="{{ share }}" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:9px; font-size:14.5px; font-weight:600; color:var(--ct);" style-hover="background:var(--csoft);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0C7C84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></svg>
+                Compartilhar</button>
+              <button type="button" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:9px; font-size:13.5px; font-weight:600; color:var(--cf);" style-hover="background:var(--csoft);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 6-5 6 5 6M16 6l5 6-5 6"/></svg>
+                Ver JSON-LD (dev)</button>
+            </div>
+          </aside>
+        </div>
+      </main>
+      </sc-if>
+
+      <!-- ============ DESKTOP : A4 ACESSIBILIDADE ============ -->
+      <sc-if value="{{ isAccess }}" hint-placeholder-val="{{ false }}">
+      <main style="max-width:1240px; margin:0 auto; padding:34px 40px 64px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:600; color:var(--cm2); display:inline-flex; gap:6px; margin-bottom:18px;" style-hover="color:var(--ct);">← Início</button>
+        <div style="display:flex; align-items:center; gap:13px; margin-bottom:8px;">
+          <span style="width:42px; height:42px; border-radius:11px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg></span>
+          <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:44px; letter-spacing:-.015em; margin:0;">Encontre por acessibilidade</h1>
+        </div>
+        <p style="font-size:18px; line-height:1.5; color:var(--cm); margin:0 0 28px; max-width:680px;">Escolha o recurso de que você precisa. Mostramos apenas os eventos que o oferecem — com selos claros e contagens — e você confirma sempre na fonte oficial.</p>
+
+        <div role="radiogroup" aria-label="Recurso de acessibilidade" style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:22px;">
+          <button type="button" onClick="{{ pickLibras }}" role="radio" aria-checked="{{ selLibras }}" style="all:unset; cursor:pointer; box-sizing:border-box; display:flex; flex-direction:column; gap:10px; padding:22px; border-radius:14px; border:2px solid {{ libBtnBorder }}; background:{{ libBtnBg }}; color:{{ libBtnFg }};">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4"/><path d="M10 9.5V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 11.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.1-2.9L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.2"/></svg>
+            <span style="font-family:'Newsreader',serif; font-size:22px; font-weight:600;">Libras</span>
+            <span style="font-size:13.5px; font-weight:600; color:{{ libBtnSub }};">Língua Brasileira de Sinais</span>
+          </button>
+          <button type="button" onClick="{{ pickAudio }}" role="radio" aria-checked="{{ selAudio }}" style="all:unset; cursor:pointer; box-sizing:border-box; display:flex; flex-direction:column; gap:10px; padding:22px; border-radius:14px; border:2px solid {{ audioBtnBorder }}; background:{{ audioBtnBg }}; color:{{ audioBtnFg }};">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>
+            <span style="font-family:'Newsreader',serif; font-size:22px; font-weight:600;">Audiodescrição</span>
+            <span style="font-size:13.5px; font-weight:600; color:{{ audioBtnSub }};">Narração para baixa visão</span>
+          </button>
+          <button type="button" onClick="{{ pickWheel }}" role="radio" aria-checked="{{ selWheel }}" style="all:unset; cursor:pointer; box-sizing:border-box; display:flex; flex-direction:column; gap:10px; padding:22px; border-radius:14px; border:2px solid {{ wheelBtnBorder }}; background:{{ wheelBtnBg }}; color:{{ wheelBtnFg }};">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="4.4" r="1.7"/><path d="M9 7v5.2h4.4L16 18"/><path d="M13 12.5a5 5 0 1 1-4.4-2.4"/></svg>
+            <span style="font-family:'Newsreader',serif; font-size:22px; font-weight:600;">Cadeirante</span>
+            <span style="font-size:13.5px; font-weight:600; color:{{ wheelBtnSub }};">Assentos acessíveis</span>
+          </button>
+        </div>
+
+        <div style="display:flex; gap:13px; align-items:flex-start; background:#EAF5F5; border:1px solid #BBDFE1; border-radius:12px; padding:18px 20px; margin-bottom:26px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0C7C84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px;" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <p style="font-size:15px; line-height:1.55; color:#2C5A5E; margin:0;"><strong style="color:#0A4F55;">{{ accFeatureTitle }}.</strong> {{ accFeatureDesc }}</p>
+        </div>
+
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:24px; margin:0;">{{ accListCount }} eventos com {{ accFeatureTitle }}</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
+          <sc-for list="{{ accList }}" as="ev" hint-placeholder-count="3" style="display:contents;">
+            <dc-import name="Event Card" event="{{ ev }}" hint-size="100%,330px"></dc-import>
+          </sc-for>
+        </div>
+      </main>
+      </sc-if>
+
+      <!-- ============ DESKTOP : A6 ASSINAR / INTEGRAR ============ -->
+      <sc-if value="{{ isSubscribe }}" hint-placeholder-val="{{ false }}">
+      <main style="max-width:980px; margin:0 auto; padding:34px 40px 64px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:600; color:var(--cm2); display:inline-flex; gap:6px; margin-bottom:18px;" style-hover="color:var(--ct);">← Início</button>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:44px; letter-spacing:-.015em; margin:0 0 8px;">Assinar e integrar</h1>
+        <p style="font-size:18px; line-height:1.5; color:var(--cm); margin:0 0 30px; max-width:640px;">Leve a programação para o seu calendário ou site. Tudo aberto, atualizado automaticamente, sem cadastro.</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+          <div style="background:var(--cs); border:1px solid var(--cl); border-radius:14px; padding:24px;">
+            <div style="display:flex; align-items:center; gap:11px; margin-bottom:6px;"><span style="width:36px; height:36px; border-radius:9px; background:#E1F1F2; color:#0C7C84; display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg></span><h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:22px; margin:0;">Assinar agenda (iCal)</h2></div>
+            <p style="font-size:14.5px; line-height:1.5; color:var(--cm); margin:0 0 16px;">Funciona no Google Calendar, Apple Calendar e Outlook. Novos eventos aparecem sozinhos.</p>
+            <div style="display:flex; gap:8px; align-items:center; background:var(--cb); border:1px solid var(--cl2); border-radius:9px; padding:6px 6px 6px 14px;">
+              <span style="flex:1; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13px; color:var(--cm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">culturasp.org.br/v1/events.ics</span>
+              <button type="button" onClick="{{ copyIcal }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:700; color:var(--pilltx); background:var(--pill); padding:9px 15px; border-radius:7px;" style-hover="background:#0C7C84;">Copiar</button>
+            </div>
+          </div>
+          <div style="background:var(--cs); border:1px solid var(--cl); border-radius:14px; padding:24px;">
+            <div style="display:flex; align-items:center; gap:11px; margin-bottom:6px;"><span style="width:36px; height:36px; border-radius:9px; background:#FBEFD9; color:#B5780A; display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a14 14 0 0 1 14 14M5 11a8 8 0 0 1 8 8"/><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg></span><h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:22px; margin:0;">Feed RSS</h2></div>
+            <p style="font-size:14.5px; line-height:1.5; color:var(--cm); margin:0 0 16px;">Para leitores de feed, sites e agregadores culturais reembalarem a programação.</p>
+            <div style="display:flex; gap:8px; align-items:center; background:var(--cb); border:1px solid var(--cl2); border-radius:9px; padding:6px 6px 6px 14px;">
+              <span style="flex:1; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13px; color:var(--cm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">culturasp.org.br/v1/events.rss</span>
+              <button type="button" onClick="{{ copyRss }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:700; color:var(--pilltx); background:var(--pill); padding:9px 15px; border-radius:7px;" style-hover="background:#0C7C84;">Copiar</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:11px; margin-top:18px;">
+          <span style="display:inline-flex; align-items:center; gap:9px; font-size:14.5px; font-weight:600; color:var(--ct); background:var(--cs); border:1px solid var(--cl2); padding:12px 18px; border-radius:10px;">Adicionar ao Google Calendar</span>
+          <span style="display:inline-flex; align-items:center; gap:9px; font-size:14.5px; font-weight:600; color:var(--ct); background:var(--cs); border:1px solid var(--cl2); padding:12px 18px; border-radius:10px;">Adicionar ao Apple Calendar</span>
+        </div>
+        <p style="font-size:13.5px; color:var(--cf); margin:22px 2px 0; line-height:1.5;">Em breve: widget incorporável para colar a agenda no seu site. Todos os feeds são públicos e seguem o padrão schema.org.</p>
+      </main>
+      </sc-if>
+
+      <!-- ============ DESKTOP : DEV (B) ============ -->
+      <sc-if value="{{ isDev }}" hint-placeholder-val="{{ false }}">
+      <main style="max-width:1240px; margin:0 auto; padding:34px 40px 64px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:14px; font-weight:600; color:var(--cm2); display:inline-flex; gap:6px; margin-bottom:18px;" style-hover="color:var(--ct);">← Portal público</button>
+        <span style="display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:6px 13px; border-radius:999px;">Dados abertos · Licença MIT</span>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:48px; letter-spacing:-.02em; margin:18px 0 8px;">API &amp; Dados Abertos</h1>
+        <p style="font-size:18px; line-height:1.5; color:var(--cm); margin:0 0 24px; max-width:680px;">Uma API REST read-only com a programação cultural de São Paulo, estruturada em schema.org — inclusive os dados de acessibilidade. Comece em um minuto.</p>
+
+        <div style="background:#16302F; border-radius:13px; padding:20px 22px; margin-bottom:36px; max-width:760px;">
+          <div style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#7FB3AD; margin-bottom:10px;">Exemplo · próximos eventos acessíveis</div>
+          <code style="display:block; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:13.5px; line-height:1.7; color:#EAF3F1;"><span style="color:#7FD0A0;">curl</span> https://culturasp.org.br/v1/events?accessible=<span style="color:#F2C57C;">true</span>&amp;limit=<span style="color:#F2C57C;">5</span></code>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; margin-bottom:44px;">
+          <div>
+            <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:26px; margin:0 0 16px;">Referência da API</h2>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div style="display:flex; align-items:center; gap:12px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:12px 15px;"><span style="font-size:11px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 8px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:13.5px; color:var(--ct); flex:1;">/v1/events</code><span style="font-size:12.5px; color:var(--cf);">lista + filtros</span></div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:12px 15px;"><span style="font-size:11px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 8px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:13.5px; color:var(--ct); flex:1;">/v1/events/{id}</code><span style="font-size:12.5px; color:var(--cf);">detalhe</span></div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:12px 15px;"><span style="font-size:11px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 8px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:13.5px; color:var(--ct); flex:1;">/v1/accessibility</code><span style="font-size:12.5px; color:var(--cf);">por recurso</span></div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:12px 15px;"><span style="font-size:11px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 8px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:13.5px; color:var(--ct); flex:1;">/v1/events.ics · .rss</code><span style="font-size:12.5px; color:var(--cf);">feeds</span></div>
+              <div style="display:flex; align-items:center; gap:12px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:12px 15px;"><span style="font-size:11px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 8px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:13.5px; color:var(--ct); flex:1;">/v1/sources</code><span style="font-size:12.5px; color:var(--cf);">fontes</span></div>
+            </div>
+          </div>
+          <div>
+            <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:26px; margin:0 0 16px;">Resposta · JSON-LD</h2>
+            <div style="background:#1C1814; border-radius:12px; padding:20px; overflow:hidden;">
+              <pre style="margin:0; font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:12.5px; line-height:1.65; color:#D8D2C6; white-space:pre-wrap;"><span style="color:var(--cf);">{</span>
+  <span style="color:#7FB3AD;">"@type"</span>: <span style="color:#9FD8A8;">"MusicEvent"</span>,
+  <span style="color:#7FB3AD;">"name"</span>: <span style="color:#9FD8A8;">"Orquestra Antares"</span>,
+  <span style="color:#7FB3AD;">"startDate"</span>: <span style="color:#9FD8A8;">"2026-08-08T10:50"</span>,
+  <span style="color:#7FB3AD;">"isAccessibleForFree"</span>: <span style="color:#F2C57C;">true</span>,
+  <span style="color:#7FB3AD;">"accessibility"</span>: <span style="color:var(--cf);">{</span>
+    <span style="color:#7FB3AD;">"sign_language"</span>: <span style="color:#F2C57C;">true</span>,
+    <span style="color:#7FB3AD;">"wheelchair_seats"</span>: <span style="color:#F2C57C;">15</span>
+  <span style="color:var(--cf);">}</span>
+<span style="color:var(--cf);">}</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:26px; margin:0 0 16px;">Fontes &amp; cobertura</h2>
+        <div style="background:var(--cs); border:1px solid var(--cl); border-radius:13px; overflow:hidden; margin-bottom:32px;">
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.4fr 1fr; gap:0; padding:14px 22px; background:var(--csoft); font-size:12px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--cm2);"><span>Fonte</span><span>Status</span><span>Assinatura de layout</span><span>Última coleta</span></div>
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.4fr 1fr; gap:0; padding:18px 22px; border-top:1px solid var(--csoft); align-items:center;"><span style="font-size:15px; font-weight:600; color:var(--ct);">Sala São Paulo</span><span style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#0F5C39;"><span style="width:9px; height:9px; border-radius:50%; background:#1C7A4E;"></span>Ativo</span><span style="font-size:13.5px; color:var(--cm);">Estável</span><span style="font-size:13.5px; color:var(--cm);">há 2 horas</span></div>
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.4fr 1fr; gap:0; padding:18px 22px; border-top:1px solid var(--csoft); align-items:center;"><span style="font-size:15px; font-weight:600; color:var(--ct);">Pinacoteca de São Paulo <span style="font-size:11px; font-weight:700; color:#8A5A06; background:#FBF0D9; border:1px solid #EAD3A0; padding:2px 7px; border-radius:5px; margin-left:6px;">Experimental</span></span><span style="display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:#B5780A;"><span style="width:9px; height:9px; border-radius:50%; background:#C98A00;"></span>Em validação</span><span style="font-size:13.5px; color:var(--cm);">Em monitoramento</span><span style="font-size:13.5px; color:var(--cm);">há 1 dia</span></div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:14px;">
+          <div style="display:flex; align-items:center; gap:11px; background:#E4F2E8; border:1px solid #BFE0CD; border-radius:11px; padding:14px 20px;"><span style="width:10px; height:10px; border-radius:50%; background:#1C7A4E;"></span><span style="font-size:14px; font-weight:700; color:#0F5C39;">/health · No ar</span></div>
+          <div style="display:flex; align-items:center; gap:11px; background:var(--cs); border:1px solid var(--cl2); border-radius:11px; padding:14px 20px;"><span style="font-size:14px; font-weight:600; color:var(--cm);">/metrics · 412 eventos · 2 fontes</span></div>
+        </div>
+      </main>
+      </sc-if>
+
+      <!-- FOOTER -->
+      <footer style="border-top:1px solid var(--cl); padding:34px 40px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+        <div style="font-size:13px; color:var(--cf); line-height:1.5; max-width:560px;">Portal de dados culturais abertos de São Paulo · Read-only, sem cadastro e sem coleta de dados pessoais · Licença MIT.</div>
+        <div style="display:flex; gap:18px; font-size:13.5px; font-weight:600; color:var(--cm);"><span>Sobre</span><span>Fontes</span><span>API</span><span>Repositório</span></div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MOBILE FRAME ============ -->
+<div style="position:absolute; left:1320px; top:40px; width:392px;">
+  <div data-drags-parent="1" style="font-family:'Public Sans',sans-serif; font-size:13px; font-weight:600; color:var(--cf); letter-spacing:.02em; margin-bottom:10px; padding-left:2px; cursor:grab;">Mobile · 390px</div>
+  <div style="background:#0C0A08; border-radius:42px; padding:11px; box-shadow:0 30px 70px -30px rgba(27,23,18,.55);">
+    <div class="{{ themeClass }}" style="background:var(--cb); border-radius:32px; overflow:hidden; font-family:'Public Sans',sans-serif; color:var(--ct); position:relative;">
+      <div style="height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:700; color:var(--ct);"><span>9:41</span><span style="display:flex; gap:5px; align-items:center;"><svg width="17" height="11" viewBox="0 0 17 11" fill="var(--ct)" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="22" height="11" viewBox="0 0 24 12" fill="none" aria-hidden="true"><rect x="1" y="1" width="20" height="10" rx="2.5" stroke="var(--ct)" stroke-width="1.2"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.5" fill="var(--ct)"/><rect x="22" y="4" width="1.6" height="4" rx=".8" fill="var(--ct)"/></svg></span></div>
+
+      <header style="display:flex; align-items:center; justify-content:space-between; padding:8px 18px 14px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:26px; height:26px; border-radius:7px; background:#E5432A; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Newsreader',serif; font-weight:600; font-size:16px;">C</span>
+          <span style="font-family:'Newsreader',serif; font-weight:600; font-size:19px;">CulturaSP</span>
+        </button>
+        <span style="display:flex; align-items:center; gap:8px;">
+        <button type="button" onClick="{{ toggleDark }}" aria-label="Alternar tema claro e escuro" style="all:unset; cursor:pointer; width:38px; height:38px; border-radius:9px; background:var(--csoft); display:flex; align-items:center; justify-content:center; color:var(--ct);">
+          <sc-if value="{{ dark }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4 12H1.5M22.5 12H20M5.2 5.2 6.9 6.9M17.1 17.1l1.7 1.7M18.8 5.2 17.1 6.9M6.9 17.1 5.2 18.8"/></svg></sc-if>
+          <sc-if value="{{ light }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></sc-if>
+        </button>
+        <span style="width:38px; height:38px; border-radius:9px; background:var(--csoft); display:flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ct)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
+        </span>
+      </header>
+
+      <div style="max-height:720px; overflow:hidden; position:relative;">
+      <!-- MOBILE HOME -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:6px 18px 28px;">
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:33px; line-height:1.05; letter-spacing:-.02em; margin:6px 0 0;">A agenda cultural da cidade, <span style="font-style:italic; color:#E5432A;">aberta a todos.</span></h1>
+        <p style="font-size:15px; line-height:1.5; color:var(--cm); margin:12px 0 0;">Concertos e exposições, filtrados por acessibilidade. Sem cadastro.</p>
+        <button type="button" onClick="{{ goList }}" style="all:unset; cursor:pointer; box-sizing:border-box; margin-top:18px; display:flex; align-items:center; gap:10px; width:100%; background:var(--cs); border:1.5px solid var(--cl2); border-radius:11px; padding:13px 15px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cf)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span style="font-size:15px; color:var(--cf);">Buscar evento ou local…</span>
+        </button>
+        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+          <button type="button" onClick="{{ chipAccessible }}" style="all:unset; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13.5px; font-weight:600; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:8px 13px; border-radius:999px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg> Acessível</button>
+          <button type="button" onClick="{{ chipWeekend }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--ct); background:var(--cs); border:1px solid var(--cl2); padding:8px 13px; border-radius:999px;">Fim de semana</button>
+          <button type="button" onClick="{{ chipFree }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:8px 13px; border-radius:999px;">Gratuito</button>
+        </div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin:26px 0 14px;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:22px; margin:0;">Próximos eventos</h2>
+          <button type="button" onClick="{{ goList }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:700; color:#E5432A;">Ver tudo →</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <sc-for list="{{ homeMobileViews }}" as="ev" hint-placeholder-count="3" style="display:contents;">
+            <dc-import name="Event Card" event="{{ ev }}" hint-size="100%,310px"></dc-import>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- MOBILE LIST -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:4px 18px 28px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--cm2); margin-bottom:10px; display:inline-block;">← Início</button>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:28px; margin:0 0 4px;">Programação</h1>
+        <p style="font-size:13.5px; color:var(--cm2); margin:0 0 14px;"><strong style="color:var(--ct);">{{ listCount }} eventos</strong>{{ filterSummary }}</p>
+        <div style="display:flex; gap:8px; overflow:hidden; margin-bottom:18px; flex-wrap:wrap;">
+          <button type="button" onClick="{{ toggleAccessible }}" aria-pressed="{{ filterAccessible }}" style="all:unset; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; padding:8px 13px; border-radius:999px; border:1px solid {{ accBorder }}; color:{{ accChipText }}; background:{{ accBg }};"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg> Acessível</button>
+          <button type="button" onClick="{{ toggleWeekend }}" aria-pressed="{{ filterWeekend }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:600; padding:8px 13px; border-radius:999px; border:1px solid {{ weekendBorder }}; color:{{ weekendText }}; background:{{ weekendBg }};">Fim de semana</button>
+          <button type="button" onClick="{{ toggleFree }}" aria-pressed="{{ filterFree }}" style="all:unset; cursor:pointer; font-size:13px; font-weight:600; padding:8px 13px; border-radius:999px; border:1px solid {{ freeBorder }}; color:{{ freeText }}; background:{{ freeBg }};">Gratuito</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <sc-for list="{{ listViews }}" as="ev" hint-placeholder-count="3" style="display:contents;">
+            <dc-import name="Event Card" event="{{ ev }}" hint-size="100%,310px"></dc-import>
+          </sc-for>
+          <sc-if value="{{ listEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:46px 20px; background:var(--cs); border:1px dashed var(--cl2); border-radius:13px;">
+              <span style="width:46px; height:46px; border-radius:12px; background:var(--csoft); color:var(--cm2); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8.5 11h5"/></svg></span>
+              <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:19px; margin:0; color:var(--ct);">Nenhum evento com esses filtros</h3>
+              <p style="font-size:13.5px; line-height:1.5; color:var(--cm); margin:0;">Tente afrouxar a busca.</p>
+              <button type="button" onClick="{{ clearFilters }}" style="all:unset; cursor:pointer; margin-top:2px; font-size:13.5px; font-weight:700; color:#fff; background:#E5432A; padding:10px 18px; border-radius:9px;">Limpar filtros</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- MOBILE DETAIL -->
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:4px 0 24px;">
+        <div style="padding:0 18px;">
+          <button type="button" onClick="{{ back }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--cm2); margin-bottom:12px; display:inline-block;">← Voltar</button>
+          <div style="display:flex; align-items:center; gap:9px; margin-bottom:10px;">
+            <span style="font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#fff; background:{{ sel.typeColor }}; padding:4px 10px; border-radius:999px;">{{ sel.typeLabel }}</span>
+            <span style="font-size:12px; font-weight:600; color:var(--cm);">{{ sel.source }}</span>
+          </div>
+          <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:28px; line-height:1.08; letter-spacing:-.01em; margin:0 0 16px;">{{ sel.title }}</h1>
+          <div style="display:flex; flex-direction:column; gap:8px; background:var(--cs); border:1px solid var(--cl); border-radius:11px; padding:15px 16px; margin-bottom:16px;">
+            <div style="display:flex; gap:9px; align-items:flex-start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0C7C84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px;" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg><div><div style="font-size:14.5px; font-weight:600;">{{ sel.dateFull }}</div><div style="font-size:13px; color:var(--cm);">{{ sel.timeLine }}</div></div></div>
+            <div style="display:flex; gap:9px; align-items:flex-start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0C7C84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px;" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg><div><div style="font-size:14.5px; font-weight:600;">{{ sel.venueName }}</div><div style="font-size:13px; color:var(--cm);">{{ sel.venueAddr }}</div></div></div>
+          </div>
+        </div>
+
+        <!-- mobile accessibility highlight -->
+        <div style="margin:0 18px 16px; background:#EAF5F5; border:1.5px solid #BBDFE1; border-radius:13px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:9px; margin-bottom:13px;"><span style="width:28px; height:28px; border-radius:8px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M12 6.5v6h5l3 5"/><path d="M16 14.5a6 6 0 1 1-7-4.6"/></svg></span><h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:20px; margin:0; color:#0A4F55;">Acessibilidade</h2></div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; align-items:center; gap:11px; background:#FCFCFD; border:1px solid #CFE7E8; border-radius:9px; padding:11px 13px;"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:{{ sel.librasBg }};color:{{ sel.librasFg }};display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4"/><path d="M10 9.5V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 11.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.1-2.9L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.2"/></svg></span><div style="flex:1;"><div style="font-size:14px; font-weight:700; color:#1B1712;">Libras</div></div><span style="font-size:12.5px; font-weight:700; color:{{ sel.librasFg }};">{{ sel.librasStatus }}</span></div>
+            <div style="display:flex; align-items:center; gap:11px; background:#FCFCFD; border:1px solid #CFE7E8; border-radius:9px; padding:11px 13px;"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:{{ sel.audioBg }};color:{{ sel.audioFg }};display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg></span><div style="flex:1;"><div style="font-size:14px; font-weight:700; color:#1B1712;">Audiodescrição</div></div><span style="font-size:12.5px; font-weight:700; color:{{ sel.audioFg }};">{{ sel.audioStatus }}</span></div>
+            <div style="display:flex; align-items:center; gap:11px; background:#FCFCFD; border:1px solid #CFE7E8; border-radius:9px; padding:11px 13px;"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:#0C7C84;color:#fff;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="4.4" r="1.7"/><path d="M9 7v5.2h4.4L16 18"/><path d="M13 12.5a5 5 0 1 1-4.4-2.4"/></svg></span><div style="flex:1;"><div style="font-size:14px; font-weight:700; color:#1B1712;">Cadeirante</div></div><span style="font-size:12.5px; font-weight:700; color:#0A5B61;">{{ sel.wheelStatus }}</span></div>
+          </div>
+        </div>
+
+        <sc-if value="{{ sel.hasProgram }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:0 18px 16px;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:20px; margin:0 0 4px;">Programa</h2>
+          <p style="font-size:13px; color:var(--cm); margin:0 0 10px;">Regência de {{ sel.conductor }}</p>
+          <div style="background:var(--cs); border:1px solid var(--cl); border-radius:11px; overflow:hidden;">
+            <sc-for list="{{ sel.program }}" as="p" hint-placeholder-count="3" style="display:contents;">
+              <div style="display:flex; flex-direction:column; padding:11px 15px; border-bottom:1px solid var(--csoft);"><span style="font-family:'Newsreader',serif; font-size:14.5px; font-weight:600; color:#E5432A;">{{ p.composer }}</span><span style="font-size:13.5px; color:var(--ct);">{{ p.work }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <div style="padding:0 18px;">
+          <div style="background:var(--cs); border:1px solid var(--cl); border-radius:13px; padding:18px;">
+            <sc-if value="{{ sel.free }}" hint-placeholder-val="{{ true }}"><div style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:800; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:6px 12px; border-radius:999px; margin-bottom:12px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Entrada gratuita</div></sc-if>
+            <p style="font-size:13.5px; line-height:1.5; color:var(--ct); margin:0 0 14px;">{{ sel.ticketDist }}</p>
+            <button type="button" onClick="{{ leaveOfficial }}" style="all:unset; cursor:pointer; box-sizing:border-box; width:100%; text-align:center; background:#E5432A; color:#fff; font-size:15px; font-weight:700; padding:14px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:8px;">Retirar no site oficial <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+            <button type="button" onClick="{{ addToCalendar }}" style="all:unset; cursor:pointer; box-sizing:border-box; width:100%; text-align:center; margin-top:9px; background:var(--cs); color:var(--ct); border:1.5px solid var(--cl2); font-size:14.5px; font-weight:700; padding:12px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0C7C84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg> Adicionar ao calendário</button>
+          </div>
+          <p style="font-size:11.5px; color:var(--cf); text-align:center; margin:12px 6px 0; line-height:1.5;">Dados de {{ sel.source }}. O CulturaSP não vende ingressos — confirme no site oficial.</p>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- MOBILE A4 -->
+      <sc-if value="{{ isAccess }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:6px 18px 28px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--cm2); margin-bottom:10px; display:inline-block;">← Início</button>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:26px; line-height:1.08; margin:0 0 6px;">Encontre por acessibilidade</h1>
+        <p style="font-size:14px; line-height:1.5; color:var(--cm); margin:0 0 16px;">Escolha o recurso de que você precisa. Mostramos só os eventos que o oferecem.</p>
+        <div role="radiogroup" style="display:flex; flex-direction:column; gap:9px; margin-bottom:16px;">
+          <button type="button" onClick="{{ pickLibras }}" role="radio" aria-checked="{{ selLibras }}" style="all:unset; cursor:pointer; box-sizing:border-box; display:flex; align-items:center; gap:12px; padding:14px; border-radius:11px; border:2px solid {{ libBtnBorder }}; background:{{ libBtnBg }}; color:{{ libBtnFg }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4"/><path d="M10 9.5V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 11.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.1-2.9L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.2"/></svg><span style="font-size:16px; font-weight:700;">Libras</span></button>
+          <button type="button" onClick="{{ pickAudio }}" role="radio" aria-checked="{{ selAudio }}" style="all:unset; cursor:pointer; box-sizing:border-box; display:flex; align-items:center; gap:12px; padding:14px; border-radius:11px; border:2px solid {{ audioBtnBorder }}; background:{{ audioBtnBg }}; color:{{ audioBtnFg }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg><span style="font-size:16px; font-weight:700;">Audiodescrição</span></button>
+          <button type="button" onClick="{{ pickWheel }}" role="radio" aria-checked="{{ selWheel }}" style="all:unset; cursor:pointer; box-sizing:border-box; display:flex; align-items:center; gap:12px; padding:14px; border-radius:11px; border:2px solid {{ wheelBtnBorder }}; background:{{ wheelBtnBg }}; color:{{ wheelBtnFg }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="4.4" r="1.7"/><path d="M9 7v5.2h4.4L16 18"/><path d="M13 12.5a5 5 0 1 1-4.4-2.4"/></svg><span style="font-size:16px; font-weight:700;">Cadeirante</span></button>
+        </div>
+        <div style="background:#EAF5F5; border:1px solid #BBDFE1; border-radius:11px; padding:14px 16px; margin-bottom:18px;"><p style="font-size:13.5px; line-height:1.5; color:#2C5A5E; margin:0;"><strong style="color:#0A4F55;">{{ accFeatureTitle }}.</strong> {{ accFeatureDesc }}</p></div>
+        <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:19px; margin:0 0 12px;">{{ accListCount }} eventos</h2>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <sc-for list="{{ accList }}" as="ev" hint-placeholder-count="3" style="display:contents;">
+            <dc-import name="Event Card" event="{{ ev }}" hint-size="100%,310px"></dc-import>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- MOBILE A6 -->
+      <sc-if value="{{ isSubscribe }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:6px 18px 28px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--cm2); margin-bottom:10px; display:inline-block;">← Início</button>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:26px; margin:0 0 6px;">Assinar e integrar</h1>
+        <p style="font-size:14px; line-height:1.5; color:var(--cm); margin:0 0 18px;">Leve a programação para o seu calendário ou site. Sem cadastro.</p>
+        <div style="background:var(--cs); border:1px solid var(--cl); border-radius:12px; padding:17px; margin-bottom:12px;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:18px; margin:0 0 5px;">Assinar agenda (iCal)</h2>
+          <p style="font-size:13px; color:var(--cm); margin:0 0 12px; line-height:1.5;">Google, Apple e Outlook. Atualiza sozinho.</p>
+          <div style="display:flex; gap:7px; align-items:center; background:var(--cb); border:1px solid var(--cl2); border-radius:8px; padding:5px 5px 5px 12px;"><span style="flex:1; font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--cm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">…/v1/events.ics</span><button type="button" onClick="{{ copyIcal }}" style="all:unset; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--pilltx); background:var(--pill); padding:8px 13px; border-radius:6px;">Copiar</button></div>
+        </div>
+        <div style="background:var(--cs); border:1px solid var(--cl); border-radius:12px; padding:17px;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:600; font-size:18px; margin:0 0 5px;">Feed RSS</h2>
+          <p style="font-size:13px; color:var(--cm); margin:0 0 12px; line-height:1.5;">Para leitores de feed e agregadores.</p>
+          <div style="display:flex; gap:7px; align-items:center; background:var(--cb); border:1px solid var(--cl2); border-radius:8px; padding:5px 5px 5px 12px;"><span style="flex:1; font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--cm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">…/v1/events.rss</span><button type="button" onClick="{{ copyRss }}" style="all:unset; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--pilltx); background:var(--pill); padding:8px 13px; border-radius:6px;">Copiar</button></div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- MOBILE DEV -->
+      <sc-if value="{{ isDev }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:6px 18px 28px;">
+        <button type="button" onClick="{{ goHome }}" style="all:unset; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--cm2); margin-bottom:10px; display:inline-block;">← Portal público</button>
+        <span style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:5px 11px; border-radius:999px;">Dados abertos · MIT</span>
+        <h1 style="font-family:'Newsreader',serif; font-weight:600; font-size:28px; margin:12px 0 6px;">API &amp; Dados Abertos</h1>
+        <p style="font-size:14px; line-height:1.5; color:var(--cm); margin:0 0 16px;">API REST read-only com a programação cultural de SP em schema.org — inclusive acessibilidade.</p>
+        <div style="background:#16302F; border-radius:11px; padding:15px 16px; margin-bottom:18px;"><code style="font-family:ui-monospace,Menlo,monospace; font-size:12px; line-height:1.6; color:#EAF3F1; word-break:break-all;"><span style="color:#7FD0A0;">curl</span> …/v1/events?accessible=<span style="color:#F2C57C;">true</span></code></div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; gap:10px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:11px 13px;"><span style="font-size:10.5px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 7px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:12.5px; color:var(--ct);">/v1/events</code></div>
+          <div style="display:flex; align-items:center; gap:10px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:11px 13px;"><span style="font-size:10.5px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 7px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:12.5px; color:var(--ct);">/v1/accessibility</code></div>
+          <div style="display:flex; align-items:center; gap:10px; background:var(--cs); border:1px solid var(--cl); border-radius:9px; padding:11px 13px;"><span style="font-size:10.5px; font-weight:800; color:#0F5C39; background:#E4F2E8; padding:3px 7px; border-radius:5px;">GET</span><code style="font-family:ui-monospace,Menlo,monospace; font-size:12.5px; color:var(--ct);">/v1/sources</code></div>
+        </div>
+        <div style="background:var(--cs); border:1px solid var(--cl); border-radius:11px; overflow:hidden;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:13px 15px;"><span style="font-size:14px; font-weight:600;">Sala São Paulo</span><span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#0F5C39;"><span style="width:8px;height:8px;border-radius:50%;background:#1C7A4E;"></span>Ativo</span></div>
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-top:1px solid var(--csoft);"><span style="font-size:14px; font-weight:600;">Pinacoteca</span><span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#B5780A;"><span style="width:8px;height:8px;border-radius:50%;background:#C98A00;"></span>Em validação</span></div>
+        </div>
+      </div>
+      </sc-if>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ KIT DE ESTADOS (A8) ============ -->
+<div style="position:absolute; left:40px; top:2720px; width:1240px;">
+  <div data-drags-parent="1" style="font-family:'Public Sans',sans-serif; font-size:13px; font-weight:600; color:#8A8275; letter-spacing:.02em; margin-bottom:10px; padding-left:2px; cursor:grab;">Kit de estados (A8) · loading · vazio · erro/offline · 404</div>
+  <div style="background:#FFFFFF; border-radius:12px; border:1px solid #EAE2D3; box-shadow:0 24px 60px -34px rgba(27,23,18,.4); padding:34px 36px; font-family:'Public Sans',sans-serif; color:#1B1712;">
+    <div style="display:flex; align-items:flex-start; gap:13px; background:#FBF1E9; border:1px solid #F0D9C5; border-radius:11px; padding:14px 18px; margin-bottom:28px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2622A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:1px;" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+      <p style="font-size:13.5px; line-height:1.5; color:#7A4E2C; margin:0;"><strong>Mensagem transversal.</strong> Em qualquer estado degradado, lembrar: “Os dados podem estar desatualizados — confirme sempre na fonte oficial.”</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:18px;">
+      <!-- Loading -->
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:20px;">
+        <div style="font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#8A8275; margin-bottom:14px;">Carregando · skeleton</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div style="border:1px solid #EFE8DA; border-radius:8px; overflow:hidden;"><div style="height:78px; background:linear-gradient(90deg,#ECE5D8 25%,#F6F1E7 50%,#ECE5D8 75%); background-size:720px 100%; animation:csp-shimmer 1.4s infinite linear;"></div><div style="padding:12px; display:flex; flex-direction:column; gap:8px;"><div style="height:13px; width:90%; border-radius:5px; background:linear-gradient(90deg,#ECE5D8 25%,#F6F1E7 50%,#ECE5D8 75%); background-size:720px 100%; animation:csp-shimmer 1.4s infinite linear;"></div><div style="height:11px; width:60%; border-radius:5px; background:#ECE5D8;"></div><div style="height:18px; width:46%; border-radius:999px; background:#ECE5D8; margin-top:4px;"></div></div></div>
+          <div style="border:1px solid #EFE8DA; border-radius:8px; overflow:hidden;"><div style="height:78px; background:linear-gradient(90deg,#ECE5D8 25%,#F6F1E7 50%,#ECE5D8 75%); background-size:720px 100%; animation:csp-shimmer 1.4s infinite linear;"></div><div style="padding:12px; display:flex; flex-direction:column; gap:8px;"><div style="height:13px; width:80%; border-radius:5px; background:linear-gradient(90deg,#ECE5D8 25%,#F6F1E7 50%,#ECE5D8 75%); background-size:720px 100%; animation:csp-shimmer 1.4s infinite linear;"></div><div style="height:11px; width:55%; border-radius:5px; background:#ECE5D8;"></div><div style="height:18px; width:50%; border-radius:999px; background:#ECE5D8; margin-top:4px;"></div></div></div>
+        </div>
+      </div>
+      <!-- Vazio -->
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:20px; display:flex; flex-direction:column;">
+        <div style="font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#8A8275; margin-bottom:14px;">Vazio</div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:11px; padding:18px 10px;">
+          <span style="width:50px; height:50px; border-radius:13px; background:#F1EADC; color:#6E665A; display:flex; align-items:center; justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8.5 11h5"/></svg></span>
+          <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:21px; margin:0;">Nenhum evento por aqui</h3>
+          <p style="font-size:14px; color:#544C40; margin:0; max-width:280px; line-height:1.5;">Não há eventos futuros para esses filtros. Tente afrouxar a busca.</p>
+          <span style="font-size:13.5px; font-weight:700; color:#fff; background:#E5432A; padding:9px 16px; border-radius:8px;">Limpar filtros</span>
+        </div>
+      </div>
+      <!-- Erro / Offline -->
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:20px; display:flex; flex-direction:column;">
+        <div style="font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#8A8275; margin-bottom:14px;">Erro · offline</div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:11px; padding:18px 10px;">
+          <span style="width:50px; height:50px; border-radius:13px; background:#FBE7DF; color:#C0341C; display:flex; align-items:center; justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M16 3.5 21 8M21 3.5 16 8M12 8v5"/><path d="M12 16h.01"/></svg></span>
+          <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:21px; margin:0;">Não foi possível carregar</h3>
+          <p style="font-size:14px; color:#544C40; margin:0; max-width:280px; line-height:1.5;">Verifique sua conexão. Os dados podem estar desatualizados — confirme na fonte.</p>
+          <span style="font-size:13.5px; font-weight:700; color:#1B1712; background:#fff; border:1.5px solid #E0D6C4; padding:9px 16px; border-radius:8px;">Tentar de novo</span>
+        </div>
+      </div>
+      <!-- 404 -->
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:20px; display:flex; flex-direction:column;">
+        <div style="font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#8A8275; margin-bottom:14px;">404 · não encontrado</div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:9px; padding:10px;">
+          <div style="font-family:'Newsreader',serif; font-weight:600; font-size:54px; line-height:1; color:#E5432A;">404</div>
+          <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:21px; margin:2px 0 0;">Evento não encontrado</h3>
+          <p style="font-size:14px; color:#544C40; margin:0; max-width:280px; line-height:1.5;">Este evento pode ter sido removido pela fonte oficial ou o endereço está incorreto.</p>
+          <span style="font-size:13.5px; font-weight:700; color:#fff; background:#1B1712; padding:9px 16px; border-radius:8px;">Voltar ao início</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ÍCONES DE ACESSIBILIDADE (kit) ============ -->
+<div style="position:absolute; left:40px; top:3560px; width:1240px;">
+  <div data-drags-parent="1" style="font-family:'Public Sans',sans-serif; font-size:13px; font-weight:600; color:#8A8275; letter-spacing:.02em; margin-bottom:10px; padding-left:2px; cursor:grab;">Ícones de acessibilidade · sempre ícone + rótulo + aria-label</div>
+  <div style="background:#FFFFFF; border-radius:12px; border:1px solid #EAE2D3; box-shadow:0 24px 60px -34px rgba(27,23,18,.4); padding:34px 36px; font-family:'Public Sans',sans-serif; color:#1B1712;">
+    <p style="font-size:15px; line-height:1.55; color:#544C40; margin:0 0 26px; max-width:640px;">A cor nunca é o único canal. Todo recurso traz <strong style="color:#1B1712;">ícone + rótulo textual + <code style="font-family:ui-monospace,Menlo,monospace; font-size:13px; background:#F1EADC; padding:2px 6px; border-radius:5px;">aria-label</code></strong>, e um padrão claro de “disponível” vs. “informação não disponível”.</p>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px;">
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:14px;">
+        <span style="width:52px; height:52px; border-radius:13px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4"/><path d="M10 9.5V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 11.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.1-2.9L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.2"/></svg></span>
+        <div><div style="font-family:'Newsreader',serif; font-weight:600; font-size:19px;">Libras</div><div style="font-size:13px; color:#6E665A; line-height:1.4; margin-top:2px;">Tradução em Língua Brasileira de Sinais.</div></div>
+        <div style="display:flex; flex-direction:column; gap:7px; margin-top:2px;">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:5px 10px; border-radius:999px; align-self:flex-start;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Disponível</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#8A8275; background:#F4F1EA; border:1px solid #E5DECF; padding:5px 10px; border-radius:999px; align-self:flex-start;">Não informado</span>
+        </div>
+      </div>
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:14px;">
+        <span style="width:52px; height:52px; border-radius:13px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg></span>
+        <div><div style="font-family:'Newsreader',serif; font-weight:600; font-size:19px;">Audiodescrição</div><div style="font-size:13px; color:#6E665A; line-height:1.4; margin-top:2px;">Narração do que acontece em cena.</div></div>
+        <div style="display:flex; flex-direction:column; gap:7px; margin-top:2px;">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:5px 10px; border-radius:999px; align-self:flex-start;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Disponível</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#8A8275; background:#F4F1EA; border:1px solid #E5DECF; padding:5px 10px; border-radius:999px; align-self:flex-start;">Não informado</span>
+        </div>
+      </div>
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:14px;">
+        <span style="width:52px; height:52px; border-radius:13px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="4.4" r="1.7"/><path d="M9 7v5.2h4.4L16 18"/><path d="M13 12.5a5 5 0 1 1-4.4-2.4"/></svg></span>
+        <div><div style="font-family:'Newsreader',serif; font-weight:600; font-size:19px;">Cadeirante</div><div style="font-size:13px; color:#6E665A; line-height:1.4; margin-top:2px;">Assentos e rota acessível, com contagem.</div></div>
+        <div style="display:flex; flex-direction:column; gap:7px; margin-top:2px;">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:5px 10px; border-radius:999px; align-self:flex-start;">15 lugares</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#8A8275; background:#F4F1EA; border:1px solid #E5DECF; padding:5px 10px; border-radius:999px; align-self:flex-start;">Não informado</span>
+        </div>
+      </div>
+      <div style="border:1px solid #EAE2D3; border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:14px;">
+        <span style="width:52px; height:52px; border-radius:13px; background:#0C7C84; color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11V7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5V11"/><rect x="3.5" y="11" width="17" height="6.5" rx="2"/><path d="M6.5 17.5V19M17.5 17.5V19"/></svg></span>
+        <div><div style="font-family:'Newsreader',serif; font-weight:600; font-size:19px;">Assento amplo</div><div style="font-size:13px; color:#6E665A; line-height:1.4; margin-top:2px;">Lugares para pessoas obesas.</div></div>
+        <div style="display:flex; flex-direction:column; gap:7px; margin-top:2px;">
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:5px 10px; border-radius:999px; align-self:flex-start;">14 lugares</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#8A8275; background:#F4F1EA; border:1px solid #E5DECF; padding:5px 10px; border-radius:999px; align-self:flex-start;">Não informado</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LEAVING MODAL ============ -->
+<sc-if value="{{ leaving }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(20,16,12,.5); animation:csp-fade .15s ease; font-family:'Public Sans',sans-serif;">
+  <div class="{{ themeClass }}" style="background:var(--cb); border-radius:16px; max-width:420px; width:100%; padding:30px; box-shadow:0 30px 80px -20px rgba(0,0,0,.5); animation:csp-pop .22s ease;">
+    <div style="width:46px; height:46px; border-radius:12px; background:#FBE7DF; color:#E5432A; display:flex; align-items:center; justify-content:center; margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></div>
+    <h3 style="font-family:'Newsreader',serif; font-weight:600; font-size:24px; margin:0 0 8px;">Você está saindo do CulturaSP</h3>
+    <p style="font-size:15px; line-height:1.55; color:var(--cm); margin:0 0 22px;">A retirada de ingressos acontece no site oficial da <strong style="color:var(--ct);">{{ leavingName }}</strong>. O CulturaSP é um portal de dados abertos e não processa ingressos.</p>
+    <div style="display:flex; gap:10px;">
+      <button type="button" onClick="{{ cancelLeave }}" style="all:unset; cursor:pointer; flex:1; text-align:center; font-size:15px; font-weight:700; color:var(--ct); background:var(--cs); border:1.5px solid var(--cl2); padding:13px; border-radius:10px;">Cancelar</button>
+      <button type="button" onClick="{{ confirmLeave }}" style="all:unset; cursor:pointer; flex:1.4; text-align:center; font-size:15px; font-weight:700; color:#fff; background:#E5432A; padding:13px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:8px;">Continuar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ TOAST ============ -->
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:95; background:#16302F; color:#EAF3F1; font-family:'Public Sans',sans-serif; font-size:14.5px; font-weight:600; padding:14px 22px; border-radius:11px; box-shadow:0 18px 40px -16px rgba(0,0,0,.5); display:flex; align-items:center; gap:11px; animation:csp-pop .25s ease;">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5FD0A0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+  {{ toast }}
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;list&quot;,&quot;detail&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Protótipo&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const MESF = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    const MESA = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    const DIAF = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    const DIAA = ['dom','seg','ter','qua','qui','sex','sáb'];
+    this.MESF = MESF; this.MESA = MESA; this.DIAF = DIAF; this.DIAA = DIAA;
+
+    this.raw = [
+      { id:'antares', type:'Concerto', title:'Orquestra Antares — Matinais', source:'Sala São Paulo', start:'2026-08-08T10:50:00', dur:60, free:true,
+        libras:true, audio:true, wheel:15, obese:14, conductor:'Fábio Prado',
+        performers:['Orquestra Antares','Coro Sinfônico Antares'],
+        program:[['Carlos Gomes','Sonata em Fá maior'],['G. F. Händel','Música Aquática — Suíte nº 2'],['W. A. Mozart','Sinfonia nº 40 em Sol menor']],
+        venueAddr:'Praça Júlio Prestes, 16 — Campos Elíseos, SP',
+        ticketDist:'Retirada a partir das 12h, até 3 dias antes do concerto, na bilheteria ou pelo site.',
+        ticketCancel:'Devolução de ingressos permitida até 24h antes.',
+        url:'https://www.salasaopaulo.art.br', notes:'Audiodescrição disponível mediante reserva prévia na bilheteria. Programa sujeito a alterações.' },
+      { id:'brahms', type:'Concerto', title:'Sinfônica Jovem do Estado — Noturno Brahms', source:'Sala São Paulo', start:'2026-08-08T20:00:00', dur:95, free:false,
+        libras:false, audio:true, wheel:12, obese:8, conductor:'Helena Vasques',
+        performers:['Orquestra Sinfônica Jovem do Estado'],
+        program:[['J. Brahms','Variações sobre um Tema de Haydn'],['J. Brahms','Sinfonia nº 2 em Ré maior']],
+        venueAddr:'Praça Júlio Prestes, 16 — Campos Elíseos, SP',
+        ticketDist:'Ingressos de R$ 30 a R$ 90, à venda no site oficial e na bilheteria.',
+        ticketCancel:'Reembolso conforme política da instituição.',
+        url:'https://www.salasaopaulo.art.br', notes:'Audiodescrição mediante reserva. Sem tradução em Libras nesta sessão.' },
+      { id:'coro', type:'Concerto', title:'Coro da Cidade — Cânticos Brasileiros', source:'Sala São Paulo', start:'2026-08-09T11:00:00', dur:70, free:true,
+        libras:true, audio:false, wheel:10, obese:6, conductor:'Marina Lobo',
+        performers:['Coro da Cidade de São Paulo'],
+        program:[['Villa-Lobos','Bachianas Brasileiras nº 9'],['Camargo Guarnieri','Sêca'],['Tradicional','Suíte de cantigas populares']],
+        venueAddr:'Praça Júlio Prestes, 16 — Campos Elíseos, SP',
+        ticketDist:'Retirada a partir das 12h, até 3 dias antes, na bilheteria ou pelo site.',
+        ticketCancel:'Devolução permitida até 24h antes.',
+        url:'https://www.salasaopaulo.art.br', notes:'Tradução em Libras durante todo o concerto.' },
+      { id:'camara', type:'Concerto', title:'Quarteto Paulistano — Câmara ao Meio-dia', source:'Sala São Paulo', start:'2026-08-09T12:30:00', dur:50, free:true,
+        libras:false, audio:true, wheel:8, obese:4, conductor:'—',
+        performers:['Quarteto Paulistano'],
+        program:[['F. Schubert','Quarteto nº 14 “A Morte e a Donzela”'],['H. Villa-Lobos','Quarteto de Cordas nº 5']],
+        venueAddr:'Praça Júlio Prestes, 16 — Campos Elíseos, SP',
+        ticketDist:'Retirada a partir das 12h, até 3 dias antes, na bilheteria ou pelo site.',
+        ticketCancel:'Devolução permitida até 24h antes.',
+        url:'https://www.salasaopaulo.art.br', notes:'Audiodescrição mediante reserva prévia.' },
+      { id:'piano', type:'Concerto', title:'Recital de Piano — Noturnos', source:'Sala São Paulo', start:'2026-08-07T19:00:00', dur:80, free:false,
+        libras:false, audio:false, wheel:6, obese:4, conductor:'—',
+        performers:['Solista convidado'],
+        program:[['F. Chopin','Noturnos, op. 9'],['C. Debussy','Clair de Lune'],['F. Liszt','Sonho de Amor nº 3']],
+        venueAddr:'Praça Júlio Prestes, 16 — Campos Elíseos, SP',
+        ticketDist:'Ingressos de R$ 40 a R$ 120, à venda no site oficial.',
+        ticketCancel:'Reembolso conforme política da instituição.',
+        url:'https://www.salasaopaulo.art.br', notes:'Sem recursos de acessibilidade informados para esta sessão.' },
+      { id:'expo', type:'Exposição', title:'Paisagens do Interior — Coleção em Estudo', source:'Pinacoteca de São Paulo', experimental:true,
+        startRange:'2026-05-10', endRange:'2026-08-20', free:true,
+        libras:false, audio:true, wheel:true, obese:0, conductor:'—',
+        performers:[], program:[],
+        about:'Recorte da coleção dedicado à pintura de paisagem brasileira do século XIX. Mostra em curadoria, com obras em rotação. Fonte experimental — dados ainda em validação.',
+        venueAddr:'Praça da Luz, 2 — Luz, SP',
+        ticketDist:'Entrada gratuita. Agendamento recomendado pelo site da instituição.',
+        ticketCancel:'—',
+        url:'https://pinacoteca.org.br', notes:'Roteiro com audiodescrição disponível na recepção. Acesso para cadeirantes em todos os pavimentos.' }
+    ];
+
+    this.state = {
+      screen: (props && props.startScreen) || 'home',
+      prev: 'home',
+      selectedId: null,
+      fAccessible: false, fWeekend: false, fFree: false,
+      accFeature: 'libras',
+      dark: false,
+      leaving: null, toast: null
+    };
+    this._toastT = null;
+  }
+
+  pad(n){ return String(n).padStart(2,'0'); }
+
+  buildView(e){
+    const v = { id:e.id, type:e.type, source:e.source, experimental:!!e.experimental, free:!!e.free, notes:e.notes,
+      conductor:e.conductor, venueAddr:e.venueAddr, ticketDist:e.ticketDist, ticketCancel:e.ticketCancel, url:e.url,
+      typeLabel:e.type, typeColor: e.type==='Exposição' ? '#B92C77' : '#2E3A87' };
+    v.libras = !!e.libras; v.audio = !!e.audio;
+    v.wheel = (typeof e.wheel === 'number') ? e.wheel : (e.wheel ? 1 : 0);
+    v.hasWheel = !!e.wheel;
+    v.title = e.title;
+    v.venueName = e.source;
+    v.venueShort = e.source;
+    v.program = (e.program||[]).map(p=>({composer:p[0], work:p[1]}));
+    v.hasProgram = v.program.length > 0;
+    v.performersLine = (e.performers||[]).join(' · ');
+    v.about = e.about || '';
+    v.hasNotesBlock = !!e.about;
+    v.scrapedAt = '26 de junho de 2026';
+
+    if (e.startRange){
+      v.isRange = true; v.isSingle = false;
+      const ed = new Date(e.endRange+'T00:00:00');
+      const sd = new Date(e.startRange+'T00:00:00');
+      v.coverRange = 'Até ' + ed.getDate() + ' ' + this.MESA[ed.getMonth()].toLowerCase();
+      v.whenLabel = 'Em cartaz · até ' + ed.getDate() + ' ' + this.MESA[ed.getMonth()].toLowerCase();
+      v.dateFull = sd.getDate()+' de '+this.MESF[sd.getMonth()]+' – '+ed.getDate()+' de '+this.MESF[ed.getMonth()]+' de '+ed.getFullYear();
+      v.timeLine = 'Exposição de longa duração';
+      v.weekend = true;
+    } else {
+      const d = new Date(e.start);
+      v.isRange = false; v.isSingle = true;
+      v.coverDay = this.pad(d.getDate());
+      v.coverMonth = this.MESA[d.getMonth()];
+      const h = d.getHours(), m = d.getMinutes();
+      const tl = h + 'h' + (m ? this.pad(m) : '');
+      v.timeLabel = tl;
+      v.whenLabel = this.DIAA[d.getDay()] + ' · ' + tl;
+      v.dateFull = this.DIAF[d.getDay()].replace(/^./, c=>c.toUpperCase()) + ', ' + d.getDate() + ' de ' + this.MESF[d.getMonth()] + ' de ' + d.getFullYear();
+      v.timeLine = 'Início às ' + tl + ' · duração aprox. ' + e.dur + ' min';
+      v.weekend = (d.getDay()===0 || d.getDay()===6);
+      v._date = d;
+    }
+
+    // accessibility detail strings
+    v.librasStatus = v.libras ? 'Disponível' : 'Não disponível';
+    v.librasText = v.libras ? 'Intérprete de Libras durante o evento.' : 'Não informado pela fonte para esta sessão.';
+    v.librasFg = v.libras ? '#0A5B61' : '#9A9486';
+    v.librasBg = v.libras ? '#D2EBEC' : '#EFEBE2';
+    v.audioStatus = v.audio ? 'Disponível' : 'Não disponível';
+    v.audioText = v.audio ? 'Mediante reserva prévia na bilheteria.' : 'Não informado pela fonte para esta sessão.';
+    v.audioFg = v.audio ? '#0A5B61' : '#9A9486';
+    v.audioBg = v.audio ? '#D2EBEC' : '#EFEBE2';
+    v.wheelStatus = v.hasWheel ? (typeof e.wheel==='number' ? (e.wheel + ' lugares') : 'Disponível') : 'Não informado';
+    v.wheelText = v.hasWheel ? (typeof e.wheel==='number' ? (e.wheel + ' assentos reservados para cadeirantes' + (e.obese? ' · '+e.obese+' assentos para obesos' : '')) : 'Acesso para cadeirantes em todos os pavimentos.') : 'Não informado pela fonte.';
+    v.accNotes = e.notes || '';
+    v.ariaLabel = e.type + ': ' + e.title + '. ' + v.whenLabel + ', ' + e.source + '.' + (v.free?' Gratuito.':'') + (v.libras?' Libras disponível.':'') + (v.audio?' Audiodescrição disponível.':'');
+    return v;
+  }
+
+  matches(v){
+    const s = this.state;
+    if (s.fAccessible && !(v.libras||v.audio||v.hasWheel)) return false;
+    if (s.fWeekend && !v.weekend) return false;
+    if (s.fFree && !v.free) return false;
+    return true;
+  }
+
+  go(screen){ this.setState({ prev:this.state.screen, screen }); }
+  openDetail(id){ this.setState({ prev:this.state.screen, screen:'detail', selectedId:id, toast:null }); }
+
+  showToast(msg){
+    if (this._toastT) clearTimeout(this._toastT);
+    this.setState({ toast: msg });
+    this._toastT = setTimeout(()=> this.setState({ toast:null }), 3600);
+  }
+
+  _copy(text){ try { if (navigator.clipboard) navigator.clipboard.writeText(text); } catch(e){} }
+
+  makeICS(v){
+    const e = this.raw.find(x=>x.id===v.id);
+    let dt = '', dtEnd = '';
+    if (e.start){
+      const d = new Date(e.start);
+      const f = x => x.getFullYear()+this.pad(x.getMonth()+1)+this.pad(x.getDate())+'T'+this.pad(x.getHours())+this.pad(x.getMinutes())+'00';
+      dt = f(d);
+      const end = new Date(d.getTime() + (e.dur||60)*60000);
+      dtEnd = f(end);
+    }
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//CulturaSP//PT-BR//','BEGIN:VEVENT',
+      'UID:'+v.id+'@culturasp.org.br','SUMMARY:'+v.title, dt?('DTSTART:'+dt):'', dtEnd?('DTEND:'+dtEnd):'',
+      'LOCATION:'+v.venueName+'\\, '+v.venueAddr, 'DESCRIPTION:Fonte: '+v.source+'. Confirme no site oficial: '+v.url,
+      'END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
+    return ics;
+  }
+
+  renderVals(){
+    const s = this.state;
+    const views = this.raw.map(e=>this.buildView(e));
+    views.forEach(v => { v.open = () => this.openDetail(v.id); });
+
+    const ON = '#0C7C84', onText = '#0A5B61';
+    const sw = on => on ? ON : 'var(--cl2)';
+    const knob = on => on ? '18px' : '2px';
+
+    const filtered = views.filter(v=>this.matches(v));
+    const sel = views.find(v=>v.id===s.selectedId) || views[0];
+
+    // filter summary
+    const active = [];
+    if (s.fAccessible) active.push('acessível');
+    if (s.fWeekend) active.push('fim de semana');
+    if (s.fFree) active.push('gratuito');
+    const filterSummary = active.length ? (' · ' + active.join(', ')) : '';
+
+    const featureInfo = {
+      libras: { title:'Tradução em Libras', desc:'Intérprete de Língua Brasileira de Sinais acompanha o evento, traduzindo falas e narração para o público surdo.' },
+      audio: { title:'Audiodescrição', desc:'Narração que descreve o que acontece em cena — cenário, gestos, movimento — para pessoas cegas ou com baixa visão.' },
+      wheelchair: { title:'Assentos para cadeirantes', desc:'Lugares reservados e acessíveis, com rota sem degraus até o assento, para pessoas em cadeira de rodas.' }
+    };
+    const feat = s.accFeature;
+    const accList = views.filter(v=>!v.experimental && (feat==='libras'?v.libras:feat==='audio'?v.audio:feat==='wheelchair'?v.hasWheel:(v.libras||v.audio||v.hasWheel)));
+    const fb = on => ({ bg:on?'#0C7C84':'var(--cs)', fg:on?'#fff':'var(--ct)', br:on?'#0C7C84':'var(--cl2)', sub:on?'rgba(255,255,255,.82)':'var(--cf)' });
+    const fbL=fb(feat==='libras'), fbA=fb(feat==='audio'), fbW=fb(feat==='wheelchair');
+
+    return {
+      isHome: s.screen==='home', isList: s.screen==='list', isDetail: s.screen==='detail',
+      themeClass: s.dark ? 'csp-dark' : '',
+      dark: s.dark,
+      light: !s.dark,
+      toggleDark: ()=>this.setState(st=>({dark:!st.dark})),
+      homeViews: views.filter(v=>!v.experimental).slice(0,4),
+      homeMobileViews: views.filter(v=>!v.experimental).slice(0,3),
+      listViews: filtered,
+      listCount: filtered.length,
+      listEmpty: filtered.length === 0,
+      filterSummary,
+      sel,
+
+      // nav
+      goHome: ()=>this.go('home'),
+      goList: ()=>this.go('list'),
+      goAccessible: ()=>this.setState({ prev:this.state.screen, screen:'list', fAccessible:true }),
+      back: ()=>this.go(this.state.prev==='detail'?'list':this.state.prev),
+      isAccess: s.screen==='access', isSubscribe: s.screen==='subscribe', isDev: s.screen==='dev',
+      goAccess: ()=>this.go('access'),
+      goSubscribe: ()=>this.go('subscribe'),
+      goDev: ()=>this.go('dev'),
+      accFeature: feat,
+      accFeatureTitle: featureInfo[feat] ? featureInfo[feat].title : '',
+      accFeatureDesc: featureInfo[feat] ? featureInfo[feat].desc : '',
+      accList,
+      accListCount: accList.length,
+      selLibras: feat==='libras', selAudio: feat==='audio', selWheel: feat==='wheelchair',
+      pickLibras: ()=>this.setState({accFeature:'libras'}),
+      pickAudio: ()=>this.setState({accFeature:'audio'}),
+      pickWheel: ()=>this.setState({accFeature:'wheelchair'}),
+      libBtnBg:fbL.bg, libBtnFg:fbL.fg, libBtnBorder:fbL.br, libBtnSub:fbL.sub,
+      audioBtnBg:fbA.bg, audioBtnFg:fbA.fg, audioBtnBorder:fbA.br, audioBtnSub:fbA.sub,
+      wheelBtnBg:fbW.bg, wheelBtnFg:fbW.fg, wheelBtnBorder:fbW.br, wheelBtnSub:fbW.sub,
+      copyIcal: ()=>{ this._copy('https://culturasp.org.br/v1/events.ics'); this.showToast('URL do iCal copiada'); },
+      copyRss: ()=>{ this._copy('https://culturasp.org.br/v1/events.rss'); this.showToast('URL do feed RSS copiada'); },
+
+      // home chips
+      chipAccessible: ()=>this.setState({ prev:'home', screen:'list', fAccessible:true }),
+      chipWeekend: ()=>this.setState({ prev:'home', screen:'list', fWeekend:true }),
+      chipFree: ()=>this.setState({ prev:'home', screen:'list', fFree:true }),
+
+      // filters
+      filterAccessible: s.fAccessible, filterWeekend: s.fWeekend, filterFree: s.fFree,
+      toggleAccessible: ()=>this.setState(st=>({fAccessible:!st.fAccessible})),
+      toggleWeekend: ()=>this.setState(st=>({fWeekend:!st.fWeekend})),
+      toggleFree: ()=>this.setState(st=>({fFree:!st.fFree})),
+      clearFilters: ()=>this.setState({fAccessible:false,fWeekend:false,fFree:false}),
+
+      // switch visuals
+      accSwitch: sw(s.fAccessible), accKnob: knob(s.fAccessible),
+      accBg: s.fAccessible?'#E1F1F2':'var(--cb)', accBorder: s.fAccessible?'#9FD3D6':'var(--cl2)',
+      accChipText: s.fAccessible?onText:'#0A5B61',
+      freeSwitch: sw(s.fFree), freeKnob: knob(s.fFree),
+      freeBg: s.fFree?'#E4F2E8':'var(--cs)', freeBorder: s.fFree?'#BFE0CD':'var(--cl2)', freeText: s.fFree?'#0F5C39':'#0F5C39',
+      weekendBg: s.fWeekend?'#FBE7DF':'var(--cb)', weekendBorder: s.fWeekend?'#F0C3B2':'var(--cl2)', weekendText: s.fWeekend?'#C0341C':'var(--cm2)',
+
+      // ticket / leave
+      leaveOfficial: ()=>this.setState({ leaving: { name: sel.source, url: sel.url } }),
+      leaving: s.leaving,
+      leavingName: s.leaving ? s.leaving.name : '',
+      cancelLeave: ()=>this.setState({ leaving:null }),
+      confirmLeave: ()=>{ const l=this.state.leaving; this.setState({leaving:null}); if(l) window.open(l.url,'_blank','noopener'); },
+
+      addToCalendar: ()=>{
+        try {
+          const ics = this.makeICS(sel);
+          const blob = new Blob([ics], {type:'text/calendar'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = sel.id + '.ics';
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(()=>URL.revokeObjectURL(url), 1000);
+        } catch(err){}
+        this.showToast('Evento adicionado — arquivo .ics baixado');
+      },
+      share: ()=>{ this.showToast('Link do evento copiado'); try{ if(navigator.clipboard) navigator.clipboard.writeText('https://culturasp.org.br/eventos/'+sel.id); }catch(e){} },
+
+      toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

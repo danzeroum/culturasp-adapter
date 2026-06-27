@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cb:#FBF8F2; --cs:#FFFFFF; --csoft:#F1EADC; --ct:#1B1712; --ct2:#3A352C;
+    --cm:#544C40; --cm2:#6E665A; --cf:#8A8275; --cl:#EAE2D3; --cl2:#E0D6C4;
+  }
+</style>
+</helmet>
+<button type="button" onClick="{{ event.open }}" aria-label="{{ event.ariaLabel }}" style="all:unset; box-sizing:border-box; cursor:pointer; display:flex; flex-direction:column; width:100%; background:var(--cs); border:1px solid var(--cl); border-radius:6px; overflow:hidden; font-family:'Public Sans',sans-serif; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;" style-hover="transform:translateY(-3px); box-shadow:0 14px 30px -18px rgba(27,23,18,.45); border-color:var(--cl2);" style-focus="outline:3px solid #0C7C84; outline-offset:2px;">
+  <div style="position:relative; padding:16px 18px; min-height:96px; display:flex; flex-direction:column; justify-content:space-between; color:var(--cs); background:{{ event.typeColor }};">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+      <span style="font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; opacity:.92;">{{ event.source }}</span>
+      <span style="font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:rgba(255,255,255,.18); padding:3px 9px; border-radius:999px;">{{ event.typeLabel }}</span>
+    </div>
+    <div style="display:flex; align-items:flex-end; gap:8px;">
+      <sc-if value="{{ event.isRange }}" hint-placeholder-val="{{ false }}">
+        <span style="font-family:'Newsreader',serif; font-size:26px; font-weight:500; line-height:1;">{{ event.coverRange }}</span>
+      </sc-if>
+      <sc-if value="{{ event.isSingle }}" hint-placeholder-val="{{ true }}">
+        <span style="font-family:'Newsreader',serif; font-size:46px; font-weight:500; line-height:.86;">{{ event.coverDay }}</span>
+        <span style="font-size:13px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding-bottom:4px;">{{ event.coverMonth }}</span>
+      </sc-if>
+    </div>
+  </div>
+  <div style="padding:14px 18px 18px; display:flex; flex-direction:column; gap:10px; flex:1;">
+    <h3 style="margin:0; font-family:'Newsreader',serif; font-weight:600; font-size:20px; line-height:1.16; color:var(--ct); letter-spacing:-.01em;">{{ event.title }}</h3>
+    <div style="display:flex; align-items:center; gap:7px; font-size:13.5px; color:var(--cm2); font-weight:500;">
+      <span>{{ event.whenLabel }}</span>
+      <span aria-hidden="true" style="opacity:.5;">·</span>
+      <span>{{ event.venueShort }}</span>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:2px;">
+      <sc-if value="{{ event.free }}" hint-placeholder-val="{{ true }}">
+        <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; color:#0F5C39; background:#E4F2E8; border:1px solid #BFE0CD; padding:4px 9px; border-radius:999px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Gratuito
+        </span>
+      </sc-if>
+      <sc-if value="{{ event.libras }}" hint-placeholder-val="{{ false }}">
+        <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:4px 9px; border-radius:999px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4"/><path d="M10 9.5V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V6a1.5 1.5 0 0 1 3 0v5"/><path d="M16 11.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-5.1-2.9L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.2"/></svg>
+          Libras
+        </span>
+      </sc-if>
+      <sc-if value="{{ event.audio }}" hint-placeholder-val="{{ false }}">
+        <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:4px 9px; border-radius:999px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>
+          Audiodescrição
+        </span>
+      </sc-if>
+      <sc-if value="{{ event.hasWheel }}" hint-placeholder-val="{{ false }}">
+        <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#0A5B61; background:#E1F1F2; border:1px solid #BBDFE1; padding:4px 9px; border-radius:999px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="4.4" r="1.7"/><path d="M9 7v5.2h4.4L16 18"/><path d="M13 12.5a5 5 0 1 1-4.4-2.4"/></svg>
+          Cadeirante
+        </span>
+      </sc-if>
+    </div>
+    <sc-if value="{{ event.experimental }}" hint-placeholder-val="{{ false }}">
+      <span style="align-self:flex-start; display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; letter-spacing:.04em; color:#8A5A06; background:#FBF0D9; border:1px solid #EAD3A0; padding:3px 8px; border-radius:5px; text-transform:uppercase;">Fonte em validação</span>
+    </sc-if>
+  </div>
+</button>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:360},&quot;event&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;any&quot;}}"></script>
+</body>
+</html>
