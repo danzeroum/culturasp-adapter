@@ -17,7 +17,7 @@ from pathlib import Path
 import pytest
 
 from culturasp.models.event import CulturalEvent
-from culturasp.scraper.parsers import PARSERS
+from culturasp.scraper.parsers import ALL_PARSERS
 
 REAL_DIR = Path(__file__).resolve().parent.parent / "fixtures" / "real"
 CONCERTS = sorted(REAL_DIR.glob("*_concert_*.html"))
@@ -30,7 +30,7 @@ CONCERTS = sorted(REAL_DIR.glob("*_concert_*.html"))
 @pytest.mark.parametrize("path", CONCERTS or [None], ids=lambda p: p.name if p else "none")
 def test_real_concert_parses(path: Path) -> None:
     source = path.name.split("_concert_")[0]
-    parser = PARSERS.get(source)
+    parser = ALL_PARSERS.get(source)
     assert parser is not None, f"no parser registered for source {source!r}"
 
     html = path.read_text(encoding="utf-8")
