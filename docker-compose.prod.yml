@@ -1,0 +1,19 @@
+# Production override — use together with the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Only sets scalar fields (restart policies) so the merge is safe and never
+# duplicates published ports. Postgres/Redis are already loopback-only in the
+# base file; the API is published on 8000.
+#
+# To put the API behind a reverse proxy (recommended for TLS), bind it to the
+# loopback by adding an `api.ports: ["127.0.0.1:8000:8000"]` override here and
+# point Caddy/Nginx/Traefik at it.
+services:
+  api:
+    restart: unless-stopped
+  scraper:
+    restart: unless-stopped
+  postgres:
+    restart: unless-stopped
+  redis:
+    restart: unless-stopped
