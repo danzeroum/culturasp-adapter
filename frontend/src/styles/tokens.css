@@ -1,0 +1,72 @@
+/* Design tokens — 1:1 com o handoff (§7.1/7.2).
+   Neutros trocam por tema via [data-theme="dark"]; acentos são fixos. */
+:root {
+  /* neutros — light */
+  --cb: #fbf8f2;
+  --cs: #ffffff;
+  --csoft: #f1eadc;
+  --ct: #1b1712;
+  --ct2: #3a352c;
+  --cm: #544c40;
+  --cm2: #6e665a;
+  --cf: #8a8275;
+  --cl: #eae2d3;
+  --cl2: #e0d6c4;
+  --navacc: #0c6a71;
+  --pill: #1b1712;
+  --pilltx: #ffffff;
+
+  /* acentos — iguais nos dois temas */
+  --brand: #e5432a;
+  --brand-hover: #ce3a23;
+  --concert: #2e3a87;
+  --exhibition: #b92c77;
+  --free-tx: #0f5c39;
+  --free-bg: #e4f2e8;
+  --free-bd: #bfe0cd;
+  --free-dot: #1c7a4e;
+  --teal: #0c7c84;
+  --teal-tx: #0a5b61;
+  --teal-bg: #e1f1f2;
+  --teal-bd: #bbdfe1;
+  --exp-tx: #8a5a06;
+  --exp-tx2: #b5780a;
+  --exp-bg: #fbf0d9;
+  --exp-bd: #ead3a0;
+  --exp-dot: #c98a00;
+  --weekend-bg: #fbe7df;
+  --weekend-bd: #f0c3b2;
+  --weekend-tx: #c0341c;
+  --prov-bg: #fbf1e9;
+  --prov-bd: #f0d9c5;
+  --prov-tx: #7a4e2c;
+  --prov-ic: #c2622a;
+  --dark-band: #16302f;
+  --dark-band-tx: #eaf3f1;
+  --dark-band-tx2: #afc9c5;
+  --toast-check: #5fd0a0;
+
+  --maxw-wide: 1240px;
+  --maxw-detail: 1100px;
+  --maxw-narrow: 980px;
+}
+
+[data-theme="dark"] {
+  --cb: #14110d;
+  --cs: #1e1a14;
+  --csoft: #221d16;
+  --ct: #f2ece0;
+  --ct2: #e6dfd2;
+  --cm: #c9c0ae;
+  --cm2: #a89e8d;
+  --cf: #8c8270;
+  --cl: #2e2820;
+  --cl2: #383126;
+  --navacc: #4fc3cb;
+  --pill: #f2ece0;
+  --pilltx: #14110d;
+}
+
+::selection {
+  background: #fbd9cf;
+}
