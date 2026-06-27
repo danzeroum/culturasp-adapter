@@ -1,9 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { Accessibility } from "./routes/Accessibility";
 import { Detail, NotFound } from "./routes/Detail";
 import { Home } from "./routes/Home";
 import { List } from "./routes/List";
-import { Accessibility, DevPortal, Subscribe } from "./routes/Stubs";
+import { DevPortal } from "./routes/Stubs";
+import { Subscribe } from "./routes/Subscribe";
 
 export const router = createBrowserRouter([
   {

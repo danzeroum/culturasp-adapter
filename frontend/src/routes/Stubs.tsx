@@ -14,20 +14,6 @@ function Stub({ title, note }: { title: string; note: string }) {
   );
 }
 
-export const Accessibility = () => (
-  <Stub
-    title="Acessibilidade"
-    note="Encontre eventos por recurso (Libras, audiodescrição, assentos para cadeirantes). Em construção — chega na próxima fase."
-  />
-);
-
-export const Subscribe = () => (
-  <Stub
-    title="Assinar a agenda"
-    note="Assine o feed iCal/RSS ou adicione ao seu calendário. Em construção — chega na próxima fase."
-  />
-);
-
 export const DevPortal = () => (
   <Stub
     title="API & Dados Abertos"
