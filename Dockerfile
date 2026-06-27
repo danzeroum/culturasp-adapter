@@ -24,7 +24,17 @@ RUN pip install --upgrade pip && pip install -e ".[ocr]"
 # App code (kept after install so source edits don't bust the dep layer in dev).
 COPY . .
 
+# Run as the non-root user that the Playwright base image already provides
+# (pwuser, uid 1000). Ownership fixed so the editable install and app dir are
+# readable; PYTHONDONTWRITEBYTECODE keeps it working under a read-only filesystem.
+RUN chown -R pwuser:pwuser /app
+USER pwuser
+
 EXPOSE 8000
+
+# Liveness probe at the image level (compose/k8s can override per service).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').status==200 else 1)"
 
 # Default command runs the API; the scraper service overrides this in compose.
 CMD ["uvicorn", "culturasp.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

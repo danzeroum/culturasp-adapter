@@ -12,6 +12,15 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    # Hardening: no privilege escalation, drop all Linux capabilities, and run
+    # with a read-only root filesystem (the API only reads from the DB).
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
@@ -28,14 +37,19 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    # Same hardening, minus read_only: Playwright/Chromium needs a writable FS.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     restart: unless-stopped
 
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: culturasp
-      POSTGRES_PASSWORD: culturasp
-      POSTGRES_DB: culturasp
+      POSTGRES_USER: ${POSTGRES_USER:-culturasp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-culturasp}
+      POSTGRES_DB: ${POSTGRES_DB:-culturasp}
     ports:
       - "5432:5432"
     volumes:

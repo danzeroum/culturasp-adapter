@@ -77,7 +77,16 @@ culturasp-scrape --source sala-sp --max 5
 ## Documentação
 
 Documentação completa em `docs/` (MkDocs Material): arquitetura, modelo de dados,
-guia da API, scraping ético e deploy.
+guia da API, scraping ético, deploy, compliance e backup/DR.
+
+## Segurança & compliance
+
+Containers rodam como usuário **não-root** (api com filesystem read-only, `cap_drop: ALL`,
+`no-new-privileges`); CI faz **secret scanning** (gitleaks), **auditoria de dependências**
+(pip-audit) e **scan de imagem** (Trivy). Como o adaptador é **read-only e não armazena
+PII**, as obrigações de LGPD são mínimas e BACEN não se aplica — detalhes em
+[`docs/compliance.md`](docs/compliance.md), decisões em
+[`docs/adr/0001-stack-e-deploy.md`](docs/adr/0001-stack-e-deploy.md).
 
 ## Contribuindo
 
