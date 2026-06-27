@@ -8,6 +8,10 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Deploy em VPS**: `scripts/deploy_vps.sh` (clona em `/opt/btv`, sobe a stack,
+  migra e checa health — idempotente) + `docker-compose.prod.yml` (restart
+  `unless-stopped`). Postgres/Redis passam a ser publicados **só no loopback**
+  (`127.0.0.1`). Seção "Deploy em VPS" em `docs/deployment.md`.
 - `schema_type` em `CulturalEvent` e **generalização do JSON-LD**: `event_to_jsonld`
   emite `MusicEvent` / `ExhibitionEvent` / `Event` conforme a fonte (propriedades
   de música só para `MusicEvent`). Pré-requisito para fontes de museu.

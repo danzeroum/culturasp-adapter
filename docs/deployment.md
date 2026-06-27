@@ -9,6 +9,34 @@ docker compose up --build
 
 Sobe quatro serviços: `api`, `scraper` (scheduler), `postgres`, `redis`.
 
+## Deploy em VPS (`/opt/btv`)
+
+Pré-requisitos na VPS: **Docker Engine** + plugin **Compose v2**
+(`docker compose version`).
+
+Bootstrap (clona em `/opt/btv` e sobe tudo — idempotente, pode rodar de novo p/ atualizar):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/danzeroum/culturasp-adapter/main/scripts/deploy_vps.sh | bash
+```
+
+O script (`scripts/deploy_vps.sh`) faz: preflight → clona/atualiza → cria `.env` a partir
+do exemplo → build → sobe `postgres`/`redis` e espera o banco ficar *healthy* → roda
+`alembic upgrade head` → sobe `api`/`scraper` → checa `GET /health`. Usa sempre
+`-f docker-compose.yml -f docker-compose.prod.yml` (restart `unless-stopped`).
+
+Parametrizável: `TARGET_DIR` (default `/opt/btv`), `REPO_URL`, `BRANCH`. Ex.:
+
+```bash
+TARGET_DIR=/opt/btv BRANCH=main bash scripts/deploy_vps.sh
+```
+
+**Segurança:** Postgres (5432) e Redis (6379) são publicados **apenas no loopback**
+(`127.0.0.1`) — não ficam expostos na internet. A API fica em `:8000`. Para produção,
+**revise `POSTGRES_PASSWORD` no `.env`** e considere um **reverse proxy com TLS**
+(Caddy/Nginx/Traefik) na frente da API — veja o comentário em `docker-compose.prod.yml`
+sobre como bindar a API em `127.0.0.1:8000`.
+
 ## Migrations
 
 O schema é versionado com Alembic.
