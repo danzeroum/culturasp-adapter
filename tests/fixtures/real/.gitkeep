@@ -1,0 +1,3 @@
+# Real source snapshots captured via scripts/capture_fixture.py live here.
+# They are committed by contributors (where they have network) and used by the
+# golden tests in tests/real/. Empty until the first capture.

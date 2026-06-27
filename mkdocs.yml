@@ -25,6 +25,7 @@ nav:
   - Modelo de dados: data_model.md
   - API: api.md
   - Referência OpenAPI: api_reference.md
+  - Adicionar uma fonte: adding_a_source.md
   - Scraping ético: ethics.md
   - Deploy: deployment.md
   - Compliance & segurança: compliance.md

@@ -24,12 +24,15 @@ pre-commit install
 
 ## Adicionando uma nova fonte (parser)
 
-1. Crie `src/culturasp/scraper/parsers/<fonte>.py` com uma classe que herda de
-   `BaseParser` e implementa `can_parse`, `list_event_urls` e `parse_event`.
-2. Registre-a em `src/culturasp/scraper/parsers/__init__.py` (dict `PARSERS`).
-3. Salve **um snapshot real** da página em `tests/fixtures/` e escreva testes
-   unitários que rodem **sem rede**.
-4. Adicione o caminho de listagem em `LISTING_PATHS` (`scraper/cli.py`).
+Guia completo: [`docs/adding_a_source.md`](docs/adding_a_source.md). Em resumo:
+
+1. Copie `parsers/_template.py` para `parsers/<fonte>.py` e implemente
+   `can_parse`, `list_event_urls` e `parse_event`.
+2. Capture snapshots reais localmente: `python scripts/capture_fixture.py
+   --source <fonte>` (usa o fetcher ético; salva em `tests/fixtures/real/`).
+3. Registre a fonte em `parsers/__init__.py` (`PARSERS`) e em `LISTING_PATHS`
+   (`scraper/cli.py`).
+4. Escreva testes unitários **sem rede** com os snapshots capturados.
 
 ## Regras de ouro (scraping ético)
 
