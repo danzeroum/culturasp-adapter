@@ -5,6 +5,17 @@ Todas as mudanças notáveis deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [Unreleased]
+
+### Added
+- `schema_type` em `CulturalEvent` e **generalização do JSON-LD**: `event_to_jsonld`
+  emite `MusicEvent` / `ExhibitionEvent` / `Event` conforme a fonte (propriedades
+  de música só para `MusicEvent`). Pré-requisito para fontes de museu.
+- Parser **candidato (experimental)** da Pinacoteca (`EXPERIMENTAL_PARSERS`, fora do
+  runtime) com seletores a confirmar; helpers compartilhados em `parsers/_common.py`.
+- Tooling de fontes: `scripts/capture_fixture.py` (snapshot educado local, com
+  `--listing-url`), template de parser, guia "adicionar uma fonte" e testes golden.
+
 ## [1.0.0] - 2026-06-27
 
 Primeira release do **CulturaSP-Adapter** — adaptador open source **read-only** de

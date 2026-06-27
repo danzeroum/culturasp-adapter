@@ -1,31 +1,40 @@
-"""Map :class:`CulturalEvent` to schema.org/MusicEvent JSON-LD.
+"""Map :class:`CulturalEvent` to schema.org JSON-LD.
 
 This is the open-data contract consumers rely on. We keep the mapping in one
 place so the schema.org shape can evolve independently of the internal model.
-Reference: https://schema.org/MusicEvent
+The ``@type`` follows ``event.schema_type`` (MusicEvent / ExhibitionEvent /
+Event); music-specific properties are emitted only for ``MusicEvent``.
+Reference: https://schema.org/Event
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-from culturasp.models.event import CulturalEvent
+from culturasp.models.event import CulturalEvent, SchemaType
 
 SCHEMA_CONTEXT = "https://schema.org"
 
+#: Venue @type per event type — music halls are MusicVenue; everything else Place.
+_VENUE_TYPE = {SchemaType.music_event: "MusicVenue"}
+
 
 def event_to_jsonld(event: CulturalEvent) -> dict[str, Any]:
-    """Render a single event as a schema.org/MusicEvent JSON-LD document."""
+    """Render a single event as a schema.org JSON-LD document.
+
+    The top-level ``@type`` is driven by ``event.schema_type`` so non-music
+    sources (e.g. museum exhibitions) map to the right schema.org class.
+    """
     doc: dict[str, Any] = {
         "@context": SCHEMA_CONTEXT,
-        "@type": "MusicEvent",
+        "@type": event.schema_type.value,
         "@id": str(event.source_url),
         "name": event.title,
         "url": str(event.source_url),
         "eventStatus": "https://schema.org/EventScheduled",
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "location": {
-            "@type": "MusicVenue",
+            "@type": _VENUE_TYPE.get(event.schema_type, "Place"),
             "name": event.venue,
             "address": {
                 "@type": "PostalAddress",
@@ -44,25 +53,29 @@ def event_to_jsonld(event: CulturalEvent) -> dict[str, Any]:
         # ISO 8601 duration
         doc["duration"] = f"PT{event.duration_minutes}M"
 
-    if event.conductor:
-        doc["performer"] = [{"@type": "Person", "name": event.conductor, "roleName": "conductor"}]
     for performer in event.performers:
         doc.setdefault("performer", []).append({"@type": "Person", "name": performer})
 
-    if event.program:
-        doc["workPerformed"] = [
-            {
-                "@type": "MusicComposition",
-                "name": item.work,
-                **(
-                    {"composer": {"@type": "Person", "name": item.composer}}
-                    if item.composer
-                    else {}
-                ),
-            }
-            for item in event.program
-            if item.work or item.composer
-        ]
+    # Music-specific properties only make sense for a MusicEvent.
+    if event.schema_type is SchemaType.music_event:
+        if event.conductor:
+            doc.setdefault("performer", []).insert(
+                0, {"@type": "Person", "name": event.conductor, "roleName": "conductor"}
+            )
+        if event.program:
+            doc["workPerformed"] = [
+                {
+                    "@type": "MusicComposition",
+                    "name": item.work,
+                    **(
+                        {"composer": {"@type": "Person", "name": item.composer}}
+                        if item.composer
+                        else {}
+                    ),
+                }
+                for item in event.program
+                if item.work or item.composer
+            ]
 
     # Offers — free tickets are price "0". Descriptive only.
     offer: dict[str, Any] = {

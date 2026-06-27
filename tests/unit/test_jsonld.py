@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from culturasp.models.accessibility import AccessibilityInfo
-from culturasp.models.event import CulturalEvent, ProgramItem, TicketPolicy
+from culturasp.models.event import CulturalEvent, ProgramItem, SchemaType, TicketPolicy
 from culturasp.models.jsonld import event_to_jsonld
 
 NOW = datetime(2026, 6, 27, tzinfo=timezone.utc)
@@ -50,3 +50,24 @@ def test_jsonld_work_performed() -> None:
     works = doc["workPerformed"]
     assert works[0]["name"] == "Sinfonia nº 40"
     assert works[0]["composer"]["name"] == "Mozart"
+
+
+def test_jsonld_exhibition_event_omits_music_props() -> None:
+    # A non-music event maps to ExhibitionEvent and drops music-only properties,
+    # even if program/conductor happen to be populated.
+    event = _sample().model_copy(update={"schema_type": SchemaType.exhibition_event})
+    doc = event_to_jsonld(event)
+    assert doc["@type"] == "ExhibitionEvent"
+    assert doc["location"]["@type"] == "Place"
+    assert "workPerformed" not in doc
+    assert "performer" not in doc
+    # Common properties still present.
+    assert doc["name"] == "Orquestra Antares"
+    assert doc["isAccessibleForFree"] is True
+
+
+def test_jsonld_generic_event_type() -> None:
+    event = _sample().model_copy(update={"schema_type": SchemaType.event})
+    doc = event_to_jsonld(event)
+    assert doc["@type"] == "Event"
+    assert doc["location"]["@type"] == "Place"

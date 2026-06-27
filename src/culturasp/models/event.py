@@ -23,6 +23,18 @@ class OCRStatus(str, Enum):
     failed = "failed"
 
 
+class SchemaType(str, Enum):
+    """schema.org event type a source maps to (drives the JSON-LD ``@type``).
+
+    Concert halls use ``MusicEvent``; museums/exhibitions use ``ExhibitionEvent``;
+    anything else falls back to the generic ``Event``.
+    """
+
+    music_event = "MusicEvent"
+    exhibition_event = "ExhibitionEvent"
+    event = "Event"
+
+
 class ProgramItem(BaseModel):
     """A single piece in the concert programme."""
 
@@ -61,6 +73,9 @@ class CulturalEvent(BaseModel):
     end: datetime | None = Field(None, description="End datetime (ISO 8601, local tz)")
     duration_minutes: int | None = Field(None, description="Duration in minutes, if published")
 
+    schema_type: SchemaType = Field(
+        SchemaType.music_event, description="schema.org event type for JSON-LD"
+    )
     venue: str = Field("Sala São Paulo", description="Venue name")
     program: list[ProgramItem] = Field(default_factory=list)
     conductor: str | None = None

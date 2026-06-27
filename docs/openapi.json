@@ -573,6 +573,11 @@
             "title": "Duration Minutes",
             "description": "Duration in minutes, if published"
           },
+          "schema_type": {
+            "$ref": "#/components/schemas/SchemaType",
+            "description": "schema.org event type for JSON-LD",
+            "default": "MusicEvent"
+          },
           "venue": {
             "type": "string",
             "title": "Venue",
@@ -721,6 +726,16 @@
         "type": "object",
         "title": "ProgramItem",
         "description": "A single piece in the concert programme."
+      },
+      "SchemaType": {
+        "type": "string",
+        "enum": [
+          "MusicEvent",
+          "ExhibitionEvent",
+          "Event"
+        ],
+        "title": "SchemaType",
+        "description": "schema.org event type a source maps to (drives the JSON-LD ``@type``).\n\nConcert halls use ``MusicEvent``; museums/exhibitions use ``ExhibitionEvent``;\nanything else falls back to the generic ``Event``."
       },
       "TicketPolicy": {
         "properties": {
