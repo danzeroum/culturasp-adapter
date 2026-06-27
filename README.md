@@ -52,7 +52,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"          # adicione [ocr] para Tesseract/pdf2image
 playwright install chromium      # só necessário para um scrape real
 
-pytest                           # roda offline contra fixtures (sem rede)
+pytest                           # 36 testes offline contra fixtures (sem rede)
 ruff check . && ruff format --check .
 ```
 
