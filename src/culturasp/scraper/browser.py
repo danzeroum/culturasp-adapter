@@ -34,9 +34,16 @@ def proxy_settings(proxy_url: str) -> ProxySettings | None:
     parts = urlsplit(proxy_url)
     if not parts.hostname:
         return None
+    try:
+        port = parts.port  # urllib validates the port lazily here
+    except ValueError as exc:
+        raise ValueError(
+            f"invalid CULTURASP_HTTP_PROXY {proxy_url!r}: {exc} "
+            "(expected scheme://[user:pass@]host:port with a numeric port)"
+        ) from exc
     server = f"{parts.scheme or 'http'}://{parts.hostname}"
-    if parts.port:
-        server = f"{server}:{parts.port}"
+    if port:
+        server = f"{server}:{port}"
     proxy: ProxySettings = {"server": server}
     if parts.username:
         proxy["username"] = parts.username
