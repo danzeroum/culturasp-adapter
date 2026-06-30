@@ -39,11 +39,24 @@ class RobotsChecker:
         host = f"{parsed.scheme}://{parsed.netloc}"
         if host not in self._parsers:
             rp = urllib.robotparser.RobotFileParser()
-            rp.set_url(urljoin(host, "/robots.txt"))
+            robots_url = urljoin(host, "/robots.txt")
             try:
-                rp.read()
+                # Fetch via httpx, which transparently decompresses gzip/deflate.
+                # urllib's own reader does NOT decompress, so a gzip-encoded
+                # robots.txt raises a decode error and leaves the parser "unread"
+                # — and an unread RobotFileParser makes can_fetch() deny *every*
+                # URL, silently blocking all scraping. A 4xx (no robots.txt) or a
+                # transport/parse failure must fail open, not closed.
+                resp = httpx.get(
+                    robots_url,
+                    headers={"User-Agent": self._user_agent},
+                    timeout=10,
+                    follow_redirects=True,
+                )
+                rp.parse(resp.text.splitlines() if resp.status_code < 400 else [])
             except Exception as exc:
                 logger.warning("robots_read_failed", host=host, error=str(exc))
+                rp.parse([])  # permissive on technical failure
             self._parsers[host] = rp
         return self._parsers[host]
 

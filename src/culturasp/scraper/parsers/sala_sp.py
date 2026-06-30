@@ -27,7 +27,9 @@ from culturasp.scraper.parsers.base import BaseParser
 
 logger = get_logger(__name__)
 
-_CONCERT_PATH = re.compile(r"/concerto/\d+", re.IGNORECASE)
+# Matches both absolute ("/salasp/pt/concerto/1727") and relative ("concerto/1586")
+# hrefs — the live listing uses the relative form. urljoin() resolves them.
+_CONCERT_PATH = re.compile(r"(?:^|/)concerto/\d+", re.IGNORECASE)
 
 
 class SalaSPParser(BaseParser):
