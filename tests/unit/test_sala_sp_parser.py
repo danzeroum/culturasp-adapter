@@ -31,6 +31,22 @@ def test_list_event_urls_discovers_only_concerts(parser: SalaSPParser, listing_h
     ]
 
 
+def test_list_event_urls_handles_relative_hrefs(parser: SalaSPParser) -> None:
+    # The live listing links are relative ("concerto/1586") and resolve against
+    # the listing URL's directory. Non-concert links must be ignored.
+    html = """
+    <a href="concerto/1586">A</a>
+    <a href="concerto/1587?x=1">B</a>
+    <a href="/osesp/pt/concertos-ingressos">tickets</a>
+    <a href="programacao-ingressos">prog</a>
+    """
+    base = "https://salasaopaulo.art.br/salasp/pt/programacao"
+    assert parser.list_event_urls(html, base) == [
+        "https://salasaopaulo.art.br/salasp/pt/concerto/1586",
+        "https://salasaopaulo.art.br/salasp/pt/concerto/1587",
+    ]
+
+
 def test_parse_event_core_fields(parser: SalaSPParser, concert_html: str) -> None:
     url = "https://salasaopaulo.art.br/salasp/pt/concerto/1727"
     event = parser.parse_event(concert_html, url, scraped_at=NOW)
