@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
+import pytest
+
 from culturasp.scraper.browser import proxy_settings
+
+
+def test_invalid_port_raises_clear_error() -> None:
+    # A common mistake: leaving the placeholder PORT in the env value.
+    with pytest.raises(ValueError, match="CULTURASP_HTTP_PROXY"):
+        proxy_settings("http://user:pass@host:PORTA")
 
 
 def test_empty_means_direct_connection() -> None:
