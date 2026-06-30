@@ -82,7 +82,7 @@ class SalaSPParser(BaseParser):
             conductor=clean_text(labels.get("regente") or labels.get("regência")),
             program=self._parse_program(soup),
             accessibility=accessibility_from_soup(soup),
-            ticket=self._parse_ticket(soup, labels),
+            ticket=self._parse_ticket(soup, labels, url),
             seat_map_url=self._seat_map_url(soup, url),
             scraped_at=scraped_at,
         )
@@ -119,7 +119,7 @@ class SalaSPParser(BaseParser):
         return items
 
     @staticmethod
-    def _parse_ticket(soup: BeautifulSoup, labels: dict[str, str]) -> TicketPolicy:
+    def _parse_ticket(soup: BeautifulSoup, labels: dict[str, str], base_url: str) -> TicketPolicy:
         page_text = soup.get_text(" ", strip=True).lower()
         free = "gratuito" in page_text or "gratuita" in page_text or "grátis" in page_text
 
@@ -128,7 +128,9 @@ class SalaSPParser(BaseParser):
             href = str(a["href"])
             label = a.get_text(" ", strip=True).lower()
             if "ingresso" in label or "retirar" in label or "onebox" in href.lower():
-                external = href
+                # Ticket hrefs are often relative ("/osesp/pt/..."); external_url
+                # requires an absolute URL, so resolve against the page URL.
+                external = urljoin(base_url, href)
                 break
 
         return TicketPolicy(
