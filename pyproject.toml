@@ -26,7 +26,12 @@ dependencies = [
     "uvicorn[standard]>=0.29",
     "pydantic>=2.6",
     "pydantic-settings>=2.2",
-    "playwright>=1.43",
+    # Pinned to the minor that matches the Playwright base image in the
+    # Dockerfile (mcr.microsoft.com/playwright/python:v1.43.0-jammy). The base
+    # image bundles only the Chromium build for its own version, so an unpinned
+    # upgrade (e.g. 1.61) leaves Playwright looking for a browser revision that
+    # isn't in the image. Bump this and the Dockerfile FROM tag together.
+    "playwright>=1.43,<1.44",
     "beautifulsoup4>=4.12",
     "lxml>=5.2",
     "dateparser>=1.2",
