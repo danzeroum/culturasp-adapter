@@ -95,8 +95,8 @@ else
 fi
 
 # --- app tier ----------------------------------------------------------------
-log "Starting application services (api, scraper)"
-dc up -d api scraper
+log "Starting application services (api, scraper, frontend)"
+dc up -d api scraper frontend
 
 # --- health check ------------------------------------------------------------
 log "Waiting for the API health endpoint"
@@ -116,7 +116,7 @@ echo
 dc ps
 echo
 if [ "$healthy" -eq 1 ]; then
-  ok "Deploy complete — API is up at http://localhost:8000  (docs: /docs)"
+  ok "Deploy complete — API at http://localhost:8000 (docs: /docs); site at http://localhost:8080"
 else
   err "Deploy finished but /health did not respond yet. Check logs: (cd $TARGET_DIR && docker compose logs -f api)"
 fi

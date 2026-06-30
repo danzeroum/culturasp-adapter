@@ -17,3 +17,5 @@ services:
     restart: unless-stopped
   redis:
     restart: unless-stopped
+  frontend:
+    restart: unless-stopped
