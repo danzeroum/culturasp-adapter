@@ -38,6 +38,17 @@ class Settings(BaseSettings):
     respect_robots: bool = True
     scrape_interval: int = 1_800
 
+    # Outbound proxy for the headless browser, e.g. http://user:pass@host:port.
+    # Empty = direct connection. Use a residential/allowed-IP proxy when the
+    # source blocks the host's IP (common for datacenter/VPS addresses).
+    http_proxy: str = ""
+    # Page-load strategy + timeout (ms) for navigation. "networkidle" is fragile
+    # on sites with constant background requests (analytics, long-poll) and can
+    # hang; "domcontentloaded" is the robust default. Pair with a wait_selector
+    # when content renders client-side.
+    nav_wait_until: str = "domcontentloaded"
+    nav_timeout_ms: int = 45_000
+
     # --- Sources ---
     sala_sp_base_url: str = "https://salasaopaulo.art.br"
 
