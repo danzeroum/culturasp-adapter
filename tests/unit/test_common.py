@@ -4,7 +4,17 @@ from __future__ import annotations
 
 import pytest
 
-from culturasp.scraper.parsers._common import parse_ptbr_date_range
+from culturasp.scraper.parsers._common import parse_datetime, parse_ptbr_date_range
+
+
+def test_parse_datetime_applies_colon_time() -> None:
+    # The live site writes the time as "20:00", not "20h00".
+    start, end, duration = parse_datetime(
+        {"data": "qui., 2 de julho de 2026", "horário": "20:00", "duração": "95 min."}
+    )
+    assert start is not None and (start.hour, start.minute) == (20, 0)
+    assert duration == 95
+    assert end is not None and (end.hour, end.minute) == (21, 35)
 
 
 def _ymd(dt) -> tuple[int, int, int] | None:

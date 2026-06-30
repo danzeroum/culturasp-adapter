@@ -67,6 +67,30 @@ def test_parse_event_resolves_relative_ticket_url(parser: SalaSPParser) -> None:
     )
 
 
+def test_parse_program_splits_uppercase_composers(parser: SalaSPParser) -> None:
+    # Live pages put the whole programme in one <p> with UPPERCASE composers,
+    # followed by descriptive prose that must be ignored.
+    html = (
+        "<h1>X</h1>"
+        "<h2>Programa</h2>"
+        "<p>FELIX MENDELSSOHN-BARTHOLDY Sinfonia nº 4, Op. 90 "
+        "WILLIAM WALTON Concerto para viola</p>"
+        "<p>Neste programa, afirma Fischer, há conexões escondidas.</p>"
+        "<h2>Mais informações</h2>"
+    )
+    event = parser.parse_event(html, "https://salasaopaulo.art.br/x/concerto/1", scraped_at=NOW)
+    assert [(p.composer, p.work) for p in event.program] == [
+        ("Felix Mendelssohn-Bartholdy", "Sinfonia nº 4, Op. 90"),
+        ("William Walton", "Concerto para viola"),
+    ]
+
+
+def test_parse_event_extracts_conductor_from_prose(parser: SalaSPParser) -> None:
+    html = "<h1>X</h1><p>Sob regência de Thierry Fischer, a Osesp apresenta.</p>"
+    event = parser.parse_event(html, "https://salasaopaulo.art.br/x/concerto/1", scraped_at=NOW)
+    assert event.conductor == "Thierry Fischer"
+
+
 def test_parse_event_core_fields(parser: SalaSPParser, concert_html: str) -> None:
     url = "https://salasaopaulo.art.br/salasp/pt/concerto/1727"
     event = parser.parse_event(concert_html, url, scraped_at=NOW)

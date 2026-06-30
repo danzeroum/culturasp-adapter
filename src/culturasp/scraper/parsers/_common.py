@@ -15,7 +15,8 @@ from bs4 import BeautifulSoup, Tag
 
 from culturasp.models.accessibility import AccessibilityInfo
 
-TIME_RE = re.compile(r"(\d{1,2})\s*h\s*(\d{2})?")
+# Accepts "20h", "20h50" and the colon form "20:00" used on the live site.
+TIME_RE = re.compile(r"(\d{1,2})\s*[h:]\s*(\d{2})?")
 DURATION_RE = re.compile(r"(\d+)\s*min", re.IGNORECASE)
 _YEAR_RE = re.compile(r"\b(20\d{2})\b")
 # Range separators must be space-delimited so numeric dates like "10-05-2026"
