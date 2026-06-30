@@ -56,6 +56,17 @@ def test_parse_event_skips_empty_leading_h1(parser: SalaSPParser) -> None:
     assert event.id == "sala-sp:1586"
 
 
+def test_parse_event_resolves_relative_ticket_url(parser: SalaSPParser) -> None:
+    # Ticket links are relative on the live site; external_url needs to be absolute.
+    html = '<h1>Show</h1><a href="/osesp/pt/informacoes-ingressos">Ingressos</a>'
+    url = "https://salasaopaulo.art.br/salasp/pt/concerto/1586"
+    event = parser.parse_event(html, url, scraped_at=NOW)
+    assert (
+        str(event.ticket.external_url)
+        == "https://salasaopaulo.art.br/osesp/pt/informacoes-ingressos"
+    )
+
+
 def test_parse_event_core_fields(parser: SalaSPParser, concert_html: str) -> None:
     url = "https://salasaopaulo.art.br/salasp/pt/concerto/1727"
     event = parser.parse_event(concert_html, url, scraped_at=NOW)
