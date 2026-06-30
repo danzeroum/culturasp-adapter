@@ -58,7 +58,12 @@ class SalaSPParser(BaseParser):
     def parse_event(self, html: str, url: str, *, scraped_at: datetime) -> CulturalEvent:
         soup = BeautifulSoup(html, "lxml")
 
-        title = clean_text(soup.h1.get_text()) if soup.h1 else None
+        # Concert pages render two <h1>s — an empty one (logo/skip target) and
+        # the real title — so take the first non-empty heading, not just soup.h1.
+        title = next(
+            (t for h1 in soup.find_all("h1") if (t := clean_text(h1.get_text()))),
+            None,
+        )
         if not title:
             raise ParseError(f"No <h1> title found at {url}")
 

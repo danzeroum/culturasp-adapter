@@ -47,6 +47,15 @@ def test_list_event_urls_handles_relative_hrefs(parser: SalaSPParser) -> None:
     ]
 
 
+def test_parse_event_skips_empty_leading_h1(parser: SalaSPParser) -> None:
+    # Live concert pages have an empty first <h1> before the real title.
+    html = "<html><body><h1></h1><h1>Concerto Real</h1></body></html>"
+    url = "https://salasaopaulo.art.br/salasp/pt/concerto/1586"
+    event = parser.parse_event(html, url, scraped_at=NOW)
+    assert event.title == "Concerto Real"
+    assert event.id == "sala-sp:1586"
+
+
 def test_parse_event_core_fields(parser: SalaSPParser, concert_html: str) -> None:
     url = "https://salasaopaulo.art.br/salasp/pt/concerto/1727"
     event = parser.parse_event(concert_html, url, scraped_at=NOW)
