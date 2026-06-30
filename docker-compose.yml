@@ -68,5 +68,16 @@ services:
       # Loopback-only (see postgres note above).
       - "127.0.0.1:6379:6379"
 
+  # Static SPA served by nginx, which also reverse-proxies the API so the
+  # browser stays same-origin (no CORS, no API host baked into the bundle).
+  # Browse at http://<host>:8080.
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
 volumes:
   pgdata:

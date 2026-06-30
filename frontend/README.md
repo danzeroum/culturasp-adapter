@@ -50,11 +50,19 @@ casa com o build presente. Pré-suba a API semeada e o Playwright a reaproveita
 
 ## Configuração
 `VITE_API_BASE` (ver `.env.example`): vazio em dev (usa o proxy do Vite); em
-produção, a URL pública da API.
+produção, a URL pública da API — **ou vazio** quando servido pelo nginx do
+container (mesma origem; ver abaixo).
 
-## Configuração
-`VITE_API_BASE` (ver `.env.example`): vazio em dev (usa o proxy do Vite); em
-produção, a URL pública da API.
+## Docker (produção)
+`frontend/Dockerfile` builda o SPA e serve com **nginx**, que também faz
+reverse-proxy de `/v1`, `/health`, `/metrics`, `/docs` e `/openapi.json` para o
+serviço `api` — então o navegador fica **mesma origem** (sem CORS, sem host da
+API embutido no bundle). O serviço `frontend` está no `docker-compose.yml`:
+```bash
+# na raiz do repo (sobe api + scraper + postgres + redis + frontend)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# site em http://<host>:8080  ·  docs em /docs (proxied)
+```
 
 ## Estrutura
 ```
