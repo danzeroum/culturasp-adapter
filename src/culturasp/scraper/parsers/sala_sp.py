@@ -31,6 +31,42 @@ logger = get_logger(__name__)
 # hrefs — the live listing uses the relative form. urljoin() resolves them.
 _CONCERT_PATH = re.compile(r"(?:^|/)concerto/\d+", re.IGNORECASE)
 
+# On the live site the programme is a single run-on line where each composer's
+# name is printed in UPPERCASE (2-4 consecutive all-caps words); the work runs
+# until the next such name. Descriptive paragraphs use ordinary title case, so
+# they contain no match and are skipped. Char classes intentionally include the
+# curly apostrophe found in some names.
+_NAME_UPPER = r"[A-ZÀ-ÖØ-Þ][A-ZÀ-ÖØ-Þ'’\-]+"  # noqa: RUF001
+_NAME_TITLE = r"[A-ZÀ-ÖØ-Þ][a-zà-öø-ÿ'’.\-]+"  # noqa: RUF001
+_COMPOSER_RE = re.compile(rf"(?:{_NAME_UPPER}\s+){{1,3}}{_NAME_UPPER}")
+# Best-effort conductor: only the explicit "regência de <Name>" phrasing, so a
+# missing one stays None rather than guessing.
+_CONDUCTOR_RE = re.compile(rf"[Rr]eg[êe]ncia\s+d[eo]\s+({_NAME_TITLE}(?:\s+{_NAME_TITLE}){{1,3}})")
+
+
+def _split_caps_program(text: str) -> list[ProgramItem]:
+    """Split a run-on programme line into items by its UPPERCASE composer names."""
+    matches = list(_COMPOSER_RE.finditer(text))
+    items: list[ProgramItem] = []
+    for i, m in enumerate(matches):
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        work = text[m.end() : end].strip(" ,;:–—-")  # noqa: RUF001
+        items.append(ProgramItem(composer=m.group().strip().title(), work=work or None))
+    return items
+
+
+def _split_dash_item(text: str) -> ProgramItem:
+    """Split a single ``Composer - Work`` list entry."""
+    parts = re.split(r"\s+[—\-:]\s+|,\s+", text, maxsplit=1)
+    if len(parts) == 2:
+        return ProgramItem(composer=parts[0], work=parts[1])
+    return ProgramItem(composer=None, work=text)
+
+
+def _find_conductor(soup: BeautifulSoup) -> str | None:
+    m = _CONDUCTOR_RE.search(soup.get_text(" ", strip=True))
+    return m.group(1) if m else None
+
 
 class SalaSPParser(BaseParser):
     source = "sala-sp"
@@ -79,7 +115,8 @@ class SalaSPParser(BaseParser):
             end=end,
             duration_minutes=duration,
             venue=clean_text(labels.get("local")) or "Sala São Paulo",
-            conductor=clean_text(labels.get("regente") or labels.get("regência")),
+            conductor=clean_text(labels.get("regente") or labels.get("regência"))
+            or _find_conductor(soup),
             program=self._parse_program(soup),
             accessibility=accessibility_from_soup(soup),
             ticket=self._parse_ticket(soup, labels, url),
@@ -106,16 +143,17 @@ class SalaSPParser(BaseParser):
         for sib in heading.find_all_next():
             if isinstance(sib, Tag) and sib.name in {"h2", "h3"} and sib is not heading:
                 break
-            if isinstance(sib, Tag) and sib.name in {"li", "p"}:
-                text = clean_text(sib.get_text(" ", strip=True))
-                if not text:
-                    continue
-                # "Composer — Work" / "Composer: Work" / "Composer, Work"
-                parts = re.split(r"\s+[—\-:]\s+|,\s+", text, maxsplit=1)
-                if len(parts) == 2:
-                    items.append(ProgramItem(composer=parts[0], work=parts[1]))
-                else:
-                    items.append(ProgramItem(composer=None, work=text))
+            if not (isinstance(sib, Tag) and sib.name in {"li", "p"}):
+                continue
+            text = clean_text(sib.get_text(" ", strip=True))
+            if not text:
+                continue
+            caps = _split_caps_program(text)
+            if caps:
+                items.extend(caps)  # run-on line with UPPERCASE composers
+            elif sib.name == "li":
+                items.append(_split_dash_item(text))  # explicit list entry
+            # a <p> with neither is descriptive prose — skip it
         return items
 
     @staticmethod
