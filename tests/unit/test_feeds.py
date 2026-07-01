@@ -52,3 +52,11 @@ def test_rss_returns_bytes_with_channel_and_item() -> None:
 def test_rss_handles_event_without_start() -> None:
     rss = events_to_rss([_event(start=None, end=None)]).decode("utf-8")
     assert "data a confirmar" in rss
+
+
+def test_rss_handles_naive_start() -> None:
+    # Scraped events have naive datetimes; feedgen's pubDate needs a tz, so the
+    # feed must normalise them instead of raising (previously a 500).
+    rss = events_to_rss([_event(start=datetime(2026, 8, 8, 20, 0), end=None)]).decode("utf-8")
+    assert "Orquestra Antares" in rss
+    assert "pubDate" in rss
