@@ -12,6 +12,7 @@ The fetcher is the only component allowed to touch the network.
 from __future__ import annotations
 
 import asyncio
+import json
 import secrets
 import urllib.robotparser
 from urllib.parse import urljoin, urlparse
@@ -106,6 +107,34 @@ class Fetcher:
 
         self._cache.set("page", url, html)
         return html
+
+    async def fetch_json(self, url: str, *, use_cache: bool = True) -> object:
+        """Fetch and decode a JSON endpoint politely.
+
+        Used by API-native sources (e.g. Sesc's WordPress JSON API). Unlike
+        :meth:`fetch`, this goes straight through httpx — the payload is JSON, so
+        there is nothing for a headless browser to render. Honours robots.txt,
+        the inter-request delay and the cache (keyed under ``"json"``).
+        """
+        if self._settings.respect_robots and not self._robots.can_fetch(url):
+            logger.warning("robots_disallowed", url=url)
+            raise RobotsDisallowedError(url)
+
+        if use_cache:
+            cached = self._cache.get("json", url)
+            if cached is not None:
+                logger.info("cache_hit", url=url)
+                return json.loads(cached)
+
+        logger.info("fetch_json_live", url=url)
+        await asyncio.sleep(self._delay_seconds())
+        async with httpx.AsyncClient(
+            headers={"User-Agent": self._settings.user_agent}, timeout=30, follow_redirects=True
+        ) as client:
+            resp = await client.get(url)
+            resp.raise_for_status()
+            self._cache.set("json", url, resp.text)
+            return resp.json()
 
     async def fetch_bytes(self, url: str) -> bytes:
         """Download a binary asset (e.g. a seat-map PDF) politely.

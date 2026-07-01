@@ -41,7 +41,7 @@ async def test_collect_all_continues_after_one_source_fails(
     monkeypatch.setattr(
         sched, "PARSERS", {"broken": _FakeParser("broken"), "ok": _FakeParser("ok")}
     )
-    monkeypatch.setattr(sched, "LISTING_PATHS", {"broken": "/b", "ok": "/o"})
+    monkeypatch.setattr(sched, "listing_url_for", lambda source, settings: f"/{source}")
 
     await sched.collect_all()
 

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -17,3 +19,8 @@ def listing_html() -> str:
 @pytest.fixture
 def concert_html() -> str:
     return (FIXTURES / "sala_sp_concert.html").read_text(encoding="utf-8")
+
+
+@pytest.fixture
+def sesc_filter_payload() -> dict[str, Any]:
+    return json.loads((FIXTURES / "sesc_filter.json").read_text(encoding="utf-8"))
