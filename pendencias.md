@@ -32,11 +32,24 @@ Brincando Juntos (loja Nuvemshop), Mães Amigas, Guia de Bolso, Temporada Baby,
 Dicas de Mãe: reagregam eventos de terceiros com ToS restritivos e duplicam as
 fontes primárias. **Recomendação:** manter fora de escopo. Confirmar.
 
-## 5. Próxima fonte institucional a implementar
-Sugerido: **Biblioteca Monteiro Lobato / portais da Prefeitura** (dado público,
-sem barreira comercial). Depende de confirmar a URL/estrutura da agenda — se for
-HTML renderizado por JS, a captura de fixture precisa rodar **localmente** (o
-browser headless é bloqueado pelo proxy deste ambiente). **Confirma a prioridade?**
+## 5. Próxima fonte institucional a implementar (investigado — bloqueado aqui)
+Sugerido: **portais públicos da Prefeitura de SP** (dado público, sem barreira
+comercial). Investigação nesta sessão:
+- `www.prefeitura.sp.gov.br/.../monteiro_lobato/` → responde **302** (redireciona;
+  a agenda real fica noutra URL a confirmar).
+- **SP Cultura** (`spcultura.prefeitura.sp.gov.br`, plataforma **MapasCulturais**,
+  que tem **API pública** `/api/event/find`) seria a fonte ideal e *API-native*
+  (como o Sesc), mas está **inacessível deste ambiente** (conexão 000 pelo proxy) —
+  mesmo bloqueio das fontes Cloudflare.
+
+**Não dá para validar/implementar aqui.** Rodando localmente (com rede), o caminho é:
+1. confirmar o endpoint do MapasCulturais de SP (ex.: `/api/event/find?@select=...`);
+2. escrever um parser **API-native** análogo ao `sesc.py` (usa `fetch_events` +
+   `Fetcher.fetch_json`), mapeando faixa etária/público quando a API expuser;
+3. capturar um fixture JSON e adicionar testes offline.
+
+**Confirma a prioridade da SP Cultura como próxima fonte?** Se sim, faço localmente
+ou quando o acesso estiver liberado.
 
 ## 6. Teatro Folha — content-signals
 O `robots.txt` declara *content-signals* reservando direitos para IA/treino. O
