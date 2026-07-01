@@ -18,6 +18,11 @@ from culturasp.models.accessibility import AccessibilityInfo
 # Accepts "20h", "20h50" and the colon form "20:00" used on the live site.
 TIME_RE = re.compile(r"(\d{1,2})\s*[h:]\s*(\d{2})?")
 DURATION_RE = re.compile(r"(\d+)\s*min", re.IGNORECASE)
+# Live dates are prefixed with an abbreviated weekday ("seg., 20 de julho de
+# 2026"). dateparser chokes on some of these abbreviations (notably "seg.")
+# and returns None, so we strip the redundant weekday before parsing — the day
+# number already carries the information.
+_WEEKDAY_PREFIX = re.compile(r"^(?:dom|seg|ter|qua|qui|sex|s[áa]b)\.?,?\s+", re.IGNORECASE)
 _YEAR_RE = re.compile(r"\b(20\d{2})\b")
 # Range separators must be space-delimited so numeric dates like "10-05-2026"
 # are never split on their internal hyphens.
@@ -27,10 +32,19 @@ _ONLY_START = re.compile(r"^(?:a partir d[eo]|a partir do dia|desde)\s+(.*)$", r
 _RANGE_OPENER = re.compile(r"^(?:de|do dia)\s+", re.IGNORECASE)
 
 
+def _dateparse(text: str) -> datetime | None:
+    """Parse a PT-BR date, first dropping a leading weekday abbreviation."""
+    return dateparser.parse(
+        _WEEKDAY_PREFIX.sub("", text.strip()),
+        languages=["pt"],
+        settings={"DATE_ORDER": "DMY"},
+    )
+
+
 def _parse_ptbr_date(text: str | None) -> datetime | None:
     if not text or not text.strip():
         return None
-    return dateparser.parse(text, languages=["pt"], settings={"DATE_ORDER": "DMY"})
+    return _dateparse(text)
 
 
 def clean_text(text: str | None) -> str | None:
@@ -74,7 +88,7 @@ def parse_datetime(
 
     start: datetime | None = None
     if date_text:
-        base = dateparser.parse(date_text, languages=["pt"], settings={"DATE_ORDER": "DMY"})
+        base = _dateparse(date_text)
         if base and time_text:
             tm = TIME_RE.search(time_text)
             if tm:
