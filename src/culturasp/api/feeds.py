@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import timezone
+
 from culturasp.models.event import CulturalEvent
 
 
@@ -48,6 +50,7 @@ def events_to_rss(events: list[CulturalEvent]) -> bytes:
         fe.title(e.title)
         fe.link(href=str(e.source_url))
         if e.start:
-            fe.pubDate(e.start)
+            # feedgen requires a tz-aware datetime; scraped times are naive.
+            fe.pubDate(e.start if e.start.tzinfo else e.start.replace(tzinfo=timezone.utc))
         fe.description(f"{e.venue} — {e.start.isoformat() if e.start else 'data a confirmar'}")
     return fg.rss_str(pretty=True)
