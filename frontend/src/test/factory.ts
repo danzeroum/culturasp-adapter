@@ -12,6 +12,10 @@ export function makeEvent(overrides: Partial<CulturalEvent> = {}): CulturalEvent
     duration_minutes: 60,
     schema_type: "MusicEvent",
     venue: "Sala São Paulo",
+    min_age: null,
+    max_age: null,
+    audience: null,
+    category: null,
     program: [
       { composer: "Mozart", work: "Sinfonia nº 40" },
       { composer: "Händel", work: "Water Music" },

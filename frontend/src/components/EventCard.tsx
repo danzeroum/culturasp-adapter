@@ -2,13 +2,15 @@ import { Link } from "react-router-dom";
 import type { EventVM } from "../lib/adapter";
 import { AudioIcon, CheckIcon, LibrasIcon, WheelchairIcon } from "../lib/icons";
 
-function Chip({ children, kind }: { children: React.ReactNode; kind: "free" | "access" | "exp" }) {
+function Chip({ children, kind }: { children: React.ReactNode; kind: "free" | "access" | "exp" | "kids" }) {
   const styles =
     kind === "free"
       ? { color: "var(--free-tx)", background: "var(--free-bg)", border: "1px solid var(--free-bd)" }
       : kind === "exp"
         ? { color: "var(--exp-tx)", background: "var(--exp-bg)", border: "1px solid var(--exp-bd)" }
-        : { color: "var(--teal-tx)", background: "var(--teal-bg)", border: "1px solid var(--teal-bd)" };
+        : kind === "kids"
+          ? { color: "#7a3d00", background: "#fff1de", border: "1px solid #f6c88a" }
+          : { color: "var(--teal-tx)", background: "var(--teal-bg)", border: "1px solid var(--teal-bd)" };
   return (
     <span
       style={{
@@ -128,6 +130,7 @@ export function EventCard({ vm }: { vm: EventVM }) {
               <WheelchairIcon size={13} /> Cadeirante
             </Chip>
           )}
+          {vm.kidsLabel && <Chip kind="kids">{vm.kidsLabel}</Chip>}
         </div>
         {vm.experimental && (
           <span style={{ alignSelf: "flex-start" }}>
