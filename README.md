@@ -68,7 +68,7 @@ culturasp-scrape --source sala-sp --max 5
 
 | Rota | Descrição |
 |---|---|
-| `GET /v1/events` | Lista eventos (filtros: `source`, `date_from`, `date_to`, `accessible`) |
+| `GET /v1/events` | Lista eventos (filtros: `source`, `date_from`, `date_to`, `accessible`, `audience`, `age`) |
 | `GET /v1/events/{id}` | Evento detalhado |
 | `GET /v1/events/{id}/jsonld` | Evento como schema.org/MusicEvent |
 | `GET /v1/events.ics` · `.rss` | Feeds iCal / RSS |

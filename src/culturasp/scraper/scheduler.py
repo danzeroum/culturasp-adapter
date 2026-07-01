@@ -14,7 +14,7 @@ from culturasp.core.config import get_settings
 from culturasp.core.logging import get_logger
 from culturasp.db.provider import get_repository
 from culturasp.db.session import create_all
-from culturasp.scraper.cli import LISTING_PATHS
+from culturasp.scraper.cli import listing_url
 from culturasp.scraper.parsers import PARSERS
 from culturasp.scraper.pipeline import ScrapePipeline
 
@@ -25,9 +25,8 @@ async def collect_all() -> None:
     settings = get_settings()
     repo = get_repository()
     for source, parser in PARSERS.items():
-        listing_url = settings.sala_sp_base_url + LISTING_PATHS[source]
         try:
-            await ScrapePipeline(parser, repo).run(listing_url)
+            await ScrapePipeline(parser, repo).run(listing_url(source, settings))
         except Exception as exc:
             logger.error("source_collection_failed", source=source, error=str(exc))
 

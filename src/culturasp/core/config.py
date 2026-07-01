@@ -51,6 +51,7 @@ class Settings(BaseSettings):
 
     # --- Sources ---
     sala_sp_base_url: str = "https://salasaopaulo.art.br"
+    sesc_base_url: str = "https://www.sescsp.org.br"
 
     # --- Observability ---
     log_level: str = "INFO"

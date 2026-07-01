@@ -8,6 +8,17 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Programação infantil**: modelo de dados ganha público-alvo e faixa etária
+  (`min_age`, `max_age`, `audience`, `category`) e os tipos schema.org
+  `TheaterEvent`/`ChildrensEvent`; o JSON-LD emite `typicalAgeRange` + `audience`
+  (`PeopleAudience`). A API `GET /v1/events` passa a filtrar por `audience` e `age`.
+- Helper `parse_age_range` (`parsers/_common.py`): interpreta faixa etária PT-BR
+  ("a partir de 4 anos", "4 a 10 anos", "livre", "12+") em `(min_age, max_age, label)`.
+- Parser **candidato (experimental)** do **SESC SP** (`sesc_sp.py`, foco infantil,
+  em `EXPERIMENTAL_PARSERS`) e infraestrutura multi-fonte: base URL por fonte
+  (`CULTURASP_SESC_BASE_URL`) e resolução de listagem via `listing_url(source, settings)`.
+- **Triagem das fontes infantis** (`docs/sources_infantil.md`): classificação
+  (instituição/agregador/ingressos), status de robots.txt/Cloudflare e recomendação.
 - **Brief de design** (`docs/design_brief.md`): especificação completa de todas as
   interfaces (portal público + portal de dados/dev), derivada da API/modelo, com
   fluxos, design system, requisitos de acessibilidade (WCAG 2.2 AA) e entregáveis.

@@ -16,6 +16,9 @@ produz essa forma, e a API a serve.
 | `venue` | str | padrão "Sala São Paulo" |
 | `program` | ProgramItem[] | compositor + obra |
 | `conductor` / `performers` | str? / str[] | |
+| `min_age` / `max_age` | int? / int? | faixa etária recomendada (programação infantil/família) |
+| `audience` | str? | rótulo do público, ex. `infantil` / `livre` |
+| `category` | str? | tipo de atividade, ex. `teatro` / `oficina` / `contação de histórias` |
 | `accessibility` | AccessibilityInfo | estruturado |
 | `ticket` | TicketPolicy | **descritivo apenas** |
 | `seat_map_url` / `seat_map_text` | URL? / str? | PDF + texto OCR |
@@ -36,9 +39,12 @@ qualquer recurso.
 ## Mapeamento JSON-LD
 
 O `@type` segue o campo `schema_type` do evento: **`MusicEvent`** (concertos),
-**`ExhibitionEvent`** (museus/exposições) ou **`Event`** (genérico). Propriedades
-específicas de música (`workPerformed`, regente como `performer`) são emitidas
-apenas para `MusicEvent`. Exemplo (`MusicEvent`):
+**`ExhibitionEvent`** (museus/exposições), **`TheaterEvent`** / **`ChildrensEvent`**
+(teatro/programação infantil) ou **`Event`** (genérico). Propriedades específicas
+de música (`workPerformed`, regente como `performer`) são emitidas apenas para
+`MusicEvent`. Quando há faixa etária/público, emitem-se `typicalAgeRange` e
+`audience` (schema.org `PeopleAudience` com `suggestedMinAge`/`suggestedMaxAge`).
+Exemplo (`MusicEvent`):
 
 ```json
 {
