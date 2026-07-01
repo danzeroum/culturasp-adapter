@@ -35,15 +35,31 @@ seletores funcionam. Revise os arquivos, reduza-os se forem grandes e commite.
 > Para a Sala São Paulo, este passo valida os seletores atuais contra a página
 > de produção — é o que falta para promover o parser de "MVP" para "validado".
 
+## 2b. Fonte com API JSON (API-native)
+
+Se a fonte expõe uma **API JSON pública** (como o Sesc SP), pule o parsing de HTML:
+implemente o hook opcional `async def fetch_events(self, fetcher, *, scraped_at,
+max_events=None)` no seu `BaseParser` e monte os `CulturalEvent` direto do JSON
+(use `fetcher.fetch_json(url)`, que é educado — robots.txt + delay + cache). O
+`ScrapePipeline` detecta o hook e usa esse atalho, pulando render/OCR/monitor;
+`list_event_urls`/`parse_event` ficam como no-ops. Mantenha a lógica de mapeamento
+numa **função pura** (ex.: `cards_to_events`) para testar offline sem rede.
+
+Referência completa: `parsers/sesc.py` (inclui filtro por unidade da capital via
+allowlist configurável).
+
 ## 3. Registre a fonte
 
 - Adicione a classe ao dict `PARSERS` em `parsers/__init__.py`.
-- Adicione o caminho da listagem em `LISTING_PATHS` (`scraper/cli.py`).
+- Adicione o caminho da listagem em `LISTING_PATHS` (`scraper/cli.py`) e, se a fonte
+  tiver host próprio, a base URL em `base_url_for` (mesmo arquivo). Para API-native, o
+  `listing_url` é apenas nominal — o `fetch_events` resolve as URLs da API internamente.
 
 ## 4. Escreva testes offline
 
 Use os snapshots capturados como fixtures e siga o padrão de
-`tests/unit/test_sala_sp_parser.py`. Os testes golden em
+`tests/unit/test_sala_sp_parser.py` (HTML) ou `tests/unit/test_sesc_parser.py`
+(API-native, com fixture JSON). Os testes golden em
 `tests/real/test_real_fixtures.py` rodam automaticamente sobre qualquer
 `tests/fixtures/real/*_concert_*.html` presente (e são pulados quando ausentes).
 

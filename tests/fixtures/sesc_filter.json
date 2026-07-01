@@ -1,0 +1,125 @@
+{
+  "editorial": [],
+  "atividade": [
+    {
+      "id": 1219120,
+      "link": "/programacao/fabio-peron-e-lucas-rocha",
+      "titulo": "Fábio Peron e Lucas Rocha",
+      "complemento": "Pelo Mundo",
+      "cancelado": "",
+      "esgotado": "",
+      "dataPrimeiraSessao": "2026-07-07T19:00",
+      "dataProxSessao": "2026-07-07T19:00",
+      "dataUltimaSessao": "2026-07-07T19:00",
+      "tipos_linguagens": [
+        {
+          "cor": null,
+          "link": "/tipos-linguagens/shows-espetaculos-e-performances",
+          "titulo": "Shows, Espetáculos e Performances",
+          "children": [
+            { "cor": null, "link": "/tipos-linguagens/musica", "titulo": "Música" }
+          ]
+        }
+      ],
+      "unidade": [{ "name": "Consolação", "link": "/unidades/consolacao" }],
+      "gratuito": "",
+      "online": "1"
+    },
+    {
+      "id": 900001,
+      "link": "/programacao/oficina-de-bordado-livre",
+      "titulo": "Oficina de Bordado Livre",
+      "complemento": "Com educador do Sesc Belenzinho",
+      "cancelado": "",
+      "esgotado": "",
+      "dataPrimeiraSessao": "2026-07-10T18:30",
+      "dataProxSessao": "2026-07-12T14:00",
+      "dataUltimaSessao": "2026-07-20T17:00",
+      "tipos_linguagens": [
+        {
+          "cor": null,
+          "link": "/tipos-linguagens/cursos-e-oficinas",
+          "titulo": "Cursos e Oficinas",
+          "children": []
+        }
+      ],
+      "unidade": [{ "name": "Belenzinho", "link": "/unidades/belenzinho" }],
+      "gratuito": "Atividade gratuita",
+      "online": ""
+    },
+    {
+      "id": 1233113,
+      "link": "/programacao/bordado-russo-retrato-abstrato-2",
+      "titulo": "Bordado Russo: Retrato Abstrato",
+      "complemento": "Com Guilherme Gonçalves",
+      "cancelado": "",
+      "esgotado": "",
+      "dataPrimeiraSessao": "2026-07-01T18:30",
+      "dataProxSessao": "2026-07-01T21:00",
+      "dataUltimaSessao": "2026-07-22T17:00",
+      "tipos_linguagens": [
+        {
+          "cor": null,
+          "link": "/tipos-linguagens/cursos-e-oficinas",
+          "titulo": "Cursos e Oficinas",
+          "children": []
+        }
+      ],
+      "unidade": [{ "name": "Franca", "link": "/unidades/franca" }],
+      "gratuito": "Atividade gratuita",
+      "online": ""
+    },
+    {
+      "id": 900002,
+      "link": "/programacao/show-cancelado",
+      "titulo": "Show Cancelado",
+      "complemento": "",
+      "cancelado": "Cancelado",
+      "esgotado": "",
+      "dataPrimeiraSessao": "2026-07-15T20:00",
+      "dataProxSessao": "2026-07-15T20:00",
+      "dataUltimaSessao": "2026-07-15T20:00",
+      "tipos_linguagens": [
+        {
+          "cor": null,
+          "link": "/tipos-linguagens/shows-espetaculos-e-performances",
+          "titulo": "Shows, Espetáculos e Performances",
+          "children": [
+            { "cor": null, "link": "/tipos-linguagens/musica", "titulo": "Música" }
+          ]
+        }
+      ],
+      "unidade": [{ "name": "Pompeia", "link": "/unidades/pompeia" }],
+      "gratuito": "",
+      "online": ""
+    },
+    {
+      "id": 900003,
+      "link": "/programacao/turne-multi-unidade",
+      "titulo": "Turnê Multi-unidade",
+      "complemento": "",
+      "cancelado": "",
+      "esgotado": "",
+      "dataPrimeiraSessao": "2026-08-01T20:00",
+      "dataProxSessao": "2026-08-01T20:00",
+      "dataUltimaSessao": "2026-08-02T20:00",
+      "tipos_linguagens": [
+        {
+          "cor": null,
+          "link": "/tipos-linguagens/shows-espetaculos-e-performances",
+          "titulo": "Shows, Espetáculos e Performances",
+          "children": [
+            { "cor": null, "link": "/tipos-linguagens/musica", "titulo": "Música" }
+          ]
+        }
+      ],
+      "unidade": [
+        { "name": "Franca", "link": "/unidades/franca" },
+        { "name": "Pinheiros", "link": "/unidades/pinheiros" }
+      ],
+      "gratuito": "",
+      "online": ""
+    }
+  ],
+  "total": { "value": 5, "relation": "eq" }
+}

@@ -35,8 +35,24 @@ class ScrapePipeline:
         self._enable_ocr = enable_ocr
 
     async def run(self, listing_url: str, *, max_events: int | None = None) -> list[CulturalEvent]:
-        """Scrape the listing page and every event linked from it."""
+        """Scrape a source into the repository.
+
+        API-native sources (``parser.fetch_events`` returns events) take a fast
+        path; HTML sources fall back to the listing → discover → parse flow.
+        """
         now = datetime.now(timezone.utc)
+
+        api_events = await self._parser.fetch_events(
+            self._fetcher, scraped_at=now, max_events=max_events
+        )
+        if api_events is not None:
+            for event in api_events:
+                if self._enable_ocr and event.seat_map_url:
+                    event = await self._ocr_seat_map(event)
+                self._repo.upsert(event)
+            logger.info("scrape_complete", source=self._parser.source, events=len(api_events))
+            return api_events
+
         listing_html = await self._fetcher.fetch(listing_url)
         urls = self._parser.list_event_urls(listing_html, listing_url)
         if max_events is not None:

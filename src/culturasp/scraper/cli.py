@@ -38,6 +38,15 @@ def listing_url(source: str, settings: Settings) -> str:
     return base.rstrip("/") + LISTING_PATHS[source]
 
 
+def base_url_for(source: str, settings: Settings) -> str:
+    """Origin each source is read from (each source has its own host)."""
+    return {"sesc": settings.sesc_base_url}.get(source, settings.sala_sp_base_url)
+
+
+def listing_url_for(source: str, settings: Settings) -> str:
+    return base_url_for(source, settings) + LISTING_PATHS[source]
+
+
 async def _run(source: str, max_events: int | None) -> int:
     settings = get_settings()
     parser = PARSERS[source]

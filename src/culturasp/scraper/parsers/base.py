@@ -9,8 +9,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from culturasp.models.event import CulturalEvent
+
+if TYPE_CHECKING:
+    from culturasp.scraper.fetcher import Fetcher
 
 
 class BaseParser(ABC):
@@ -39,3 +43,19 @@ class BaseParser(ABC):
         The monitor hashes these to detect layout changes. Default: title.
         """
         return ["h1"]
+
+    async def fetch_events(
+        self,
+        fetcher: Fetcher,
+        *,
+        scraped_at: datetime,
+        max_events: int | None = None,
+    ) -> list[CulturalEvent] | None:
+        """Optional fast path for API-native sources.
+
+        A source backed by a structured JSON API (e.g. Sesc) overrides this to
+        build events directly from the API — no per-event page fetch, no layout
+        monitor. HTML sources (the default) return ``None`` and are collected via
+        the ``list_event_urls`` → ``parse_event`` flow instead.
+        """
+        return None

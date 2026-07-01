@@ -6,6 +6,7 @@ from culturasp.scraper.parsers.sesc_sp import SescSPParser
 #: Live source parsers — used by the scheduler/API. Keyed by source slug.
 PARSERS: dict[str, BaseParser] = {
     SalaSPParser.source: SalaSPParser(),
+    SescParser.source: SescParser(),
 }
 
 #: Experimental/candidate parsers — NOT used at runtime. Selectors unverified;
