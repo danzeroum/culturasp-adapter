@@ -143,3 +143,46 @@ def test_interval_appended_to_url() -> None:
     )
     url = parser._page_url(BASE, 1)
     assert url.endswith("?ppp=1000&page=1&intervalo=mes")
+
+
+def _child_card() -> dict[str, Any]:
+    return {
+        "id": 101,
+        "titulo": "A Força do Amor - Alonso e Marina",
+        "link": "/programacao/a-forca-do-amor",
+        "unidade": [{"name": "Pinheiros", "link": "/unidades/pinheiros"}],
+        "publico_tag": [{"link": "/publico_tag/criancas", "titulo": "Crianças"}],
+        "tipos_linguagens": [
+            {"titulo": "Shows, Espetáculos e Performances", "children": [{"titulo": "Teatro"}]}
+        ],
+        "dataProxSessao": "2026-07-11T15:00",
+        "gratuito": "Atividade gratuita",
+    }
+
+
+def test_audience_infantil_from_publico_tag() -> None:
+    (event,) = cards_to_events(
+        [_child_card()], base_url=BASE, capital_units={"pinheiros"}, scraped_at=NOW
+    )
+    assert event.audience == "infantil"
+    # A children's activity is typed as schema.org/ChildrensEvent...
+    assert event.schema_type is SchemaType.childrens_event
+    # ...and the category prefers the specific leaf ("Teatro") over its parent.
+    assert event.category == "Teatro"
+
+
+def test_audience_livre_from_diversas_idades() -> None:
+    card = _child_card()
+    card["publico_tag"] = [{"link": "/publico_tag/diversas-idades", "titulo": "Diversas idades"}]
+    (event,) = cards_to_events([card], base_url=BASE, capital_units={"pinheiros"}, scraped_at=NOW)
+    assert event.audience == "livre"
+    # Not children → falls back to the linguagem-based type (Teatro → TheaterEvent).
+    assert event.schema_type is SchemaType.theater_event
+
+
+def test_audience_none_when_no_publico_tag(sesc_filter_payload: dict[str, Any]) -> None:
+    events = cards_to_events(
+        sesc_filter_payload["atividade"], base_url=BASE, capital_units=CAPITAL, scraped_at=NOW
+    )
+    # The fixture cards carry no publico_tag, so audience stays unset.
+    assert all(e.audience is None for e in events)

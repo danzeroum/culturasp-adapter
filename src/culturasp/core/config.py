@@ -51,7 +51,6 @@ class Settings(BaseSettings):
 
     # --- Sources ---
     sala_sp_base_url: str = "https://salasaopaulo.art.br"
-    sesc_base_url: str = "https://www.sescsp.org.br"
 
     # Sesc São Paulo. The site exposes a public WordPress JSON API
     # (/wp-json/wp/v1/atividades/filter) covering the whole state; we keep only

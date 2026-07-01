@@ -76,7 +76,58 @@ def _schema_type(card: dict[str, Any]) -> SchemaType:
         return SchemaType.music_event
     if "exposi" in blob:  # exposição / exposições
         return SchemaType.exhibition_event
+    if "teatro" in blob:
+        return SchemaType.theater_event
     return SchemaType.event
+
+
+#: Sesc's ``publico_tag`` controlled vocabulary (slug of ``/publico_tag/<slug>``).
+_CHILD_TAG_SLUGS = {"criancas", "crianca", "bebes", "bebe", "infantil"}
+_OPEN_TAG_SLUGS = {"diversas-idades", "todas-as-idades", "todos-os-publicos", "livre", "familia"}
+
+
+def _publico_meta(card: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """Return the ``publico_tag`` (slugs, titles) for an activity card."""
+    slugs: list[str] = []
+    titles: list[str] = []
+    for tag in card.get("publico_tag") or []:
+        link = (tag.get("link") or "").strip("/")
+        if link:
+            slugs.append(link.rsplit("/", 1)[-1].lower())
+        title = clean_text(tag.get("titulo"))
+        if title:
+            titles.append(title)
+    return slugs, titles
+
+
+def _audience_from_card(card: dict[str, Any]) -> str | None:
+    """Normalised audience label from the activity's ``publico_tag``.
+
+    Sesc tags the target public with a controlled vocabulary
+    (``/publico_tag/<slug>``): children (``criancas``/``bebes``) → "infantil";
+    all-ages (``diversas-idades``/...) → "livre"; otherwise the tag's own label.
+    Numeric ages are not exposed by this field, so ``min_age``/``max_age`` stay
+    ``None`` and children's programming is filtered via ``audience=infantil``.
+    """
+    slugs, titles = _publico_meta(card)
+    if any(s in _CHILD_TAG_SLUGS for s in slugs):
+        return "infantil"
+    if any(s in _OPEN_TAG_SLUGS for s in slugs):
+        return "livre"
+    return titles[0].lower() if titles else None
+
+
+def _category_from_card(card: dict[str, Any]) -> str | None:
+    """Most specific activity category from ``tipos_linguagens`` (leaf preferred)."""
+    for top in card.get("tipos_linguagens") or []:
+        for child in top.get("children") or []:
+            label = clean_text(child.get("titulo"))
+            if label:
+                return label
+        label = clean_text(top.get("titulo"))
+        if label:
+            return label
+    return None
 
 
 def _card_to_event(
@@ -93,12 +144,19 @@ def _card_to_event(
     venue = f"Sesc {units[0]['name']}" if units and units[0].get("name") else "Sesc São Paulo"
     source_url = urljoin(base_url, str(link))
 
+    # A children's activity is best typed as schema.org/ChildrensEvent; otherwise
+    # fall back to the linguagem-based type (music/exhibition/theater/event).
+    audience = _audience_from_card(card)
+    schema_type = SchemaType.childrens_event if audience == "infantil" else _schema_type(card)
+
     return CulturalEvent(
         id=f"sesc:{card_id}",
         source="sesc",
         source_url=source_url,
         title=title,
-        schema_type=_schema_type(card),
+        schema_type=schema_type,
+        audience=audience,
+        category=_category_from_card(card),
         # dataProxSessao is the next upcoming session; fall back to the first.
         start=_parse_dt(card.get("dataProxSessao") or card.get("dataPrimeiraSessao")),
         end=None,

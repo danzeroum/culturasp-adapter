@@ -23,7 +23,7 @@ proteção — portanto fora de escopo.
 
 | # | Fonte | Classe | robots / acesso | Viabilidade | Recomendação |
 |---|---|---|---|---|---|
-| 7 | **SESC SP** (`sescsp.org.br`) | Instituição | `Disallow:` vazio (libera tudo); WordPress + plugin React `sesc-eventos` (listagem via JS) | **Alta** | ✅ **Primeiro parser** — feito (`sesc_sp.py`, experimental). Melhor custo-benefício: rede de unidades, muita coisa gratuita. |
+| 7 | **SESC SP** (`sescsp.org.br`) | Instituição | `Disallow:` vazio (libera tudo); **API JSON pública** (`/wp-json/wp/v1/atividades/filter`) | **Alta** | ✅ **Fonte live** (`parsers/sesc.py`, slug `sesc`, apenas capital). O campo `publico_tag` marca o público (`Crianças` → `audience=infantil`); `tipos_linguagens` vira `category`. Filtre com `?source=sesc&audience=infantil`. |
 | 11 | **Museu Catavento** (`catavento.org.br`) | Instituição | Cloudflare challenge (403/000) | Baixa | ⏸ Bloqueado a bots. Reavaliar com captura local; não force. |
 | 12 | **Museu da Imaginação** (`museudaimaginacao.com.br`) | Instituição | Cloudflare challenge | Baixa | ⏸ Bloqueado a bots. |
 | 8 | **Teatro Folha** (`teatrofolha.com.br`) | Instituição | robots com *content-signals* (reserva de direitos p/ IA/treino) | Média | ⚠️ Respeitar sinais de conteúdo; avaliar antes de coletar. |
@@ -42,9 +42,11 @@ proteção — portanto fora de escopo.
 
 ## Conclusões
 
-1. **SESC é a fonte inicial** e já tem parser (`sesc-sp`, em `EXPERIMENTAL_PARSERS`).
-   Falta validar os seletores contra um snapshot real (captura local — o browser
-   headless é bloqueado pelo proxy deste ambiente) e promovê-lo a `PARSERS`.
+1. **SESC é a fonte inicial e já é live** (`sesc`, em `PARSERS`): é **API-native**
+   (JSON público), então não depende de render de browser. A programação infantil sai
+   do próprio `publico_tag` da API (`Crianças`/`Bebês` → `audience=infantil`); o campo
+   **não** traz idade numérica, então o filtro por infantil é via `audience` (o filtro
+   `age` exige faixa `min/max`, ausente nesta fonte).
 2. **Muitas fontes ficam atrás de Cloudflare** (Catavento, Museu da Imaginação,
    Teatro Vivo, SP Crianças) — coleta ética não passa por esse desafio; ficam em
    espera, não em evasão.
@@ -55,11 +57,11 @@ proteção — portanto fora de escopo.
 
 ## Próximos parsers sugeridos (ordem)
 
-1. **SESC** — validar e promover (feito o esqueleto).
-2. **Biblioteca Monteiro Lobato / portais públicos da Prefeitura** — dados
+1. **Biblioteca Monteiro Lobato / portais públicos da Prefeitura** — dados
    públicos, sem barreira comercial; confirmar URL de agenda.
-3. **Teatro Folha** — respeitando os *content-signals* declarados.
-4. Reavaliar as fontes Cloudflare somente se houver acesso autorizado/local.
+2. **Teatro Folha** — respeitando os *content-signals* declarados.
+3. Reavaliar as fontes Cloudflare somente se houver acesso autorizado/local.
+4. **Sympla/Eventbrite** — como plataforma (ToS/API), fase posterior.
 
 Cada novo parser segue `parsers/_template.py`, entra primeiro em
 `EXPERIMENTAL_PARSERS` e só é promovido após captura real

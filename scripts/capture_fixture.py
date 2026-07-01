@@ -25,8 +25,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from culturasp.core.config import get_settings
-from culturasp.scraper.cli import LISTING_PATHS
-from culturasp.scraper.cli import listing_url as resolve_listing_url
+from culturasp.scraper.cli import LISTING_PATHS, listing_url_for
 from culturasp.scraper.fetcher import Fetcher
 from culturasp.scraper.parsers import ALL_PARSERS
 
@@ -52,7 +51,7 @@ async def _capture(source: str, max_events: int, listing_url: str | None) -> Non
                 f"source {source!r} has no known listing path — pass --listing-url "
                 "with the real programação/exposições URL."
             )
-        listing_url = resolve_listing_url(source, settings)
+        listing_url = listing_url_for(source, settings)
     print(f"→ fetching listing: {listing_url}")
     listing_html = await fetcher.fetch(listing_url, use_cache=False)
     (OUT_DIR / f"{source}_listing.html").write_text(listing_html, encoding="utf-8")
