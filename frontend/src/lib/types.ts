@@ -1,7 +1,12 @@
 // Types mirroring the backend `CulturalEvent` model (src/culturasp/models/event.py).
 // Hand-written to match the API exactly; can later be generated from /openapi.json.
 
-export type SchemaType = "MusicEvent" | "ExhibitionEvent" | "Event";
+export type SchemaType =
+  | "MusicEvent"
+  | "ExhibitionEvent"
+  | "TheaterEvent"
+  | "ChildrensEvent"
+  | "Event";
 export type OCRStatus = "not_attempted" | "success" | "failed";
 
 export interface ProgramItem {
@@ -34,6 +39,10 @@ export interface CulturalEvent {
   duration_minutes: number | null;
   schema_type: SchemaType;
   venue: string;
+  min_age: number | null;
+  max_age: number | null;
+  audience: string | null;
+  category: string | null;
   program: ProgramItem[];
   conductor: string | null;
   performers: string[];
@@ -60,6 +69,8 @@ export interface EventQuery {
   date_from?: string;
   date_to?: string;
   accessible?: boolean;
+  audience?: string;
+  age?: number;
   limit?: number;
   offset?: number;
 }

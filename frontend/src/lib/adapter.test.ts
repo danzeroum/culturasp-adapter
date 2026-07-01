@@ -78,3 +78,44 @@ describe("makeICS", () => {
     expect(ics).toContain("END:VCALENDAR");
   });
 });
+
+describe("toEventVM — audience & age", () => {
+  it("maps a children's event to the Infantil type and a kids chip label", () => {
+    const vm = toEventVM(
+      makeEvent({
+        schema_type: "ChildrensEvent",
+        audience: "infantil",
+        min_age: 4,
+        max_age: 10,
+        category: "Teatro",
+      }),
+    );
+    expect(vm.typeLabel).toBe("Infantil");
+    expect(vm.typeColor).toBe("#C2410C");
+    expect(vm.isChildrens).toBe(true);
+    expect(vm.audienceLabel).toBe("Infantil");
+    expect(vm.ageLabel).toBe("4–10 anos");
+    expect(vm.kidsLabel).toBe("Infantil · 4–10 anos");
+    expect(vm.category).toBe("Teatro");
+    expect(vm.ariaLabel).toContain("Público: Infantil.");
+  });
+
+  it("labels an open rating as Livre without duplicating the chip", () => {
+    const vm = toEventVM(makeEvent({ audience: "livre", min_age: 0, max_age: null }));
+    expect(vm.audienceLabel).toBe("Livre");
+    expect(vm.ageLabel).toBe("Livre");
+    expect(vm.kidsLabel).toBe("Livre");
+  });
+
+  it("formats an open-ended minimum age", () => {
+    const vm = toEventVM(makeEvent({ audience: null, min_age: 6, max_age: null }));
+    expect(vm.ageLabel).toBe("A partir de 6 anos");
+    expect(vm.kidsLabel).toBe("A partir de 6 anos");
+  });
+
+  it("leaves the kids label empty when no audience/age is published", () => {
+    const vm = toEventVM(makeEvent());
+    expect(vm.kidsLabel).toBe("");
+    expect(vm.isChildrens).toBe(false);
+  });
+});

@@ -68,6 +68,12 @@ export interface EventVM {
   externalUrl: string | null;
   // seat map (optional)
   seatMapUrl: string | null;
+  // audience / age (children & family programming)
+  audienceLabel: string;
+  ageLabel: string;
+  kidsLabel: string;
+  isChildrens: boolean;
+  category: string | null;
   // provenance
   scrapedAtLabel: string;
   experimental: boolean;
@@ -76,13 +82,38 @@ export interface EventVM {
 const TYPE_LABEL: Record<SchemaType, string> = {
   MusicEvent: "Concerto",
   ExhibitionEvent: "Exposição",
+  TheaterEvent: "Teatro",
+  ChildrensEvent: "Infantil",
   Event: "Evento",
 };
 const TYPE_COLOR: Record<SchemaType, string> = {
   MusicEvent: "#2E3A87", // indigo
   ExhibitionEvent: "#B92C77", // magenta
+  TheaterEvent: "#0E7C5A", // green
+  ChildrensEvent: "#C2410C", // orange
   Event: "#3A4A6B", // slate (generic)
 };
+
+// Audience label (PT-BR). Falls back to a capitalised form of the raw tag.
+const AUDIENCE_LABEL: Record<string, string> = {
+  infantil: "Infantil",
+  livre: "Livre",
+  familia: "Família",
+  jovens: "Jovens",
+};
+
+function audienceLabel(a: string | null): string {
+  if (!a) return "";
+  return AUDIENCE_LABEL[a] ?? a.charAt(0).toUpperCase() + a.slice(1);
+}
+
+// Recommended age band → PT-BR label. Mirrors CulturalEvent.age_range_text.
+function ageLabel(min: number | null, max: number | null): string {
+  if (min == null && max == null) return "";
+  if (max != null) return `${min ?? 0}–${max} anos`;
+  if (!min) return "Livre"; // min 0/undefined, no upper bound
+  return `A partir de ${min} anos`;
+}
 
 const NOT_INFORMED = "Não informado";
 const NOT_INFORMED_SESSION = "Não informado pela fonte para esta sessão.";
@@ -129,11 +160,21 @@ export function toEventVM(e: CulturalEvent): EventVM {
 
   const typeLabel = TYPE_LABEL[e.schema_type] ?? "Evento";
 
+  const audLabel = audienceLabel(e.audience);
+  const ageLbl = ageLabel(e.min_age, e.max_age);
+  // Combine into one chip label, avoiding a redundant "Livre · Livre".
+  const kidsLabel =
+    audLabel && ageLbl && audLabel !== ageLbl
+      ? `${audLabel} · ${ageLbl}`
+      : audLabel || ageLbl;
+  const isChildrens = e.schema_type === "ChildrensEvent" || e.audience === "infantil";
+
   const ariaLabel =
     `${typeLabel}: ${e.title}. ${when}, ${e.source}.` +
     (e.ticket.free_of_charge ? " Gratuito." : "") +
     (libras ? " Libras disponível." : "") +
-    (audio ? " Audiodescrição disponível." : "");
+    (audio ? " Audiodescrição disponível." : "") +
+    (audLabel ? ` Público: ${audLabel}.` : "");
 
   return {
     id: e.id,
@@ -181,6 +222,11 @@ export function toEventVM(e: CulturalEvent): EventVM {
     ticketCancel: e.ticket.cancellation_window ?? "",
     externalUrl: e.ticket.external_url,
     seatMapUrl: e.seat_map_url,
+    audienceLabel: audLabel,
+    ageLabel: ageLbl,
+    kidsLabel,
+    isChildrens,
+    category: e.category,
     scrapedAtLabel: parseDate(e.scraped_at) ? dateLong(parseDate(e.scraped_at)!) : "",
     experimental: false, // API only serves live sources; experimental ones aren't returned
   };

@@ -36,4 +36,9 @@ describe("EventCard", () => {
     renderCard();
     expect(screen.getByRole("heading", { name: /Orquestra Antares/ })).toBeInTheDocument();
   });
+
+  it("shows a kids chip for children's programming", () => {
+    renderCard({ schema_type: "ChildrensEvent", audience: "infantil", min_age: 4, max_age: 10 });
+    expect(screen.getByText("Infantil · 4–10 anos")).toBeInTheDocument();
+  });
 });
