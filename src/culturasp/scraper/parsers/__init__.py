@@ -1,10 +1,12 @@
 from culturasp.scraper.parsers.base import BaseParser
 from culturasp.scraper.parsers.pinacoteca import PinacotecaParser
 from culturasp.scraper.parsers.sala_sp import SalaSPParser
+from culturasp.scraper.parsers.sesc import SescParser
 
 #: Live source parsers — used by the scheduler/API. Keyed by source slug.
 PARSERS: dict[str, BaseParser] = {
     SalaSPParser.source: SalaSPParser(),
+    SescParser.source: SescParser(),
 }
 
 #: Experimental/candidate parsers — NOT used at runtime. Selectors unverified;
@@ -23,4 +25,5 @@ __all__ = [
     "BaseParser",
     "PinacotecaParser",
     "SalaSPParser",
+    "SescParser",
 ]
