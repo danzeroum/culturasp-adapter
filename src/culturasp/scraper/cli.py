@@ -15,8 +15,11 @@ from culturasp.scraper.pipeline import ScrapePipeline
 logger = get_logger(__name__)
 
 #: Per-source listing (programme) URL. Discovered links are scraped from here.
+#: For sala-sp we use the ticketing programme ("programacao-ingressos"): it
+#: renders the full season (~35 concerts) into the DOM, whereas "/programacao"
+#: only shows the next few ("Próximos concertos").
 LISTING_PATHS = {
-    "sala-sp": "/salasp/pt/programacao",
+    "sala-sp": "/salasp/pt/programacao-ingressos",
 }
 
 
