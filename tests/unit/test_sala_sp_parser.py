@@ -8,9 +8,16 @@ import pytest
 
 from culturasp.core.exceptions import ParseError
 from culturasp.models.event import OCRStatus
+from culturasp.scraper.cli import LISTING_PATHS
 from culturasp.scraper.parsers.sala_sp import SalaSPParser
 
 NOW = datetime(2026, 6, 27, tzinfo=timezone.utc)
+
+
+def test_listing_path_is_full_programme() -> None:
+    # "/programacao" only shows the next few concerts; the ticketing programme
+    # page renders the whole season, so that's what we scrape.
+    assert LISTING_PATHS["sala-sp"].endswith("/programacao-ingressos")
 
 
 @pytest.fixture
