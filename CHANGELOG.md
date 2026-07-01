@@ -8,6 +8,20 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Fonte Sesc São Paulo** (`parsers/sesc.py`, **live** em `PARSERS`), limitada às
+  unidades da **cidade de São Paulo (capital)**. Diferente da Sala SP (HTML), o Sesc
+  expõe uma **API JSON pública** (`/wp-json/wp/v1/atividades/filter`), então o parser é
+  **API-native**: monta os `CulturalEvent` direto do JSON (paginação + dedup), sem
+  render das páginas de detalhe (SPA). O filtro "apenas capital" é por *slug* de unidade
+  numa allowlist configurável (`CULTURASP_SESC_CAPITAL_UNITS`); Música → `MusicEvent`,
+  exposições → `ExhibitionEvent`, demais → `Event`; datas com fuso `-03:00`.
+- **Hook `BaseParser.fetch_events`** (opcional): habilita fontes **API-native** — o
+  `ScrapePipeline` usa o atalho quando o parser o implementa; fontes HTML retornam
+  `None` e seguem o fluxo listagem→descobre→parse (Sala SP inalterada).
+- **`Fetcher.fetch_json`**: GET JSON educado (httpx, cache-first, robots.txt + delay + UA).
+- **Config `CULTURASP_SESC_*`**: `SESC_BASE_URL`, `SESC_CAPITAL_UNITS` (allowlist de
+  unidades da capital) e `SESC_INTERVAL` (janela opcional da API). Resolução de base URL
+  **por fonte** em `cli.py`/`scheduler.py` (antes fixa na Sala SP).
 - **Brief de design** (`docs/design_brief.md`): especificação completa de todas as
   interfaces (portal público + portal de dados/dev), derivada da API/modelo, com
   fluxos, design system, requisitos de acessibilidade (WCAG 2.2 AA) e entregáveis.

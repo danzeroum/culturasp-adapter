@@ -1,8 +1,8 @@
 # CulturaSP-Adapter
 
 Adaptador **open source read-only** que lê dados culturais públicos de São Paulo
-(começando pela **Sala São Paulo / OSESP**), estrutura em **JSON-LD / schema.org**
-e expõe via **API REST**.
+(**Sala São Paulo / OSESP** e **Sesc SP**, unidades da capital), estrutura em
+**JSON-LD / schema.org** e expõe via **API REST**.
 
 ## Por quê?
 

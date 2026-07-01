@@ -1,8 +1,8 @@
 # 🎼 CulturaSP-Adapter
 
 > Adaptador **open source read-only** que lê dados culturais públicos de São Paulo
-> (a começar pela **Sala São Paulo / OSESP**), estrutura em **JSON-LD / schema.org**
-> e expõe via **API REST**. Transforma HTML dinâmico e PDFs em uma camada de
+> (**Sala São Paulo / OSESP** e **Sesc SP**, capital), estrutura em **JSON-LD / schema.org**
+> e expõe via **API REST**. Transforma HTML dinâmico, PDFs e APIs em uma camada de
 > **dados abertos** reutilizável.
 
 [![CI](https://github.com/danzeroum/culturasp-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/danzeroum/culturasp-adapter/actions/workflows/ci.yml)
@@ -58,11 +58,15 @@ pytest                           # 36 testes offline contra fixtures (sem rede)
 ruff check . && ruff format --check .
 ```
 
-Rodar um scrape pontual (precisa de Postgres/Redis e Playwright):
+Rodar um scrape pontual (precisa de Postgres/Redis; Playwright só para a Sala SP):
 
 ```bash
 culturasp-scrape --source sala-sp --max 5
+culturasp-scrape --source sesc --max 20   # Sesc SP, unidades da capital (via API JSON)
 ```
+
+> **Fontes:** `sala-sp` (HTML renderizado + PDFs) e `sesc` (**API-native**, apenas
+> unidades da cidade de São Paulo — configurável em `CULTURASP_SESC_CAPITAL_UNITS`).
 
 ## Endpoints principais
 
