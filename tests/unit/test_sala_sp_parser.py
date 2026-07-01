@@ -98,6 +98,17 @@ def test_parse_event_extracts_conductor_from_prose(parser: SalaSPParser) -> None
     assert event.conductor == "Thierry Fischer"
 
 
+def test_parse_event_extracts_conductor_from_credit_line(parser: SalaSPParser) -> None:
+    # Programme pages credit the conductor as "<Name> regente" (name before the
+    # role). An adjacent "Programa" heading must not bleed into the captured name.
+    html = (
+        "<h1>X</h1><h2>Programa</h2>"
+        "<p>Claudia Feres regente Gabriel Brandão piano</p>"
+    )
+    event = parser.parse_event(html, "https://salasaopaulo.art.br/x/concerto/1", scraped_at=NOW)
+    assert event.conductor == "Claudia Feres"
+
+
 def test_parse_event_core_fields(parser: SalaSPParser, concert_html: str) -> None:
     url = "https://salasaopaulo.art.br/salasp/pt/concerto/1727"
     event = parser.parse_event(concert_html, url, scraped_at=NOW)

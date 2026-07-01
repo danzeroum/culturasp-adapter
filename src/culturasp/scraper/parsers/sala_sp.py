@@ -39,9 +39,11 @@ _CONCERT_PATH = re.compile(r"(?:^|/)concerto/\d+", re.IGNORECASE)
 _NAME_UPPER = r"[A-ZÀ-ÖØ-Þ][A-ZÀ-ÖØ-Þ'’\-]+"  # noqa: RUF001
 _NAME_TITLE = r"[A-ZÀ-ÖØ-Þ][a-zà-öø-ÿ'’.\-]+"  # noqa: RUF001
 _COMPOSER_RE = re.compile(rf"(?:{_NAME_UPPER}\s+){{1,3}}{_NAME_UPPER}")
-# Best-effort conductor: only the explicit "regência de <Name>" phrasing, so a
-# missing one stays None rather than guessing.
+# Best-effort conductor. Two explicit phrasings, so a missing one stays None
+# rather than guessing: prose "regência de <Name>", and the performer-credit
+# line "<Name> regente" used on the programme pages ("Claudia Feres regente").
 _CONDUCTOR_RE = re.compile(rf"[Rr]eg[êe]ncia\s+d[eo]\s+({_NAME_TITLE}(?:\s+{_NAME_TITLE}){{1,3}})")
+_CONDUCTOR_CREDIT_RE = re.compile(rf"^({_NAME_TITLE}(?:\s+{_NAME_TITLE}){{1,3}})\s+[Rr]egente\b")
 
 
 def _split_caps_program(text: str) -> list[ProgramItem]:
@@ -64,8 +66,14 @@ def _split_dash_item(text: str) -> ProgramItem:
 
 
 def _find_conductor(soup: BeautifulSoup) -> str | None:
-    m = _CONDUCTOR_RE.search(soup.get_text(" ", strip=True))
-    return m.group(1) if m else None
+    if m := _CONDUCTOR_RE.search(soup.get_text(" ", strip=True)):
+        return m.group(1)
+    # "<Name> regente" credit — scan per-block and anchor to the block start, so
+    # an adjacent heading (e.g. the "Programa" title) can't bleed into the name.
+    for el in soup.find_all(["p", "li"]):
+        if m := _CONDUCTOR_CREDIT_RE.match(el.get_text(" ", strip=True)):
+            return m.group(1)
+    return None
 
 
 class SalaSPParser(BaseParser):

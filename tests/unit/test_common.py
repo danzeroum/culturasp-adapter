@@ -17,6 +17,16 @@ def test_parse_datetime_applies_colon_time() -> None:
     assert end is not None and (end.hour, end.minute) == (21, 35)
 
 
+def test_parse_datetime_strips_weekday_prefix() -> None:
+    # Live dates carry an abbreviated weekday ("seg., 20 de julho de 2026").
+    # dateparser returns None for some abbreviations (notably "seg."), so the
+    # helper must drop the redundant weekday before parsing.
+    start, _, _ = parse_datetime({"data": "seg., 20 de julho de 2026", "horário": "19:00"})
+    assert start is not None
+    assert (start.year, start.month, start.day) == (2026, 7, 20)
+    assert (start.hour, start.minute) == (19, 0)
+
+
 def _ymd(dt) -> tuple[int, int, int] | None:
     return (dt.year, dt.month, dt.day) if dt else None
 
