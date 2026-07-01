@@ -22,6 +22,10 @@ def list_events(
     date_from: datetime | None = Query(None, description="Only events starting at/after this"),
     date_to: datetime | None = Query(None, description="Only events starting at/before this"),
     accessible: bool | None = Query(None, description="Filter by any accessibility feature"),
+    audience: str | None = Query(None, description="Filter by audience label, e.g. 'infantil'"),
+    age: int | None = Query(
+        None, ge=0, le=120, description="Only events whose published age band includes this age"
+    ),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
 ) -> list[CulturalEvent]:
@@ -30,6 +34,8 @@ def list_events(
         date_from=date_from,
         date_to=date_to,
         accessible=accessible,
+        audience=audience,
+        age=age,
         limit=limit,
         offset=offset,
     )

@@ -71,3 +71,38 @@ def test_jsonld_generic_event_type() -> None:
     doc = event_to_jsonld(event)
     assert doc["@type"] == "Event"
     assert doc["location"]["@type"] == "Place"
+
+
+def test_jsonld_childrens_event_emits_age_and_audience() -> None:
+    event = _sample().model_copy(
+        update={
+            "schema_type": SchemaType.childrens_event,
+            "min_age": 4,
+            "max_age": 10,
+            "audience": "infantil",
+        }
+    )
+    doc = event_to_jsonld(event)
+    assert doc["@type"] == "ChildrensEvent"
+    assert doc["location"]["@type"] == "Place"
+    assert doc["typicalAgeRange"] == "4-10"
+    assert doc["audience"] == {
+        "@type": "PeopleAudience",
+        "audienceType": "infantil",
+        "suggestedMinAge": 4,
+        "suggestedMaxAge": 10,
+    }
+
+
+def test_jsonld_open_ended_age_range_text() -> None:
+    event = _sample().model_copy(update={"min_age": 4, "max_age": None})
+    doc = event_to_jsonld(event)
+    assert doc["typicalAgeRange"] == "4-"
+    assert doc["audience"]["suggestedMinAge"] == 4
+    assert "suggestedMaxAge" not in doc["audience"]
+
+
+def test_jsonld_omits_age_fields_when_absent() -> None:
+    doc = event_to_jsonld(_sample())
+    assert "typicalAgeRange" not in doc
+    assert "audience" not in doc

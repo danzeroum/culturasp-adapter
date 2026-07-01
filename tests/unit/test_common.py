@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from culturasp.scraper.parsers._common import parse_datetime, parse_ptbr_date_range
+from culturasp.scraper.parsers._common import (
+    parse_age_range,
+    parse_datetime,
+    parse_ptbr_date_range,
+)
 
 
 def test_parse_datetime_applies_colon_time() -> None:
@@ -71,3 +75,42 @@ def test_numeric_date_not_split_on_internal_hyphen() -> None:
 @pytest.mark.parametrize("text", ["", None, "   ", "sem informação"])
 def test_unparseable_yields_none(text: str | None) -> None:
     assert parse_ptbr_date_range(text) == (None, None)
+
+
+# --- parse_age_range ---------------------------------------------------------
+
+
+def test_age_range_band() -> None:
+    assert parse_age_range("de 4 a 10 anos") == (4, 10, "infantil")
+
+
+def test_age_range_band_with_dash() -> None:
+    assert parse_age_range("Classificação: 6 – 12 anos") == (6, 12, "infantil")  # noqa: RUF001
+
+
+def test_age_min_a_partir_de() -> None:
+    assert parse_age_range("recomendado a partir de 4 anos") == (4, None, "infantil")
+
+
+def test_age_plus_notation() -> None:
+    assert parse_age_range("12+") == (12, None, "infantil")
+
+
+def test_age_free_rating() -> None:
+    assert parse_age_range("Classificação livre") == (0, None, "livre")
+    assert parse_age_range("para toda a família") == (0, None, "livre")
+    assert parse_age_range("todas as idades") == (0, None, "livre")
+
+
+def test_age_bare_years() -> None:
+    assert parse_age_range("8 anos") == (8, None, "infantil")
+
+
+def test_age_range_prefers_band_over_bare() -> None:
+    # A full band ("4 a 10 anos") must win over the bare "N anos" fallback.
+    assert parse_age_range("indicado de 4 a 10 anos, duração 50 min") == (4, 10, "infantil")
+
+
+@pytest.mark.parametrize("text", ["", None, "   ", "sem indicação"])
+def test_age_unparseable_yields_none(text: str | None) -> None:
+    assert parse_age_range(text) == (None, None, None)

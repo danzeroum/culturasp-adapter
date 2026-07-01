@@ -14,8 +14,9 @@ A API é **read-only**, **sem autenticação** (dados públicos) e protegida por
 GET /v1/events?source=sala-sp&accessible=true&date_from=2026-08-01&limit=20
 ```
 
-Filtros: `source`, `date_from`, `date_to`, `accessible`, `limit` (1–200),
-`offset`.
+Filtros: `source`, `date_from`, `date_to`, `accessible`, `audience`
+(ex. `infantil`), `age` (ex. `6` — eventos cuja faixa etária publicada inclui a
+idade), `limit` (1–200), `offset`.
 
 ```http
 GET /v1/events/{id}            # detalhe

@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Protocol
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, sessionmaker
 
 from culturasp.db.models import EventRow, SourceState
@@ -29,6 +29,8 @@ class EventRepository(Protocol):
         date_from: datetime | None = None,
         date_to: datetime | None = None,
         accessible: bool | None = None,
+        audience: str | None = None,
+        age: int | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> list[CulturalEvent]: ...
@@ -40,6 +42,18 @@ class EventRepository(Protocol):
     def set_layout_signature(self, source: str, signature: str) -> None: ...
 
 
+def _age_matches(event: CulturalEvent, age: int) -> bool:
+    """True if ``age`` falls within the event's published age band.
+
+    Events without any age band are excluded — suitability can't be confirmed.
+    """
+    if event.min_age is None and event.max_age is None:
+        return False
+    if event.min_age is not None and age < event.min_age:
+        return False
+    return not (event.max_age is not None and age > event.max_age)
+
+
 def _matches(
     event: CulturalEvent,
     *,
@@ -47,10 +61,16 @@ def _matches(
     date_from: datetime | None,
     date_to: datetime | None,
     accessible: bool | None,
+    audience: str | None,
+    age: int | None,
 ) -> bool:
     if source and event.source != source:
         return False
     if accessible is not None and event.accessibility.has_any != accessible:
+        return False
+    if audience and (event.audience or "").lower() != audience.lower():
+        return False
+    if age is not None and not _age_matches(event, age):
         return False
     if date_from and (event.start is None or event.start < date_from):
         return False
@@ -77,6 +97,8 @@ class InMemoryEventRepository:
         date_from: datetime | None = None,
         date_to: datetime | None = None,
         accessible: bool | None = None,
+        audience: str | None = None,
+        age: int | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> list[CulturalEvent]:
@@ -84,7 +106,13 @@ class InMemoryEventRepository:
             e
             for e in self._events.values()
             if _matches(
-                e, source=source, date_from=date_from, date_to=date_to, accessible=accessible
+                e,
+                source=source,
+                date_from=date_from,
+                date_to=date_to,
+                accessible=accessible,
+                audience=audience,
+                age=age,
             )
         ]
         items.sort(key=lambda e: (e.start is None, e.start or datetime.max))
@@ -117,6 +145,9 @@ class SqlEventRepository:
             row.title = event.title
             row.start = event.start
             row.accessible = event.accessibility.has_any
+            row.min_age = event.min_age
+            row.max_age = event.max_age
+            row.audience = event.audience
             row.payload = payload
             row.scraped_at = event.scraped_at
             session.commit()
@@ -133,6 +164,8 @@ class SqlEventRepository:
         date_from: datetime | None = None,
         date_to: datetime | None = None,
         accessible: bool | None = None,
+        audience: str | None = None,
+        age: int | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> list[CulturalEvent]:
@@ -141,6 +174,15 @@ class SqlEventRepository:
             stmt = stmt.where(EventRow.source == source)
         if accessible is not None:
             stmt = stmt.where(EventRow.accessible == accessible)
+        if audience:
+            stmt = stmt.where(EventRow.audience == audience)
+        if age is not None:
+            # Only events with a published band; the band must include ``age``.
+            stmt = stmt.where(
+                or_(EventRow.min_age.isnot(None), EventRow.max_age.isnot(None)),
+                or_(EventRow.min_age.is_(None), EventRow.min_age <= age),
+                or_(EventRow.max_age.is_(None), EventRow.max_age >= age),
+            )
         if date_from:
             stmt = stmt.where(EventRow.start >= date_from)
         if date_to:

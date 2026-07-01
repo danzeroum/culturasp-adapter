@@ -8,6 +8,17 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Programação infantil**: modelo de dados ganha público-alvo e faixa etária
+  (`min_age`, `max_age`, `audience`, `category`) e os tipos schema.org
+  `TheaterEvent`/`ChildrensEvent`; o JSON-LD emite `typicalAgeRange` + `audience`
+  (`PeopleAudience`). A API `GET /v1/events` passa a filtrar por `audience` e `age`.
+- Helper `parse_age_range` (`parsers/_common.py`): interpreta faixa etária PT-BR
+  ("a partir de 4 anos", "4 a 10 anos", "livre", "12+") em `(min_age, max_age, label)`.
+- Parser **candidato (experimental)** do **SESC SP** (`sesc_sp.py`, foco infantil,
+  em `EXPERIMENTAL_PARSERS`) e infraestrutura multi-fonte: base URL por fonte
+  (`CULTURASP_SESC_BASE_URL`) e resolução de listagem via `listing_url(source, settings)`.
+- **Triagem das fontes infantis** (`docs/sources_infantil.md`): classificação
+  (instituição/agregador/ingressos), status de robots.txt/Cloudflare e recomendação.
 - **Fonte Sesc São Paulo** (`parsers/sesc.py`, **live** em `PARSERS`), limitada às
   unidades da **cidade de São Paulo (capital)**. Diferente da Sala SP (HTML), o Sesc
   expõe uma **API JSON pública** (`/wp-json/wp/v1/atividades/filter`), então o parser é

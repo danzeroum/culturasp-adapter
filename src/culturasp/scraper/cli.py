@@ -17,12 +17,25 @@ logger = get_logger(__name__)
 #: Per-source listing (programme) path. Discovered links are scraped from here.
 #: For sala-sp we use the ticketing programme ("programacao-ingressos"): it
 #: renders the full season (~35 concerts) into the DOM, whereas "/programacao"
-#: only shows the next few ("Próximos concertos"). For sesc the value is nominal:
-#: the source is API-native (see SescParser.fetch_events) and never fetches it.
+#: only shows the next few ("Próximos concertos"). For sesc-sp we seed the
+#: children's programme listing.
 LISTING_PATHS = {
     "sala-sp": "/salasp/pt/programacao-ingressos",
-    "sesc": "/programacao/",
+    "sesc-sp": "/programacao/infantil/",
 }
+
+#: Which configured base URL each source's listing path is joined onto. Lets one
+#: scheduler serve sources on different hosts (Sala SP, SESC, ...).
+SOURCE_BASE_URL_ATTR = {
+    "sala-sp": "sala_sp_base_url",
+    "sesc-sp": "sesc_base_url",
+}
+
+
+def listing_url(source: str, settings: Settings) -> str:
+    """Resolve a source's absolute listing URL from its configured base URL."""
+    base = getattr(settings, SOURCE_BASE_URL_ATTR[source])
+    return base.rstrip("/") + LISTING_PATHS[source]
 
 
 def base_url_for(source: str, settings: Settings) -> str:
@@ -40,9 +53,8 @@ async def _run(source: str, max_events: int | None) -> int:
     repo = get_repository()
     create_all()  # dev convenience; prod uses Alembic
 
-    listing_url = listing_url_for(source, settings)
     pipeline = ScrapePipeline(parser, repo)
-    events = await pipeline.run(listing_url, max_events=max_events)
+    events = await pipeline.run(listing_url(source, settings), max_events=max_events)
     logger.info("cli_done", source=source, events=len(events))
     return len(events)
 

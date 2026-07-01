@@ -130,6 +130,48 @@ def parse_ptbr_date_range(text: str | None) -> tuple[datetime | None, datetime |
     return _parse_ptbr_date(body), None
 
 
+# Age suitability, published in free PT-BR prose. Ordered from most to least
+# specific so an earlier pattern wins (e.g. "de 4 a 10 anos" before "4 anos").
+_AGE_FREE = re.compile(
+    r"livre|todas as idades|classifica[çc][ãa]o livre|para toda a fam[íi]lia", re.IGNORECASE
+)
+_AGE_RANGE = re.compile(r"(\d{1,2})\s*(?:a|até|ate|[-–—])\s*(\d{1,2})\s*anos", re.IGNORECASE)  # noqa: RUF001
+_AGE_MIN = re.compile(
+    r"(?:a partir d[eo]|acima d[eo]|maiores d[eo]|recomend\w*\s+(?:para|a partir d[eo]))\s*(\d{1,2})\s*anos",
+    re.IGNORECASE,
+)
+_AGE_PLUS = re.compile(r"(\d{1,2})\s*\+|\+\s*(\d{1,2})\s*anos", re.IGNORECASE)
+_AGE_BARE = re.compile(r"(\d{1,2})\s*anos", re.IGNORECASE)
+
+
+def parse_age_range(text: str | None) -> tuple[int | None, int | None, str | None]:
+    """Parse a PT-BR age-suitability phrase into ``(min_age, max_age, label)``.
+
+    Handles ranges ("de 4 a 10 anos"), one-sided minimums ("a partir de 4 anos",
+    "4+"), open ratings ("livre", "todas as idades") and a bare "N anos". The
+    label is the normalised audience tag ("infantil" when a child age band is
+    detected, "livre" for open ratings). Unrecognised input → ``(None, None, None)``.
+    """
+    cleaned = clean_text(text)
+    if not cleaned:
+        return None, None, None
+
+    if _AGE_FREE.search(cleaned):
+        return 0, None, "livre"
+    if m := _AGE_RANGE.search(cleaned):
+        lo, hi = int(m.group(1)), int(m.group(2))
+        if lo > hi:
+            lo, hi = hi, lo
+        return lo, hi, "infantil"
+    if m := _AGE_MIN.search(cleaned):
+        return int(m.group(1)), None, "infantil"
+    if m := _AGE_PLUS.search(cleaned):
+        return int(m.group(1) or m.group(2)), None, "infantil"
+    if m := _AGE_BARE.search(cleaned):
+        return int(m.group(1)), None, "infantil"
+    return None, None, None
+
+
 def accessibility_from_soup(soup: BeautifulSoup) -> AccessibilityInfo:
     """Extract structured accessibility info from free-running prose."""
     page_text = soup.get_text(" ", strip=True)

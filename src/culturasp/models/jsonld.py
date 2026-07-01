@@ -45,6 +45,20 @@ def event_to_jsonld(event: CulturalEvent) -> dict[str, Any]:
         },
     }
 
+    # Audience / age suitability — schema.org Event.typicalAgeRange + audience.
+    age_range = event.age_range_text
+    if age_range:
+        doc["typicalAgeRange"] = age_range
+    if event.audience or event.min_age is not None or event.max_age is not None:
+        audience: dict[str, Any] = {"@type": "PeopleAudience"}
+        if event.audience:
+            audience["audienceType"] = event.audience
+        if event.min_age is not None:
+            audience["suggestedMinAge"] = event.min_age
+        if event.max_age is not None:
+            audience["suggestedMaxAge"] = event.max_age
+        doc["audience"] = audience
+
     if event.start:
         doc["startDate"] = event.start.isoformat()
     if event.end:

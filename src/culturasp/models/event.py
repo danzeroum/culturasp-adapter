@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, model_validator
 
 from culturasp.models.accessibility import AccessibilityInfo
 
@@ -27,11 +27,14 @@ class SchemaType(str, Enum):
     """schema.org event type a source maps to (drives the JSON-LD ``@type``).
 
     Concert halls use ``MusicEvent``; museums/exhibitions use ``ExhibitionEvent``;
-    anything else falls back to the generic ``Event``.
+    children's theatre/workshops use ``TheaterEvent``/``ChildrensEvent``; anything
+    else falls back to the generic ``Event``.
     """
 
     music_event = "MusicEvent"
     exhibition_event = "ExhibitionEvent"
+    theater_event = "TheaterEvent"
+    childrens_event = "ChildrensEvent"
     event = "Event"
 
 
@@ -81,6 +84,16 @@ class CulturalEvent(BaseModel):
     conductor: str | None = None
     performers: list[str] = Field(default_factory=list)
 
+    # Audience / suitability — populated for family & children's programming.
+    # ``min_age``/``max_age`` are the recommended age band (e.g. "a partir de 4
+    # anos" → min=4, max=None; "4 a 10 anos" → 4/10; "livre" → min=0). ``audience``
+    # is the published label ("infantil", "livre", "família"); ``category`` is the
+    # kind of activity ("teatro", "oficina", "contação de histórias", ...).
+    min_age: int | None = Field(None, ge=0, description="Recommended minimum age, if published")
+    max_age: int | None = Field(None, ge=0, description="Recommended maximum age, if published")
+    audience: str | None = Field(None, description="Audience label, e.g. 'infantil' / 'livre'")
+    category: str | None = Field(None, description="Activity kind, e.g. 'teatro' / 'oficina'")
+
     accessibility: AccessibilityInfo = Field(default_factory=AccessibilityInfo)
     ticket: TicketPolicy = Field(default_factory=TicketPolicy)
 
@@ -89,3 +102,24 @@ class CulturalEvent(BaseModel):
     ocr_status: OCRStatus = OCRStatus.not_attempted
 
     scraped_at: datetime = Field(..., description="When this snapshot was collected")
+
+    @model_validator(mode="after")
+    def _check_age_band(self) -> CulturalEvent:
+        """A published band must be coherent: ``min_age`` cannot exceed ``max_age``."""
+        if self.min_age is not None and self.max_age is not None and self.min_age > self.max_age:
+            raise ValueError("min_age cannot be greater than max_age")
+        return self
+
+    @property
+    def age_range_text(self) -> str | None:
+        """Human/schema.org ``typicalAgeRange`` string, e.g. '4-10', '4-', 'livre'.
+
+        Returns ``None`` when no age band is known (so JSON-LD omits the property).
+        """
+        if self.min_age is None and self.max_age is None:
+            return None
+        if self.max_age is not None:
+            return f"{self.min_age or 0}-{self.max_age}"
+        if not self.min_age:  # min 0/None with no max → open to everyone
+            return "livre"
+        return f"{self.min_age}-"
