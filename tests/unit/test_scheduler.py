@@ -41,9 +41,9 @@ async def test_collect_all_continues_after_one_source_fails(
     monkeypatch.setattr(
         sched, "PARSERS", {"broken": _FakeParser("broken"), "ok": _FakeParser("ok")}
     )
-    # collect_all resolves each source's listing URL via listing_url(source, settings);
+    # collect_all resolves each source's listing URL via listing_url_for(source, settings);
     # stub it so the test doesn't depend on any real source's configured path.
-    monkeypatch.setattr(sched, "listing_url", lambda source, settings: f"/{source}")
+    monkeypatch.setattr(sched, "listing_url_for", lambda source, settings: f"/{source}")
 
     await sched.collect_all()
 

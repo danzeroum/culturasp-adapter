@@ -14,9 +14,11 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   (`PeopleAudience`). A API `GET /v1/events` passa a filtrar por `audience` e `age`.
 - Helper `parse_age_range` (`parsers/_common.py`): interpreta faixa etária PT-BR
   ("a partir de 4 anos", "4 a 10 anos", "livre", "12+") em `(min_age, max_age, label)`.
-- Parser **candidato (experimental)** do **SESC SP** (`sesc_sp.py`, foco infantil,
-  em `EXPERIMENTAL_PARSERS`) e infraestrutura multi-fonte: base URL por fonte
-  (`CULTURASP_SESC_BASE_URL`) e resolução de listagem via `listing_url(source, settings)`.
+- **Fonte Sesc passa a marcar público infantil**: `parsers/sesc.py` mapeia
+  `publico_tag` → `audience` (`criancas`/`bebes` → "infantil"; `diversas-idades` →
+  "livre") e `tipos_linguagens` → `category`; atividades infantis viram
+  `ChildrensEvent` (teatro → `TheaterEvent`). Assim
+  `GET /v1/events?source=sesc&audience=infantil` devolve a programação infantil real.
 - **Triagem das fontes infantis** (`docs/sources_infantil.md`): classificação
   (instituição/agregador/ingressos), status de robots.txt/Cloudflare e recomendação.
 - **Fonte Sesc São Paulo** (`parsers/sesc.py`, **live** em `PARSERS`), limitada às
@@ -24,8 +26,9 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   expõe uma **API JSON pública** (`/wp-json/wp/v1/atividades/filter`), então o parser é
   **API-native**: monta os `CulturalEvent` direto do JSON (paginação + dedup), sem
   render das páginas de detalhe (SPA). O filtro "apenas capital" é por *slug* de unidade
-  numa allowlist configurável (`CULTURASP_SESC_CAPITAL_UNITS`); Música → `MusicEvent`,
-  exposições → `ExhibitionEvent`, demais → `Event`; datas com fuso `-03:00`.
+  numa allowlist configurável (`CULTURASP_SESC_CAPITAL_UNITS`); tipo schema.org por
+  linguagem/público (Música → `MusicEvent`, exposições → `ExhibitionEvent`, teatro →
+  `TheaterEvent`, infantil → `ChildrensEvent`, demais → `Event`); datas com fuso `-03:00`.
 - **Hook `BaseParser.fetch_events`** (opcional): habilita fontes **API-native** — o
   `ScrapePipeline` usa o atalho quando o parser o implementa; fontes HTML retornam
   `None` e seguem o fluxo listagem→descobre→parse (Sala SP inalterada).

@@ -39,8 +39,8 @@ def _seed() -> InMemoryEventRepository:
     )
     repo.upsert(
         CulturalEvent(
-            id="sesc-sp:o-pequeno-principe",
-            source="sesc-sp",
+            id="sesc:o-pequeno-principe",
+            source="sesc",
             source_url="https://www.sescsp.org.br/programacao/o-pequeno-principe",
             title="O Pequeno Príncipe",
             schema_type=SchemaType.childrens_event,
@@ -88,19 +88,19 @@ def test_filter_by_source(client: TestClient) -> None:
 def test_filter_by_audience(client: TestClient) -> None:
     data = client.get("/v1/events?audience=infantil").json()
     assert len(data) == 1
-    assert data[0]["id"] == "sesc-sp:o-pequeno-principe"
+    assert data[0]["id"] == "sesc:o-pequeno-principe"
 
 
 def test_filter_by_age(client: TestClient) -> None:
     # 6 falls inside the 4-10 band -> matches the children's event only.
     six = client.get("/v1/events?age=6").json()
-    assert [e["id"] for e in six] == ["sesc-sp:o-pequeno-principe"]
+    assert [e["id"] for e in six] == ["sesc:o-pequeno-principe"]
     # 30 is outside every published band; the concert has no band → no match.
     assert client.get("/v1/events?age=30").json() == []
 
 
 def test_childrens_event_jsonld_age_fields(client: TestClient) -> None:
-    doc = client.get("/v1/events/sesc-sp:o-pequeno-principe/jsonld").json()
+    doc = client.get("/v1/events/sesc:o-pequeno-principe/jsonld").json()
     assert doc["@type"] == "ChildrensEvent"
     assert doc["typicalAgeRange"] == "4-10"
     assert doc["audience"]["suggestedMinAge"] == 4
